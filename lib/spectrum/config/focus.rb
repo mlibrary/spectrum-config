@@ -9,7 +9,7 @@ module Spectrum
     class MultiFocus < BaseFocus
     end
 
-    class NullFocus
+    class NullFocus < BaseFocus
     end
 
     class Focus < SimpleDelegator

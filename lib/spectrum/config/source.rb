@@ -24,7 +24,7 @@ module Spectrum
     class SRWSource < BaseSource
     end
 
-    class NullSource
+    class NullSource < BaseSource
     end
 
     class Source < SimpleDelegator
