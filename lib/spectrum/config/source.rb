@@ -27,7 +27,7 @@ module Spectrum
     class NullSource
     end
 
-    class Source < SimpleDelgator
+    class Source < SimpleDelegator
       def self.create args
         case args['type']
         when 'summon', :summon
