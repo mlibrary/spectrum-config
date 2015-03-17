@@ -1,6 +1,8 @@
 module Spectrum
   module Config
     class BaseFocus
+      def initialize args
+      end
     end
 
     class SingleFocus < BaseFocus
