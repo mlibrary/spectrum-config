@@ -30,7 +30,7 @@ module Spectrum
       end
 
       def init_with args
-        @delegate_sd_obj = create args
+        @delegate_sd_obj = Focus.create args
       end
 
       def __getobj__
