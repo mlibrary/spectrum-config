@@ -1,3 +1,5 @@
+require 'delegate'
+
 require "spectrum/config/version"
 require 'spectrum/config/source'
 require 'spectrum/config/focus'
