@@ -5,7 +5,7 @@ module Spectrum
         args.sort.inject({}) { |ret, val| ret[val.name] = val; ret }
       end
 
-      def init_with args
+      def initialize args
         @delegate_sd_obj = FocusList.create args
       end
     end
