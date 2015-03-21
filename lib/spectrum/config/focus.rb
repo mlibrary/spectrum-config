@@ -1,12 +1,13 @@
 module Spectrum
   module Config
     class BaseFocus
-      attr_accessor :name, :weight, :title, :sources
+      attr_accessor :name, :weight, :title, :sources, :search_box
       def initialize args
-        @title   = args['title']
-        @name    = args['name']
-        @weight  = args['weight']
-        @sources = args['sources']
+        @title      = args['title']
+        @name       = args['name']
+        @weight     = args['weight']
+        @sources    = args['sources']
+        @search_box = args['search_box']
       end
 
       def <=> other
