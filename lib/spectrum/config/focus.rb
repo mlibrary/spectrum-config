@@ -1,10 +1,16 @@
 module Spectrum
   module Config
     class BaseFocus
-      attr_accessor :name, :weight
+      attr_accessor :name, :weight, :title, :sources
       def initialize args
-        @name = args['name']
-        @weight = args['weight']
+        @title   = args['title']
+        @name    = args['name']
+        @weight  = args['weight']
+        @sources = args['sources']
+      end
+
+      def <=> other
+        self.weight <=> other.weight
       end
     end
 
@@ -22,7 +28,7 @@ module Spectrum
         case args['type']
         when 'single', :single
           SingleFocus.new args
-        when 'multiple', :multiple
+        when 'multi', :multi, 'multiple', :multiple
           MultiFocus.new args
         else
           NullFocus.new args
