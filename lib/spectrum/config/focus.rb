@@ -7,7 +7,16 @@ module Spectrum
         @name       = args['name']
         @weight     = args['weight']
         @sources    = args['sources']
+        @category   = args['category'].to_sym
         @search_box = args['search_box']
+      end
+
+      def category_match cat
+        if cat == :all || cat == category
+          self
+        else
+          nil
+        end
       end
 
       def <=> other
