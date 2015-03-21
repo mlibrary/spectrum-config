@@ -1,7 +1,10 @@
 module Spectrum
   module Config
     class BaseFocus
+      attr_accessor :name, :weight
       def initialize args
+        @name = args['name']
+        @weight = args['weight']
       end
     end
 
