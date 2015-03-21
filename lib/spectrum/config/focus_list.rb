@@ -2,7 +2,7 @@ module Spectrum
   module Config
     class FocusList < SimpleDelegator
       def self.create args
-        args.sort.inject({}) {|ret, val| ret[val.name] = val}
+        args.sort.inject({}) { |ret, val| ret[val.name] = val; ret }
       end
 
       def init_with args
