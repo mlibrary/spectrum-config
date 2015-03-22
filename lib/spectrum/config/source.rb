@@ -10,13 +10,17 @@ module Spectrum
       end
 
       def <=> b
-        self.name <=> b.name
+        name <=> b.name
       end
 
       def merge! args = {}
         args.each_pair do |k,v|
-          self.send (k.to_s + '=').to_sym, v
+          send (k.to_s + '=').to_sym, v
         end
+      end
+
+      def [] key
+        send key.to_sym
       end
     end
 
