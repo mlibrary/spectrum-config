@@ -33,7 +33,8 @@ module Spectrum
     end
 
     class SummonSource < BaseSource
-      attr_accessor :access_id, :client_key, :secret_key, :log, :benchmark, :transport
+      attr_accessor :access_id, :client_key, :secret_key, :log, :benchmark,
+        :transport, :session_id
       def initialize args
         super
         @log        = args['log']        || nil
@@ -42,6 +43,7 @@ module Spectrum
         @access_id  = args['access_id']  || nil
         @secret_key = args['secret_key'] || nil
         @client_key = args['client_key'] || nil
+        @session_id = args['session_id'] || nil
       end
     end
 
