@@ -8,6 +8,10 @@ module Spectrum
         @name   = args['name']
         @driver = args['driver']
       end
+
+      def <=> b
+        self.name <=> b.name
+      end
     end
 
     class SolrSource < BaseSource
