@@ -1,15 +1,32 @@
 module Spectrum
   module Config
     class BaseFocus
-      attr_accessor :name, :weight, :title, :sources, :search_box, :subsource
+      attr_accessor :name, :weight, :title, :sources, :subsource,
+        :route, :placeholder
+
       def initialize args
-        @title      = args['title']
-        @name       = args['name']
-        @weight     = args['weight']
-        @sources    = args['sources']
-        @category   = args['category'].to_sym
-        @subsource  = args['subsource'] || false
-        @search_box = args['search_box']
+        @title       = args['title']
+        @name        = args['name']
+        @weight      = args['weight']
+        @sources     = args['sources']
+        @category    = args['category'].to_sym
+        @subsource   = args['subsource'] || false
+        @route       = args['route']
+        route['as'] ||= route['path'] + '_index'
+      end
+
+      def add_route app
+        app.match route['path'],
+          to: route['to'],
+          as: route['as'].to_sym,
+          defaults: route['defaults']
+      end
+
+      def search_box
+        {
+          'route' => route['as'] + '_path',
+          'placeholder' => route['placeholder']
+        }
       end
 
       def category_match cat
