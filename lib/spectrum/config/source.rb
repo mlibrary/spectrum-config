@@ -25,13 +25,19 @@ module Spectrum
     end
 
     class SolrSource < BaseSource
-    end
-
-    class SummonSource < BaseSource
       attr_accessor :truncate
       def initialize args
         super
-        @truncate = args['truncate']
+        @truncate  = args['truncate']
+      end
+    end
+
+    class SummonSource < BaseSource
+      attr_accessor :access_id, :secret_key
+      def initialize args
+        super
+        @access_id = args['access_id']
+        @secret_key = args['secret_key']
       end
     end
 
