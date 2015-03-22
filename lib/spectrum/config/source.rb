@@ -33,7 +33,7 @@ module Spectrum
     end
 
     class SummonSource < BaseSource
-      attr_accessor :access_id, :secret_key
+      attr_accessor :access_id, :client_key
       def initialize args
         super
         @access_id  = args['access_id']
