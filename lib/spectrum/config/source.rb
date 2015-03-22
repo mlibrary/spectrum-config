@@ -36,8 +36,8 @@ module Spectrum
       attr_accessor :access_id, :secret_key
       def initialize args
         super
-        @access_id = args['access_id']
-        @secret_key = args['secret_key']
+        @access_id  = args['access_id']
+        @client_key = args['client_key']
       end
     end
 
