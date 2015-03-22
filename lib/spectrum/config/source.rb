@@ -13,7 +13,7 @@ module Spectrum
         self.name <=> b.name
       end
 
-      def merge! args
+      def merge! args = {}
         args.each_pair do |k,v|
           self.send k.to_sym, v
         end
