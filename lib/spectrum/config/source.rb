@@ -15,7 +15,7 @@ module Spectrum
 
       def merge! args = {}
         args.each_pair do |k,v|
-          self.send k.to_sym, v
+          self.send (k.to_s + '=').to_sym, v
         end
       end
     end
