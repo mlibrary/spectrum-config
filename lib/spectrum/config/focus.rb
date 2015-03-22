@@ -7,12 +7,17 @@ module Spectrum
       def initialize args
         @title       = args['title']
         @name        = args['name']
+        @route       = args['route']
         @weight      = args['weight']
         @sources     = args['sources']
         @category    = args['category'].to_sym
+        @facets      = args['facets'] || false
         @subsource   = args['subsource'] || false
-        @route       = args['route']
         route['as'] ||= route['path'] + '_index'
+      end
+
+      def has_facets?
+        @facets
       end
 
       def add_route app
