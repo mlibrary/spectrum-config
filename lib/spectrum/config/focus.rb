@@ -16,6 +16,14 @@ module Spectrum
         route['as'] ||= route['path'] + '_index'
       end
 
+      def path query
+        if query.empty?
+          "/#{route['path']}"
+        else
+          "/#{route['path']}?q=#{URI.encode(query)}"
+        end
+      end
+
       def has_facets?
         @facets
       end
