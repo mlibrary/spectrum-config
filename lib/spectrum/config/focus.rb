@@ -13,7 +13,7 @@ module Spectrum
         @category    = args['category'].to_sym
         @facets      = args['facets'] || false
         @subsource   = args['subsource'] || false
-        route['as'] ||= route['path'] + '_index'
+        route['as']  ||= route['path'] + '_index'
       end
 
       def path query

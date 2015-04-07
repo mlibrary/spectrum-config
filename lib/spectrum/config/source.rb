@@ -30,6 +30,10 @@ module Spectrum
         super
         @truncate  = args['truncate']
       end
+
+      def truncate?
+        @truncate || false
+      end
     end
 
     class SummonSource < BaseSource
