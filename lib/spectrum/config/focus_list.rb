@@ -12,18 +12,13 @@ module Spectrum
       end
 
       def match arg
-        puts "/match"
-        puts arg
-        puts "\\match"
-        if arg.respond_to?(:has_key?) && arg.has_key?('active_source') 
-          match(arg['active_source'])
+        case arg
+        when Hash
+          arg.has_key?('active_source') ? match(arg['active_source']) : nil
+        when String
+          @delegate_sd_obj.has_key?(arg) ? arg : nil
         else
-          key = arg.to_s.gsub(/^\/advanced/, '').gsub(/^\//, '')
-          if @delegate_sd_object.has_key? key
-            key
-          else
-            nil
-          end
+          nil
         end
       end
 
