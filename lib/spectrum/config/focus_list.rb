@@ -12,6 +12,9 @@ module Spectrum
       end
 
       def match arg
+        puts "/match"
+        puts arg
+        puts "\\match"
         if arg.respond_to?(:has_key?) && arg.has_key?('active_source') 
           match(arg['active_source'])
         else
