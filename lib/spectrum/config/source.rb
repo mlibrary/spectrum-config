@@ -9,6 +9,10 @@ module Spectrum
         @driver = args['driver']
       end
 
+      def is_solr?
+        false
+      end
+
       def <=> b
         name <=> b.name
       end
@@ -29,6 +33,10 @@ module Spectrum
       def initialize args
         super
         @truncate  = args['truncate']
+      end
+
+      def is_solr?
+        true
       end
 
       def truncate?
