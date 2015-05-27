@@ -2,7 +2,8 @@ module Spectrum
   module Config
     class BaseFocus
       attr_accessor :name, :weight, :title, :sources, :subsource,
-        :route, :placeholder
+        :route, :placeholder, :warning, :description, :viewstyles,
+        :layout, :default_viewstyle, :blacklight
 
       def initialize args
         @title       = args['title']
@@ -13,7 +14,17 @@ module Spectrum
         @category    = args['category'].to_sym
         @facets      = args['facets'] || false
         @subsource   = args['subsource'] || false
+        @warning     = args['warning'] || nil
+        @description = args['description'] || ''
+        @viewstyles  = args['viewstyles'] || nil
+        @layout      = args['layout'] || {}
+        @blacklight  = args['blacklight'] || Spectrum::Config::Blacklight.new
+        @default_viewstyle  = args['default_viewstyle'] || nil
         route['as']  ||= route['path'] + '_index'
+      end
+
+      def viewstyles?
+        !!viewstyles
       end
 
       def path query

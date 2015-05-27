@@ -16,7 +16,9 @@ module Spectrum
         when Hash
           arg.has_key?('active_source') ? match(arg['active_source']) : nil
         when String
-          @delegate_sd_obj.has_key?(arg) ? arg : nil
+          key = arg.gsub(/^\//, '').gsub(/\/advanced/, '')
+
+          has_key?(key) ? key : nil
         else
           nil
         end
