@@ -29,3 +29,10 @@ TODO: Write usage instructions here
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create a new Pull Request
+
+## Copyright
+
+Copyright (c) 2015, Regents of the University of Michigan.
+
+All rights reserved. See [LICENSE.txt](LICENSE.txt) for details.
+
