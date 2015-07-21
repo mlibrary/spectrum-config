@@ -6,7 +6,7 @@ module Spectrum
     class BaseFocus
       attr_accessor :name, :weight, :title, :sources, :subsource,
         :route, :placeholder, :warning, :description, :viewstyles,
-        :layout, :default_viewstyle, :blacklight
+        :layout, :default_viewstyle, :blacklight, :category
 
       def initialize args
         @title       = args['title']
@@ -15,13 +15,13 @@ module Spectrum
         @weight      = args['weight']
         @sources     = args['sources']
         @category    = args['category'].to_sym
-        @facets      = args['facets'] || false
         @subsource   = args['subsource'] || false
         @warning     = args['warning'] || nil
         @description = args['description'] || ''
         @viewstyles  = args['viewstyles'] || nil
         @layout      = args['layout'] || {}
         @blacklight  = args['blacklight'] || Spectrum::Config::Blacklight.new
+        @facets      = args['facets'] || @blacklight.has_facets?
         @default_viewstyle  = args['default_viewstyle'] || nil
         route['as']  ||= route['path'] + '_index'
       end

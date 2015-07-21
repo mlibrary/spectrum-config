@@ -6,11 +6,15 @@ module Spectrum
     class Blacklight
    
       def initialize obj = {}
-        set obj
+        set(obj)
       end
 
       def init_with obj
-        set obj
+        set(obj)
+      end
+
+      def has_facets?
+        !@facet_fields.empty?
       end
 
       def configure config, search_fields
@@ -20,26 +24,34 @@ module Spectrum
         config.document_solr_request_handler = @request_handler
 
         @show.each_pair do |name, field|
-          config.show.send (name + '=').to_sym, field
+          config.show.send((name + '=').to_sym, field)
         end
 
         @index.each_pair do |name, field|
-          config.index.send (name + '=').to_sym, field
+          config.index.send((name + '=').to_sym, field)
         end
 
         @index_field.each do |field|
           options = {}
           options[:label] = field['label'] if field.has_key? 'label'
           options[:separator] = field['separator'] if field.has_key? 'separator'
-          config.add_index_field field['name'], options
+          config.add_index_field(field['name'], options)
         end
 
         @search_fields.each do |name|
           search_fields[name].configure(config)
         end
 
-        #FACET_FIELD_CONFIG.configure config, @facet_fields
-        #SEARCH_FIELD_CONFIG.configure config, @search_fields
+        @facet_fields.each do |field|
+          options = {}
+					options[:show]  = field['show']  || true
+          options[:sort]  = field['sort']  || true
+          options[:label] = field['label'] || field['name']
+          options[:limit] = field['limit'] || true
+          options[:collapse] = field['collapse'] || false
+          config.add_facet_field(field['name'], options)
+        end
+        config.add_facet_fields_to_solr_request! if has_facets?
       end
 
       private
