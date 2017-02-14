@@ -3,27 +3,103 @@
 
 module Spectrum
   module Config
-    class BaseFocus
-      attr_accessor :name, :weight, :title, :sources, :subsource,
-        :route, :placeholder, :warning, :description, :viewstyles,
-        :layout, :default_viewstyle, :blacklight, :category
+    class Focus
+      attr_accessor :id, :name, :weight, :title, :source,
+        :placeholder, :warning, :description, :viewstyles,
+        :layout, :default_viewstyle, :category, :base,
+        :fields, :url, :filters, :sorts, :id_field
 
-      def initialize args
-        @title       = args['title']
-        @name        = args['name']
-        @route       = args['route']
-        @weight      = args['weight']
-        @sources     = args['sources']
-        @category    = args['category'].to_sym
-        @subsource   = args['subsource'] || false
-        @warning     = args['warning'] || nil
-        @description = args['description'] || ''
-        @viewstyles  = args['viewstyles'] || nil
-        @layout      = args['layout'] || {}
-        @blacklight  = args['blacklight'] || Spectrum::Config::Blacklight.new
-        @facets      = args['facets'] || @blacklight.has_facets?
-        @default_viewstyle  = args['default_viewstyle'] || nil
-        route['as']  ||= route['path'] + '_index'
+      HREF_DATA = {
+        'id' => 'href',
+        'metadata' => {
+          'name' => 'HREF',
+          'short_desc' => 'The link to the thing in the native interface',
+        }
+      }
+
+      def facet(name, base_url)
+        @facets.facet(name, @facet_values, base_url)
+      end
+
+      def facet_url
+        @url + '/facet'
+      end
+
+      def initialize args, config
+        @id             = args['id']
+        @path           = args['path'] || args['id']
+        @source         = args['source']
+        @weight         = args['weight'] || 0
+        @holdings       = args['holdings']
+        @url            = (@id == @source) ? @id : @source + '/' + @id
+        @id_field       = args['id_field'] || 'id'
+        @metadata       = Spectrum::Config::Metadata.new(args['metadata'])
+        @href           = Spectrum::Config::Href.new(args['href'])
+        @sorts          = Spectrum::Config::SortList.new(args['sorts'], config.sorts)
+        @fields         = Spectrum::Config::FieldList.new(args['fields'], config.fields)
+        @facets         = Spectrum::Config::FacetList.new(args['facets'], config.fields, config.sorts, facet_url)
+        @default_sort   = @sorts[args['default_sort']] || @sorts.default
+
+        @filters        = args['filters'] || []
+
+        @max_per_page   = args['max_per_page'] || 50000
+        @default_facets = nil
+      end
+
+      def field_map
+        @fields.reverse_map
+      end
+
+      def facet_map
+        @facets.reverse_map
+      end
+
+      def prefix
+        @id + '/'
+      end
+
+      def href_field(data)
+        @href.apply(data)
+      end
+
+      def apply_fields(data)
+        if data === Array
+          data.map {|item| apply_fields(item) }.compact
+        else
+          ret = []
+          ret << href_field(data)
+          @fields.native_pair do |native, field|
+            ret << field.apply(value(data, native))
+          end
+          ret.compact
+        end
+      end
+
+      def value(data, name)
+        if name
+          data.respond_to?(:[]) ? data[name] :
+           (data.respond_to?(name.to_sym) ? data.send(name.to_sym) : nil)
+        else
+          nil
+        end
+      end
+
+      def spectrum(base_url = '')
+        @default_facets.call if @default_facets
+        {
+          uid: @id,
+          metadata: @metadata.spectrum,
+          url: base_url + url,
+          default_sort: @default_sort.id,
+          sorts: @sorts.spectrum,
+          fields: @fields.spectrum,
+          facets: @facets.spectrum(@facet_values, base_url),
+          holdings: (@holdings ? base_url + url + '/holdings' : nil)
+        }
+      end
+
+      def is_subsource?
+        @subsource
       end
 
       def viewstyles?
@@ -32,28 +108,122 @@ module Spectrum
 
       def path query
         if query.empty?
-          "/#{route['path']}"
+          "/#{base}"
         else
-          "/#{route['path']}?q=#{URI.encode(query)}"
+          "/#{base}?q=#{URI.encode(query)}"
         end
       end
 
-      def has_facets?
-        @facets
+      def initialize_copy(source)
+        @facets = @facets.clone
       end
 
-      def add_route app
-        app.match route['path'],
-          to: route['to'],
-          as: route['as'].to_sym,
-          defaults: route['defaults']
+      def apply(request, results)
+        clone.apply_request!(request).apply_facets!(results)
+      end
+
+      def apply_request(request)
+        clone.apply_request!(request)
+      end
+
+      def apply_request!(request)
+        facet = @facets[request.facet_uid]
+        if facet
+          facet.limit  = request.facet_limit
+          facet.offset = request.facet_offset
+        end
+        self
+      end
+
+      def apply_facets(results)
+        clone.apply_facets!(results)
+      end
+
+      def apply_facets!(results)
+        if results.respond_to? :[]
+          @facet_values = results["facet_counts"]["facet_fields"]
+        elsif results.respond_to? :facets
+          @facet_values = {}
+          # TODO: Make a facet values object or something.
+          results.facets.each do |facet|
+            @facet_values[facet.display_name] = []
+            facet.counts.each do |count|
+              #unless count.applied?
+                @facet_values[facet.display_name] << count.value
+                @facet_values[facet.display_name] << count.count
+              #end
+            end
+          end
+        else
+          @facet_values = {}
+        end
+        self
+      end
+
+      def has_facets?
+        !@facets.empty?
+      end
+
+      # These need to be lazy-loaded so that rake routes will work.
+      def default_facets &block
+        @default_facets = Proc.new do
+          block.call
+          @default_facets = nil
+        end
+      end
+
+      def routes app
+        app.match @url,
+          to: 'json#search',
+          defaults: { source: source, focus: @id, type: 'DataStore' },
+          via: [ :post, :options ]
+
+        app.match "#{@url}/record/:id",
+          to: 'json#record',
+          defaults: { source: source, focus: @id, type: 'Record', id_field: id_field },
+          via: [ :get, :options ]
+
+        app.match "#{url}/holdings/:id",
+          to: 'json#holdings',
+          defaults: { source: source, focus: @id, type: 'Holdings', id_field: id_field },
+          via: [ :get, :options ]
+
+        app.get @url, to: 'json#bad_request'
+        @facets.routes(source, @id, app)
       end
 
       def search_box
         {
-          'route' => route['as'] + '_path',
-          'placeholder' => route['placeholder']
+          'route' => base + '_index_path',
+          'placeholder' => placeholder
         }
+      end
+
+      def configure_blacklight config, request
+
+        @fields.native_pair do |solr_name, field|
+          config.add_search_field solr_name, label: field.name
+          config.add_index_field solr_name, label: field.name
+          config.add_show_field solr_name, label: field.name
+        end
+
+        @facets.native_pair do |solr_name, facet|
+          config.add_facet_field solr_name,
+            label:  facet.name,
+            sort:   request.facet_sort || facet.sort,
+            include_in_request: true,
+            solr_params: {
+              'facet.mincount' => facet.mincount,
+              'facet.limit' => (request.facet_limit  || facet.limit) + 1,
+              'facet.offset' => request.facet_offset || facet.offset,
+            }
+        end
+
+        @sorts.values.each do |sort|
+          config.add_sort_field sort: sort.value, label: sort.metadata.name
+        end
+
+        config.max_per_page = @max_per_page
       end
 
       def category_match cat
@@ -67,46 +237,6 @@ module Spectrum
       def <=> other
         self.weight <=> other.weight
       end
-    end
-
-    class SingleFocus < BaseFocus
-    end
-
-    class MultiFocus < BaseFocus
-    end
-
-    class NullFocus < BaseFocus
-    end
-
-    class Focus < SimpleDelegator
-      def self.create args
-        case args['type']
-        when 'single', :single
-          SingleFocus.new args
-        when 'multi', :multi, 'multiple', :multiple
-          MultiFocus.new args
-        else
-          NullFocus.new args
-        end
-      end
-
-      def initialize obj
-        super
-        @delegate_sd_obj = obj
-      end
-
-      def init_with args
-        @delegate_sd_obj = Focus.create args
-      end
-
-      def __getobj__
-         @delegate_sd_obj
-      end
-
-      def __setobj__ obj
-         @delegate_sd_obj = obj
-      end
-
     end
   end
 end

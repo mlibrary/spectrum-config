@@ -4,13 +4,38 @@
 module Spectrum
   module Config
     class ConfigList < SimpleDelegator
-      def self.create args
-        args.sort.inject({}) { |ret, val| ret[val.name] = val; ret }
+      CONTAINS = NullConfig
+
+      def initialize list = [], *rest
+        begin
+          list ||= []
+          __setobj__(
+            list.map do |item|
+              if item.class == self.class::CONTAINS
+                item
+              else
+                self.class::CONTAINS.new(item, *rest)
+              end
+            end.sort.inject({}) do |ret, val|
+              ret[val.id] = val
+              ret
+            end
+          )
+        rescue
+          STDERR.puts self.class
+          STDERR.puts self.class::CONTAINS
+          raise
+        end
       end
 
-      def initialize args
-        @delegate_sd_obj = FocusList.create args
+      def total_available
+        __getobj__.values.length
       end
+
+      def spectrum
+        __getobj__.values.map(&:spectrum)
+      end
+
     end
   end
 end

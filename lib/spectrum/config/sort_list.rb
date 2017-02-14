@@ -3,10 +3,10 @@
 
 module Spectrum
   module Config
-    class SourceList < ConfigList
-      CONTAINS = Source
-      def routes(config)
-        __getobj__.values.each {|source| source.routes(config)}
+    class SortList < MappedConfigList
+      CONTAINS = Sort
+      def default
+        __getobj__.values.first
       end
     end
   end

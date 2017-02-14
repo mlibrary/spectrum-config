@@ -4,18 +4,19 @@
 module Spectrum
   module Config
     class BaseSource
-      attr_accessor :url, :type, :name, :driver
+      attr_accessor :url, :type, :id, :driver, :path, :id_field, :holdings
       def initialize args
+        @id        = args['id']
+        @id_field  = args['id_field'] || 'id'
+        @name      = args['name']
         @url       = args['url']
         @type      = args['type']
-        @name      = args['name']
         @driver    = args['driver']
         @link_key  = args['link_key']  || 'id'
         @link_type = args['link_type'] || :relative
-        @link_base = args['link_base'] || nil
+        @link_base = args['link_base']
+        @holdings  = args['holdings']
       end
-
-
 
       def link_to base, doc
         send @link_type, base, doc
@@ -26,7 +27,7 @@ module Spectrum
       end
 
       def <=> b
-        name <=> b.name
+        self.id <=> b.id
       end
 
       def merge! args = {}
@@ -39,14 +40,15 @@ module Spectrum
         send key.to_sym
       end
 
-      def fix_params params, controller
-        fixed_params = params.deep_clone
-        %w(layout commit source sources controller action).each do |param_name|
-          fixed_params.delete(param_name)
-        end
-        fixed_params.delete(:source)
-        fixed_params['source'] = name
-        fixed_params
+      def params(focus, request, controller = nil)
+        request.query(focus.field_map, focus.facet_map).merge({
+          source: self,
+          'source' => self
+        })
+      end
+
+      def engine focus, request, controller = nil
+        nil
       end
 
       private
@@ -81,6 +83,18 @@ module Spectrum
       def truncate?
         @truncate || false
       end
+
+      def engine focus, request, controller = nil
+        p = params(focus, request, controller)
+        p[:config] = ::Blacklight::Configuration.new do |config|
+          focus.configure_blacklight(config, request)
+        end
+        p[:fq] += focus.filters
+        p[:sort] = (focus.sorts[request.sort] || focus.sorts.default).value
+        engine = Spectrum::SearchEngines::Solr.new(p)
+        engine.documents.slice(*request.slice)
+        engine
+      end
     end
 
     class SummonSource < BaseSource
@@ -97,29 +111,35 @@ module Spectrum
         @session_id = args['session_id'] || nil
       end
 
-      def fix_params params, controller
-        fixed_params = super(params, controller)
+      def engine focus, request, controller
+        Spectrum::SearchEngines::Summon.new(params(focus, request, controller))
+      end
+
+      def params(focus, request, controller = nil)
+        new_params = super
+        new_params['s.fvf'] = request.fvf(focus.facet_map)
+        new_params.delete(:fq)
 
         # The Summon API support authenticated or un-authenticated roles,
         # with Authenticated having access to more searchable metadata.
         # We're Authenticated if the user is on-campus, or has logged-in.
-        fixed_params['s.role'] = 'authenticated' if controller.on_campus? || controller.logged_in?
+        new_params['s.role'] = 'authenticated' #if controller.on_campus? || controller.logged_in?
 
         # items-per-page (summon page size, s.ps, aka 'rows') should be
         # a persisent browser setting
-        if fixed_params['s.ps'] && (fixed_params['s.ps'].to_i > 1)
+        if new_params['s.ps'] && (new_params['s.ps'].to_i > 1)
           # Store it, if passed
-          controller.set_browser_option('summon_per_page', fixed_params['s.ps'])
+          #controller.set_browser_option('summon_per_page', new_params['s.ps'])
         else
           # Retrieve and use previous value, if not passed
-          summon_per_page = controller.get_browser_option('summon_per_page')
-          if summon_per_page && (summon_per_page.to_i > 1)
-            fixed_params['s.ps'] = summon_per_page
-          end
+          #summon_per_page = controller.get_browser_option('summon_per_page')
+          #if summon_per_page && (summon_per_page.to_i > 1)
+          #  new_params['s.ps'] = summon_per_page
+          #end
         end
 
         # Article searches within QuickSearch should act as New searches
-        fixed_params['new_search'] = 'true' if controller.active_source == 'quicksearch'
+        #new_params['new_search'] = 'true' if controller.active_source == 'quicksearch'
         # QuickSearch is only one of may possible Aggregates - so maybe this instead?
         # params['new_search'] = 'true' if @search_style == 'aggregate'
 
@@ -130,27 +150,28 @@ module Spectrum
         #params['new_search'] = true unless request.referrer && clios.any? do |prefix|
           #request.referrer.starts_with? prefix
         #end
+        new_params['new_search'] = true
 
-        # New approach, 5/14 - params will always be "q".  
+        # New approach, 5/14 - params will always be "q".
         # "s.q" is internal only to the Summon controller logic
-        if fixed_params['s.q']
+        if new_params['s.q']
           # s.q ovewrites q, unless 'q' is given independently
-          fixed_params['q'] = fixed_params['s.q'] unless fixed_params['q']
-          fixed_params.delete('s.q')
+          new_params['q'] = new_params['s.q'] unless new_params['q']
+          new_params.delete('s.q')
         end
 
         #   # LibraryWeb QuickSearch will pass us "search_field=all_fields",
         #   # which means to do a Summon search against 's.q'
-        if fixed_params['q'] && fixed_params['search_field'] && (fixed_params['search_field'] != 'all_fields')
-          hash = Rack::Utils.parse_nested_query("#{fixed_params['search_field']}=#{fixed_params['q']}")
-          fixed_params.merge! hash
+        if new_params['q'] && new_params['search_field'] && (new_params['search_field'] != 'all_fields')
+          hash = Rack::Utils.parse_nested_query("#{new_params['search_field']}=#{new_params['q']}")
+          new_params.merge! hash
         end
 
-        if fixed_params['pub_date']
-          fixed_params['s.cmd'] = "setRangeFilter(PublicationDate,#{fixed_params['pub_date']['min_value']}:#{fixed_params['pub_date']['max_value']})"
+        if new_params['pub_date']
+          new_params['s.cmd'] = "setRangeFilter(PublicationDate,#{new_params['pub_date']['min_value']}:#{new_params['pub_date']['max_value']})"
         end
 
-        fixed_params
+        new_params
       end
     end
 
@@ -160,8 +181,8 @@ module Spectrum
     class NullSource < BaseSource
     end
 
-    class Source < SimpleDelegator
-      def self.create args
+    module Source
+      def self.new args
         case args['type']
         when 'summon', :summon
           SummonSource.new args
@@ -172,22 +193,6 @@ module Spectrum
         else
           NullSource.new args
         end
-      end
-
-      def initialize obj
-        super
-        @delegate_sd_obj = obj
-      end
-
-      def init_with args
-        @delegate_sd_obj = Source.create args
-      end
-
-      def __getobj__
-         @delegate_sd_obj
-      end
-      def __setobj__ obj
-         @delegate_sd_obj = obj
       end
     end
   end

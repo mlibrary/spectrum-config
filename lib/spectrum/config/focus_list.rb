@@ -4,14 +4,16 @@
 module Spectrum
   module Config
     class FocusList < ConfigList
-      def add_routes app
-        @delegate_sd_obj.each_value do |focus|
-          focus.add_route(app)
+      CONTAINS = Focus
+
+      def routes app
+        __getobj__.each_value do |focus|
+          focus.routes(app)
         end
       end
 
       def by_category cat
-        @delegate_sd_obj.values.map {|item| item.category_match(cat)}.compact
+        __getobj__.values.map {|item| item.category_match(cat)}.compact
       end
 
       def match arg
@@ -27,8 +29,12 @@ module Spectrum
         end
       end
 
+      def spectrum
+        __getobj__.values.map(&:spectrum)
+      end
+
       def default
-        @delegate_sd_obj.keys.first
+        __getobj__.keys.first
       end
     end
   end
