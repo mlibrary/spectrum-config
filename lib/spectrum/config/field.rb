@@ -21,8 +21,8 @@ module Spectrum
         @metadata   = Metadata.new(args['metadata'])
         @type       = args['type'] || 'solr'
         @field      = args['field'] || args['id']
-        @base       = args['base']
-        @map        = args['map']
+        @marcfields = args['marcfields']
+        @subfields  = args['subfields']
         @uid        = args['uid'] || args['id']
 
         @sorts      = (args['sorts'] || [])
@@ -69,12 +69,35 @@ module Spectrum
         end
       end
 
-      def apply data
+      def transform(value)
+        if @type == 'solr'
+          value
+        elsif @type == 'marcxml'
+          record = MARC::XMLReader.new(StringIO.new(value.first)).first
+          record.fields(@marcfields).map do |field|
+            hsh = {}
+            @subfields.each_pair do |label, code|
+              hsh[label] = field.find_all { |subfield| subfield.code == code }.map(&:value)
+            end
+            hsh
+          end
+        end
+      end
+
+      def value(data)
+        if data.respond_to?(:[])
+          transform(data[@field])
+        elsif data.respond_to(@field)
+          transform(data.send(@field))
+        end
+      end
+
+      def apply(data)
         if @viewable && valid_data?(data)
           {
             uid: @id,
             name: @metadata.name,
-            value: @filters.apply(data),
+            value: @filters.apply(value(data)),
             value_has_html: @has_html,
           }
         else

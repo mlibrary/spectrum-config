@@ -1,10 +1,10 @@
 module Spectrum
   module Config
-    class Href
+    class HoldingsURL
       attr_accessor :field, :prefix
 
-      UID = 'href'
-      NAME = 'HREF'
+      UID = 'holdings_url'
+      NAME = 'Holdings URL'
       HAS_HTML = false
       DEFAULT_FIELD = 'id'
       DEFAULT_PREFIX = ''
@@ -53,7 +53,7 @@ module Spectrum
         {
           uid: UID,
           name: NAME,
-          value: "#{base_url}/#{@prefix}/record/#{value}",
+          value: "#{base_url}/#{@prefix}/holdings/#{value}",
           value_has_html: HAS_HTML,
         }
       end

@@ -34,7 +34,8 @@ module Spectrum
         @url            = (@id == @source) ? @id : @source + '/' + @id
         @id_field       = args['id_field'] || 'id'
         @metadata       = Spectrum::Config::Metadata.new(args['metadata'])
-        @href           = Spectrum::Config::Href.new(args['href'])
+        @href           = Spectrum::Config::Href.new('prefix' => @url)
+        @holdings       = Spectrum::Config::HoldingsURL.new('prefix' => @url)
         @sorts          = Spectrum::Config::SortList.new(args['sorts'], config.sorts)
         @fields         = Spectrum::Config::FieldList.new(args['fields'], config.fields)
         @facets         = Spectrum::Config::FacetList.new(args['facets'], config.fields, config.sorts, facet_url)
@@ -58,18 +59,23 @@ module Spectrum
         @id + '/'
       end
 
-      def href_field(data)
-        @href.apply(data)
+      def href_field(data, base_url)
+        @href.apply(data, base_url)
       end
 
-      def apply_fields(data)
+      def holdings_field(data, base_url)
+        @holdings.apply(data, base_url)
+      end
+
+      def apply_fields(data, base_url)
         if data === Array
-          data.map {|item| apply_fields(item) }.compact
+          data.map {|item| apply_fields(item, base_url) }.compact
         else
           ret = []
-          ret << href_field(data)
-          @fields.native_pair do |native, field|
-            ret << field.apply(value(data, native))
+          ret << href_field(data, base_url)
+          ret << holdings_field(data, base_url)
+          @fields.each_value do |field|
+            ret << field.apply(data)
           end
           ret.compact
         end
