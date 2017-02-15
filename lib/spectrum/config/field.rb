@@ -87,7 +87,7 @@ module Spectrum
       def value(data)
         if data.respond_to?(:[])
           transform(data[@field])
-        elsif data.respond_to(@field)
+        elsif data.respond_to?(@field)
           transform(data.send(@field))
         end
       end

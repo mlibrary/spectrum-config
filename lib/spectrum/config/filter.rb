@@ -19,8 +19,10 @@ module Spectrum
       def fullname data
         if data.respond_to?(:map)
           data.map(&:fullname)
-        else
+        elsif data.respond_to?(:fullname)
           data.fullname
+        else
+          data
         end
       end
     end
