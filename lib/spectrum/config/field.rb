@@ -93,11 +93,12 @@ module Spectrum
       end
 
       def apply(data)
-        if @viewable && valid_data?(data)
+        val = @filters.apply(value(data))
+        if @viewable && valid_data?(val)
           {
             uid: @id,
             name: @metadata.name,
-            value: @filters.apply(value(data)),
+            value: val,
             value_has_html: @has_html,
           }
         else
