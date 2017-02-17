@@ -75,9 +75,19 @@ module Spectrum
         elsif @type == 'marcxml'
           record = MARC::XMLReader.new(StringIO.new(value.first)).first
           record.fields(@marcfields).map do |field|
-            hsh = {}
+            hsh = {
+              uid: @id,
+              name: @metadata.name,
+              value: [],
+              value_has_html: @has_html
+            }
             @subfields.each_pair do |label, code|
-              hsh[label] = field.find_all { |subfield| subfield.code == code }.map(&:value)
+              hsh[:value] << {
+                uid: "#{@marcfields}#{code}",
+                name: label,
+                value:  field.find_all { |subfield| subfield.code == code }.map(&:value),
+                value_has_html: @has_html
+              }
             end
             hsh
           end
