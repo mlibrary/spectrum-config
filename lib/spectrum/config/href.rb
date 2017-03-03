@@ -16,11 +16,12 @@ module Spectrum
       end
 
       def apply(data, base_url)
-        if data.respond_to? :[]
-          apply_hash(data, base_url)
-        else
-          apply_object(data, base_url)
-        end
+        {
+          uid: UID,
+          name: NAME,
+          value: get_url(data, base_url),
+          value_has_html: HAS_HTML,
+        }
       end
 
       def apply_object(data, base_url)
@@ -50,12 +51,15 @@ module Spectrum
           value = value.join('/')
         end
 
-        {
-          uid: UID,
-          name: NAME,
-          value: "#{base_url}/#{@prefix}/record/#{value}",
-          value_has_html: HAS_HTML,
-        }
+        "#{base_url}/#{@prefix}/record/#{value}"
+      end
+
+      def get_url(data, base_url)
+        if data.respond_to? :[]
+          apply_hash(data, base_url)
+        else
+          apply_object(data, base_url)
+        end
       end
 
     end

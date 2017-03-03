@@ -24,6 +24,10 @@ module Spectrum
         @marcfields = args['marcfields']
         @subfields  = args['subfields']
         @uid        = args['uid'] || args['id']
+        @model_field = args['model_field']
+        @openurl_root = args['openurl_root']
+        @openurl_field = args['openurl_field']
+        @direct_link_field = args['direct_link_field']
 
         @sorts      = (args['sorts'] || [])
         raise "Missing sort id(s): #{(@sorts - sort_list.keys).join(', ')}" unless (@sorts - sort_list.keys).empty?
@@ -76,7 +80,7 @@ module Spectrum
           record = MARC::XMLReader.new(StringIO.new(value.first)).first
           record.fields(@marcfields).map do |field|
             hsh = {
-              uid: @id,
+              uid: @uid,
               name: @metadata.name,
               value: [],
               value_has_html: @has_html
@@ -91,14 +95,30 @@ module Spectrum
             end
             hsh
           end
+        elsif @type == 'summon_date'
+          [value.day, value.month, value.year].compact.join('/')
+        end
+      end
+
+      def summon_access_url(data)
+        if (data.src[@model_field].first == 'OpenURL')
+          @openurl_root + '?' + data.send(@openurl_field)
+        else
+          data.send(@direct_link_field)
         end
       end
 
       def value(data)
+        if @type == 'summon_access_url'
+          return summon_access_url(data)
+        end
+
         if data.respond_to?(:[])
           transform(data[@field])
         elsif data.respond_to?(@field)
           transform(data.send(@field))
+        elsif data.respond_to?(:src)
+          transform(data.src[@field])
         end
       end
 
@@ -106,7 +126,7 @@ module Spectrum
         val = @filters.apply(value(data))
         if @viewable && valid_data?(val)
           {
-            uid: @id,
+            uid: @uid,
             name: @metadata.name,
             value: val,
             value_has_html: @has_html,

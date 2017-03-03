@@ -34,8 +34,8 @@ module Spectrum
         @url            = (@id == @source) ? @id : @source + '/' + @id
         @id_field       = args['id_field'] || 'id'
         @metadata       = Spectrum::Config::Metadata.new(args['metadata'])
-        @href           = Spectrum::Config::Href.new('prefix' => @url)
-        @holdings       = Spectrum::Config::HoldingsURL.new('prefix' => @url)
+        @href           = Spectrum::Config::Href.new('prefix' => @url, 'field' => @id_field)
+        @holdings       = Spectrum::Config::HoldingsURL.new('prefix' => @url, 'field' => @id_field)
         @sorts          = Spectrum::Config::SortList.new(args['sorts'], config.sorts)
         @fields         = Spectrum::Config::FieldList.new(args['fields'], config.fields)
         @facets         = Spectrum::Config::FacetList.new(args['facets'], config.fields, config.sorts, facet_url)
@@ -57,6 +57,14 @@ module Spectrum
 
       def prefix
         @id + '/'
+      end
+
+      def get_id(data)
+        value(data, @id_field)
+      end
+
+      def get_url(data, base_url)
+        @href.get_url(data, base_url)
       end
 
       def href_field(data, base_url)
