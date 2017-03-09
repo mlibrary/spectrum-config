@@ -47,10 +47,6 @@ module Spectrum
         @default_facets = nil
       end
 
-      def field_map
-        @fields.reverse_map
-      end
-
       def facet_map
         @facets.reverse_map
       end
@@ -215,10 +211,14 @@ module Spectrum
 
       def configure_blacklight config, request
 
-        @fields.native_pair do |solr_name, field|
-          config.add_search_field solr_name, label: field.name
-          config.add_index_field solr_name, label: field.name
-          config.add_show_field solr_name, label: field.name
+        added = {}
+        @fields.each do |f|
+          unless added[f.field]
+            config.add_search_field f.field, label: f.name if f.searchable?
+            config.add_index_field f.field, label: f.name
+            config.add_show_field f.field, label: f.name
+            added[f.field] = true
+          end
         end
 
         @facets.native_pair do |solr_name, facet|

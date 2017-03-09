@@ -3,26 +3,32 @@
 
 module Spectrum
   module Config
-    class FieldList < MappedConfigList
+    class FieldList < ConfigList
       CONTAINS = Field
 
+      def by_uid(uid)
+        __getobj__.values.each do |f|
+          return f if f.uid == uid
+        end
+      end
+
+      def each
+        __getobj__.values.each { |f| yield f }
+      end
+
       def apply data
-        binding.pry
         data.map {|item| apply_fields(item) }.compact
       end
 
       def apply_fields item
-        binding.pry
         __getobj__.map {|field| item}.compact
       end
 
       def list
-        binding.pry
         __getobj__.map {|field| field.list? ? field : nil}.compact
       end
 
       def full
-        binding.pry
         __getobj__.map {|field| field.full? ? field : nil}.compact
       end
 

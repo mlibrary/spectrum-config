@@ -4,8 +4,54 @@ module Spectrum
       attr_accessor :weight, :id, :fixed, :weight, :default, :required,
                     :has_html, :metadata, :facet, :filters
 
-      def initialize args = {}, sort_list = {}
+      attr_reader :list, :full, :viewable, :searchable, :type, :marcfields,
+                  :subfields, :uid, :model_field, :field, :openurl_root,
+                  :openurl_field, :direct_link_field, :sorts
+
+      def searchable?
+        @searchable
+      end
+
+      def empty?
+        false
+      end
+
+      def initialize(args = {}, sort_list = {})
         args ||= {}
+        if String === args
+          initialize_from_instance(sort_list[args])
+        else
+          initialize_from_hash(args, sort_list)
+        end
+      end
+
+      def initialize_from_instance(i)
+        @id = i.id
+        @fixed = i.fixed
+        @field = i.field
+        @weight = i.weight
+        @default = i.default
+        @required = i.required
+        @has_html = i.has_html
+        @list = i.list
+        @full = i.full
+        @viewable = i.viewable
+        @searchable = i.searchable
+        @facet = i.facet
+        @metadata = i.metadata
+        @type = i.type
+        @marcfields = i.marcfields
+        @subfields = i.subfields
+        @uid = i.uid
+        @model_field = i.model_field
+        @openurl_root = i.openurl_root
+        @openurl_field = i.openurl_field
+        @direct_link_field = i.direct_link_field
+        @sorts = i.sorts
+        @filters = i.filters
+      end
+
+      def initialize_from_hash(args, sort_list)
         raise args.inspect unless args['metadata']
         @id         = args['id']
         @fixed      = args['fixed']      || false
@@ -77,7 +123,7 @@ module Spectrum
         if @type == 'solr'
           value
         elsif @type == 'marcxml'
-          record = MARC::XMLReader.new(StringIO.new(value.first)).first
+          record = MARC::XMLReader.new(StringIO.new(value)).first
           record.fields(@marcfields).map do |field|
             hsh = {
               uid: @uid,

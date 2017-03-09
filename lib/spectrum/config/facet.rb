@@ -18,9 +18,9 @@ module Spectrum
         @metadata     = Metadata.new(args['metadata'])
         @url          = url + '/' + @id
 
-        sorts         = args['sorts'] || DEFAULT_SORTS
+        sorts         = args['facet_sorts'] || DEFAULT_SORTS
         @sorts        = Spectrum::Config::SortList.new(sorts, sort_list)
-        @default_sort = @sorts[args['default_sort']] || @sorts.default
+        @default_sort = @sorts[args['default_facet_sort']] || @sorts.default
       end
 
       def routes(source, focus, app)

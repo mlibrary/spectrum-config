@@ -41,7 +41,7 @@ module Spectrum
       end
 
       def params(focus, request, controller = nil)
-        request.query(focus.field_map, focus.facet_map).merge({
+        request.query(focus.fields, focus.facet_map).merge({
           source: self,
           'source' => self
         })
