@@ -33,7 +33,7 @@ module Spectrum
       end
 
       def spectrum
-        __getobj__.values.map(&:spectrum)
+        __getobj__.values.map(&:spectrum).compact
       end
 
     end
