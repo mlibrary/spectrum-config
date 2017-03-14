@@ -38,6 +38,9 @@ require 'spectrum/config/field_facet'
 require 'spectrum/config/filter'
 require 'spectrum/config/filter_list'
 
+require 'spectrum/config/bookplate'
+require 'spectrum/config/bookplate_list'
+
 module Spectrum
   module Config
     # Your code goes here...

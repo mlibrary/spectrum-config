@@ -6,7 +6,8 @@ module Spectrum
 
       attr_reader :list, :full, :viewable, :searchable, :type, :marcfields,
                   :subfields, :uid, :model_field, :field, :openurl_root,
-                  :openurl_field, :direct_link_field, :sorts
+                  :openurl_field, :direct_link_field, :sorts, :bookplates,
+                  :collapse
 
       def searchable?
         @searchable
@@ -16,12 +17,12 @@ module Spectrum
         false
       end
 
-      def initialize(args = {}, sort_list = {})
+      def initialize(args = {}, config = {})
         args ||= {}
         if String === args
-          initialize_from_instance(sort_list[args])
+          initialize_from_instance(config[args])
         else
-          initialize_from_hash(args, sort_list)
+          initialize_from_hash(args, config)
         end
       end
 
@@ -49,9 +50,11 @@ module Spectrum
         @direct_link_field = i.direct_link_field
         @sorts = i.sorts
         @filters = i.filters
+        @bookplates = i.bookplates
+        @collapse = i.collapse
       end
 
-      def initialize_from_hash(args, sort_list)
+      def initialize_from_hash(args, config)
         raise args.inspect unless args['metadata']
         @id         = args['id']
         @fixed      = args['fixed']      || false
@@ -74,10 +77,12 @@ module Spectrum
         @openurl_root = args['openurl_root']
         @openurl_field = args['openurl_field']
         @direct_link_field = args['direct_link_field']
+        @collapse = args['collapse']
+        @bookplates = config.bookplates
 
         @sorts      = (args['sorts'] || [])
-        raise "Missing sort id(s): #{(@sorts - sort_list.keys).join(', ')}" unless (@sorts - sort_list.keys).empty?
-        @sorts.map! { |sort| sort_list[sort] }
+        raise "Missing sort id(s): #{(@sorts - config.sorts.keys).join(', ')}" unless (@sorts - config.sorts.keys).empty?
+        @sorts.map! { |sort| config.sorts[sort] }
 
         @filters = FilterList.new(args['filters'] || [])
         #raise "Missing filter id(s): #{(@filters - filter_list.keys).join(', ')}" unless (@filters - filter_list.keys).empty?
@@ -120,29 +125,31 @@ module Spectrum
       end
 
       def transform(value)
-        if @type == 'solr'
-          value
-        elsif @type == 'marcxml'
+        if @type == 'marcxml'
           record = MARC::XMLReader.new(StringIO.new(value)).first
-          record.fields(@marcfields).map do |field|
-            hsh = {
-              uid: @uid,
-              name: @metadata.name,
-              value: [],
-              value_has_html: @has_html
-            }
+          ret = []
+          record.fields(@marcfields).each do |field|
+            val = []
             @subfields.each_pair do |label, code|
-              hsh[:value] << {
-                uid: "#{@marcfields}#{code}",
-                name: label,
-                value:  field.find_all { |subfield| subfield.code == code }.map(&:value),
-                value_has_html: @has_html
-              }
+              payload = field.find_all { |subfield| subfield.code == code }.map(&:value)
+              if @collapse
+                ret = ret + payload unless payload.empty?
+              else
+                val << {
+                  uid: "#{@marcfields}#{code}",
+                  name: label,
+                  value: payload,
+                  value_has_html: @has_html
+                } unless payload.empty?
+              end
             end
-            hsh
+            ret << val unless @collapse
           end
+          ret
         elsif @type == 'summon_date'
           [value.day, value.month, value.year].compact.join('/')
+        else
+          value
         end
       end
 
@@ -154,17 +161,50 @@ module Spectrum
         end
       end
 
+      def bookplate(data)
+        return nil unless data[@field].respond_to?(:each)
+        data[@field].each do |fund|
+          if @bookplates[fund]
+            return [
+              {
+                'uid' => 'desc',
+                'name' => 'Description',
+                'value' => @bookplates[fund].desc,
+                'value_has_html' => false
+              },
+              {
+                'uid' => 'image',
+                'name' => 'Image',
+                'value' => @bookplates[fund].image,
+                'value_has_html' => false
+              }
+            ]
+          end
+        end
+      end
+
+      def concat(data)
+        return @field.map {|name| resolve_key(data, name)}.join('')
+      end
+
       def value(data)
         if @type == 'summon_access_url'
           return summon_access_url(data)
+        elsif @type == 'bookplate'
+          return bookplate(data)
+        elsif @type == 'concat'
+          return concat(data)
         end
+        resolve_key(data, @field)
+      end
 
+      def resolve_key(data, name)
         if data.respond_to?(:[])
-          transform(data[@field])
-        elsif data.respond_to?(@field)
-          transform(data.send(@field))
+          return transform(data[name])
+        elsif data.respond_to?(name)
+          return transform(data.send(name))
         elsif data.respond_to?(:src)
-          transform(data.src[@field])
+          return transform(data.src[name])
         end
       end
 

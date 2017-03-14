@@ -213,11 +213,13 @@ module Spectrum
 
         added = {}
         @fields.each do |f|
-          unless added[f.field]
-            config.add_search_field f.field, label: f.name if f.searchable?
-            config.add_index_field f.field, label: f.name
-            config.add_show_field f.field, label: f.name
-            added[f.field] = true
+          fname = f.field
+          fname = fname.last if Array === fname
+          unless added[fname] 
+            config.add_search_field fname, label: f.name if f.searchable?
+            config.add_index_field fname, label: f.name
+            config.add_show_field fname, label: f.name
+            added[fname] = true
           end
         end
 
