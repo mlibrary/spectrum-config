@@ -7,7 +7,7 @@ module Spectrum
       attr_reader :list, :full, :viewable, :searchable, :type, :marcfields,
                   :subfields, :uid, :model_field, :field, :openurl_root,
                   :openurl_field, :direct_link_field, :sorts, :bookplates,
-                  :collapse, :fields
+                  :collapse, :fields, :query_params
 
       def searchable?
         @searchable
@@ -53,6 +53,7 @@ module Spectrum
         @bookplates = i.bookplates
         @collapse = i.collapse
         @fields = i.fields
+        @query_params = i.query_params
       end
 
       def initialize_from_hash(args, config)
@@ -81,6 +82,7 @@ module Spectrum
         @collapse = args['collapse']
         @bookplates = config.bookplates
         @fields = args['fields']
+        @query_params = args['query_params'] || {}
 
         @sorts      = (args['sorts'] || [])
         raise "Missing sort id(s): #{(@sorts - config.sorts.keys).join(', ')}" unless (@sorts - config.sorts.keys).empty?

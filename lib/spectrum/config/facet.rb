@@ -3,10 +3,14 @@ module Spectrum
     class Facet
       attr_accessor :weight, :id, :limit, :mincount, :offset
 
+      attr_reader :uid, :field
+
       DEFAULT_SORTS = {'count' => 'count', 'index' => 'index'}
 
       def initialize args = {}, sort_list = [], url = ''
         @id           = args['id']
+        @uid          = args['uid'] || @id
+        @field        = args['field'] || @uid
         @more         = args['more']     || false
         @fixed        = args['fixed']    || false
         @values       = args['values']   || []
@@ -16,7 +20,7 @@ module Spectrum
         @limit        = args['limit']    || 20
         @offset       = args['offset']   || 0
         @metadata     = Metadata.new(args['metadata'])
-        @url          = url + '/' + @id
+        @url          = url + '/' + @uid
 
         sorts         = args['facet_sorts'] || DEFAULT_SORTS
         @sorts        = Spectrum::Config::SortList.new(sorts, sort_list)
@@ -54,7 +58,7 @@ module Spectrum
       def spectrum(data, base_url)
         data ||= []
         {
-          uid: @id,
+          uid: @uid,
           default_value: @default,
           values: values(data),
           fixed: @fixed,

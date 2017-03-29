@@ -123,7 +123,7 @@ module Spectrum
         # The Summon API support authenticated or un-authenticated roles,
         # with Authenticated having access to more searchable metadata.
         # We're Authenticated if the user is on-campus, or has logged-in.
-        new_params['s.role'] = 'authenticated' #if controller.on_campus? || controller.logged_in?
+        new_params['s.role'] = 'authenticated' if request.authenticated?
 
         # items-per-page (summon page size, s.ps, aka 'rows') should be
         # a persisent browser setting
@@ -170,6 +170,10 @@ module Spectrum
         if new_params['pub_date']
           new_params['s.cmd'] = "setRangeFilter(PublicationDate,#{new_params['pub_date']['min_value']}:#{new_params['pub_date']['max_value']})"
         end
+
+        new_params['s.ho'] = request.holdings_only? ? 'true' : 'false'
+
+        new_params['s.bookMark'] = request.book_mark if request.book_mark?
 
         new_params
       end
