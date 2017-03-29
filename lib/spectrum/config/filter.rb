@@ -12,11 +12,29 @@ module Spectrum
         @method = data['method']
       end
 
+      def <=>(other)
+        if other.respond_to? :id
+          @id <=> other.id
+        elsif other.respond_to? :to_s
+          @id <=> other.to_s
+        else
+          0
+        end
+      end
+
       def apply(data)
         send(@method.to_sym, data)
       end
 
-      def fullname data
+      def uniq(data)
+        if data.respond_to?(:uniq)
+          data.uniq
+        else
+          data
+        end
+      end
+
+      def fullname(data)
         if data.respond_to?(:map)
           data.map(&:fullname)
         elsif data.respond_to?(:fullname)

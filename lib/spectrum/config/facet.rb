@@ -57,6 +57,7 @@ module Spectrum
 
       def spectrum(data, base_url)
         data ||= []
+        data = @values if data.empty?
         {
           uid: @uid,
           default_value: @default,
