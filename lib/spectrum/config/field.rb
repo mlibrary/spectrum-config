@@ -9,6 +9,10 @@ module Spectrum
                   :openurl_field, :direct_link_field, :sorts, :bookplates,
                   :collapse, :fields, :query_params, :values
 
+      def pseudo_facet?
+        @type == 'pseudo_facet'
+      end
+
       def searchable?
         @searchable
       end

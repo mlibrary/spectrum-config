@@ -21,10 +21,15 @@ module Spectrum
         @offset       = args['offset']   || 0
         @metadata     = Metadata.new(args['metadata'])
         @url          = url + '/' + @uid
+        @type         = args['type']
 
         sorts         = args['facet_sorts'] || DEFAULT_SORTS
         @sorts        = Spectrum::Config::SortList.new(sorts, sort_list)
         @default_sort = @sorts[args['default_facet_sort']] || @sorts.default
+      end
+
+      def pseudo_facet?
+        @type == 'pseudo_facet'
       end
 
       def routes(source, focus, app)

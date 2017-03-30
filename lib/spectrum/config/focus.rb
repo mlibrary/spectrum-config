@@ -17,6 +17,15 @@ module Spectrum
         }
       }
 
+      def filter_facets(facets)
+        @facets.values.each do |facet|
+          if facets.has_key?(facet.uid) && facet.pseudo_facet?
+            facets = facets.reject { |key, _| key == facet.uid }
+          end
+        end
+        facets
+      end
+
       def facet(name, base_url)
         @facets.facet(name, @facet_values, base_url)
       end
