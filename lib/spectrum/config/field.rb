@@ -68,7 +68,7 @@ module Spectrum
         @weight     = args['weight']     || 0
         @default    = args['default']    || ""
         @required   = args['required']   || false
-        @has_html   = args['has_html']   || false
+        @has_html   = true #args['has_html']   || false
         @list       = args['list']       || true
         @full       = args['full']       || true
         @viewable   = args['viewable'].nil?   ? true : args['viewable']
@@ -94,7 +94,7 @@ module Spectrum
         raise "Missing sort id(s): #{(@sorts - config.sorts.keys).join(', ')}" unless (@sorts - config.sorts.keys).empty?
         @sorts.map! { |sort| config.sorts[sort] }
 
-        @filters = FilterList.new(args['filters'] || [])
+        @filters = FilterList.new((args['filters'] || []) + [{"id" => "decode", "method" => "decode"}])
         #raise "Missing filter id(s): #{(@filters - filter_list.keys).join(', ')}" unless (@filters - filter_list.keys).empty?
         #@filters.map! { |filter| filter_list[filter] }
 
@@ -202,7 +202,7 @@ module Spectrum
         flds = @fields.map do |field|
           [field['uid'], resolve_key(data, field['field'])]
         end.to_h
-        0.upto(flds.first.length) do |i|
+        0.upto(flds.values.first.length - 1) do |i|
           ret << @fields.map do |field|
             {
               'uid' => field['uid'],
