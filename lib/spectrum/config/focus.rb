@@ -18,12 +18,25 @@ module Spectrum
       }
 
       def filter_facets(facets)
-        @facets.values.each do |facet|
-          if facets.has_key?(facet.uid) && facet.pseudo_facet?
-            facets = facets.reject { |key, _| key == facet.uid }
+        if facets
+          @facets.values.each do |facet|
+            if facets.has_key?(facet.uid) && facet.pseudo_facet?
+              facets = facets.reject { |key, _| key == facet.uid }
+            end
           end
         end
         facets
+      end
+
+      def names(fields)
+        ['names', 'title'].each do |name|
+          fields.each do |field|
+            if field[:uid] == name
+              return field[:value]
+            end
+          end
+        end
+        return []
       end
 
       def facet(name, base_url)
@@ -53,7 +66,12 @@ module Spectrum
         @filters        = args['filters'] || []
 
         @max_per_page   = args['max_per_page'] || 50000
-        @default_facets = nil
+        @default_facets = args['default_facets'] || {}
+        @get_null_facets = nil
+      end
+
+      def default_facets
+        @default_facets.dup
       end
 
       def facet_map
@@ -104,7 +122,7 @@ module Spectrum
       end
 
       def spectrum(base_url = '')
-        @default_facets.call if @default_facets
+        @get_null_facets.call if @get_null_facets
         {
           uid: @id,
           metadata: @metadata.spectrum,
@@ -184,10 +202,10 @@ module Spectrum
       end
 
       # These need to be lazy-loaded so that rake routes will work.
-      def default_facets &block
-        @default_facets = Proc.new do
+      def get_null_facets &block
+        @get_null_facets = Proc.new do
           block.call
-          @default_facets = nil
+          @get_null_facets = nil
         end
       end
 
