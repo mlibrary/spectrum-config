@@ -95,6 +95,14 @@ module Spectrum
         engine.documents.slice(*request.slice)
         engine
       end
+
+      def params(focus, request, controller = nil)
+        new_params = super
+        #unless request.search_only?
+          #new_params[:fq] << "search_only:false"
+        #end
+        new_params
+      end
     end
 
     class SummonSource < BaseSource

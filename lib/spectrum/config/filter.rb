@@ -1,6 +1,8 @@
 # Copyright (c) 2015, Regents of the University of Michigan.
 # All rights reserved. See LICENSE.txt for details.
 
+require 'htmlentities'
+
 module Spectrum
   module Config
     class Filter
@@ -10,6 +12,7 @@ module Spectrum
       def initialize data
         @id     = data['id']
         @method = data['method']
+        @decoder = HTMLEntities.new
       end
 
       def <=>(other)
@@ -24,6 +27,46 @@ module Spectrum
 
       def apply(data)
         send(@method.to_sym, data)
+      end
+
+      def truncate(data)
+        if String === data
+          if data.length > 128
+            data[0, 127] + "\u2026"
+          else
+            data
+          end
+        elsif data.respond_to?(:map) && data.all? {|item| String === item}
+          data.map do |item|
+            truncate(item)
+          end
+        else
+          data
+        end
+      end
+
+      def trim(data)
+        if String === data
+          data.sub(%r{(\S{3,})\s*[/.,:]$}, '\1')
+        elsif data.respond_to?(:map) && data.all? {|item| String === item}
+          data.map do |item|
+            trim(item)
+          end
+        else
+          data
+        end
+      end
+
+      def decode(data)
+        if String === data
+          @decoder.decode(data)
+        elsif data.respond_to?(:map) && data.all? {|item| String === item}
+          data.map do |item|
+           @decoder.decode(item)
+          end
+        else
+          data
+        end
       end
 
       def uniq(data)
