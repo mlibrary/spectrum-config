@@ -1,34 +1,63 @@
 module Spectrum
   module Config
     class Field
+      class << self
+
+        def new(field_def, config)
+          type = get_type(field_def, config)
+          return type.new(field_def, config) if type
+          obj = self.allocate
+          obj.send(:initialize, field_def, config)
+          obj
+        end
+
+        def inherited(base)
+          registry << base
+        end
+
+        def type(t = nil)
+          @type = t if t
+          @type
+        end
+
+        private
+
+        def get_type(field_def, config)
+          reindex!
+          return index[field_def['type']] if index[field_def['type']]
+          return index[field_def.type] if field_def.respond_to?(:type) && index[field_def.type]
+          return index[config[field_def].type] if config.respond_to?(:[]) && config[field_def]
+          return registry.first if registry.length > 0
+          nil
+        end
+
+        def reindex!
+          return unless dirty?
+          registry.each do |item|
+            index[item.type] = item
+          end
+        end
+
+        def registry
+          @registry ||= []
+        end
+
+        def dirty?
+          registry.length > index.length
+        end
+
+        def index
+          @index ||= {}
+        end
+      end
+
       attr_accessor :weight, :id, :fixed, :weight, :default, :required,
                     :has_html, :metadata, :facet, :filters
 
-      attr_reader :list, :full, :viewable, :searchable, :type, :marcfields,
-                  :subfields, :uid, :model_field, :field, :openurl_root,
-                  :openurl_field, :direct_link_field, :sorts, :bookplates,
-                  :collapse, :fields, :query_params, :values
+      attr_reader :list, :full, :viewable, :searchable, :uid,
+                  :field, :sorts, :fields, :query_params, :values
 
-      def pseudo_facet?
-        @type == 'pseudo_facet'
-      end
-
-      def searchable?
-        @searchable
-      end
-
-      def empty?
-        false
-      end
-
-      def initialize(args = {}, config = {})
-        args ||= {}
-        if String === args
-          initialize_from_instance(config[args])
-        else
-          initialize_from_hash(args, config)
-        end
-      end
+      type 'default'
 
       def initialize_from_instance(i)
         @id = i.id
@@ -44,25 +73,17 @@ module Spectrum
         @searchable = i.searchable
         @facet = i.facet
         @metadata = i.metadata
-        @type = i.type
-        @marcfields = i.marcfields
-        @subfields = i.subfields
         @uid = i.uid
-        @model_field = i.model_field
-        @openurl_root = i.openurl_root
-        @openurl_field = i.openurl_field
-        @direct_link_field = i.direct_link_field
         @sorts = i.sorts
         @filters = i.filters
-        @bookplates = i.bookplates
-        @collapse = i.collapse
-        @fields = i.fields
         @query_params = i.query_params
         @values = i.values
+        @origin = 'instance'
       end
 
       def initialize_from_hash(args, config)
         raise args.inspect unless args['metadata']
+        @origin     = 'hash'
         @id         = args['id']
         @fixed      = args['fixed']      || false
         @weight     = args['weight']     || 0
@@ -75,18 +96,8 @@ module Spectrum
         @searchable = args['searchable'].nil? ? true : args['searchable']
         @facet      = FieldFacet.new(args['facet'])
         @metadata   = Metadata.new(args['metadata'])
-        @type       = args['type'] || 'solr'
         @field      = args['field'] || args['id']
-        @marcfields = args['marcfields']
-        @subfields  = args['subfields']
         @uid        = args['uid'] || args['id']
-        @model_field = args['model_field']
-        @openurl_root = args['openurl_root']
-        @openurl_field = args['openurl_field']
-        @direct_link_field = args['direct_link_field']
-        @collapse = args['collapse']
-        @bookplates = config.bookplates
-        @fields = args['fields']
         @query_params = args['query_params'] || {}
         @values = args['values'] || []
 
@@ -95,9 +106,31 @@ module Spectrum
         @sorts.map! { |sort| config.sorts[sort] }
 
         @filters = FilterList.new((args['filters'] || []) + [{"id" => "decode", "method" => "decode"}])
-        #raise "Missing filter id(s): #{(@filters - filter_list.keys).join(', ')}" unless (@filters - filter_list.keys).empty?
-        #@filters.map! { |filter| filter_list[filter] }
+      end
 
+      def type
+        self.class.type
+      end
+
+      def pseudo_facet?
+        false
+      end
+
+      def searchable?
+        @searchable
+      end
+
+      def empty?
+        false
+      end
+
+      def initialize(args = {}, config = {})
+        if String === args
+          raise "Unknown field type '#{args}'" unless config.has_key?(args)
+          initialize_from_instance(config[args])
+        else
+          initialize_from_hash(args, config)
+        end
       end
 
       def list?
@@ -135,96 +168,10 @@ module Spectrum
       end
 
       def transform(value)
-        if @type == 'marcxml'
-          record = MARC::XMLReader.new(StringIO.new(value)).first
-          ret = []
-          record.fields(@marcfields).each do |field|
-            val = []
-            @subfields.each_pair do |label, code|
-              payload = field.find_all { |subfield| subfield.code == code }.map(&:value)
-              if @collapse
-                ret = ret + payload unless payload.empty?
-              else
-                val << {
-                  uid: "#{@marcfields}#{code}",
-                  name: label,
-                  value: payload,
-                  value_has_html: @has_html
-                } unless payload.empty?
-              end
-            end
-            ret << val unless @collapse
-          end
-          ret
-        elsif @type == 'summon_date'
-          [value.day, value.month, value.year].compact.join('/')
-        else
-          value
-        end
-      end
-
-      def summon_access_url(data)
-        if (data.src[@model_field].first == 'OpenURL')
-          @openurl_root + '?' + data.send(@openurl_field)
-        else
-          data.send(@direct_link_field)
-        end
-      end
-
-      def bookplate(data)
-        return nil unless data[@field].respond_to?(:each)
-        data[@field].each do |fund|
-          if @bookplates[fund]
-            return [
-              {
-                'uid' => 'desc',
-                'name' => 'Description',
-                'value' => @bookplates[fund].desc,
-                'value_has_html' => false
-              },
-              {
-                'uid' => 'image',
-                'name' => 'Image',
-                'value' => @bookplates[fund].image,
-                'value_has_html' => false
-              }
-            ]
-          end
-        end
-      end
-
-      def concat(data)
-        return @field.map {|name| resolve_key(data, name)}.join('')
-      end
-
-      def parallel_merge(data)
-        ret = []
-        flds = @fields.map do |field|
-          [field['uid'], resolve_key(data, field['field'])]
-        end.to_h
-        0.upto(flds.values.first.length - 1) do |i|
-          ret << @fields.map do |field|
-            {
-              'uid' => field['uid'],
-              'name' => field['name'],
-              'value' => flds[field['uid']][i],
-              'value_has_html' => true,
-            }
-          end
-        end
-        ret
+        value
       end
 
       def value(data)
-        if @type == 'summon_access_url'
-          return summon_access_url(data)
-        elsif @type == 'bookplate'
-          return bookplate(data)
-        elsif @type == 'concat'
-          return concat(data)
-        elsif @type == 'parallel_merge'
-          return parallel_merge(data)
-        end
         resolve_key(data, @field)
       end
 
@@ -274,6 +221,7 @@ module Spectrum
           data
         end
       end
+
     end
   end
 end

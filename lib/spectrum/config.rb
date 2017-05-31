@@ -27,7 +27,26 @@ require 'spectrum/config/holdings_url'
 require 'spectrum/config/sort'
 require 'spectrum/config/sort_list'
 
+require 'spectrum/config/marc'
+require 'spectrum/config/marc_matcher'
+
+require 'spectrum/config/condition'
+
+require 'spectrum/config/aggregator'
+require 'spectrum/config/collapsing_aggregator'
+require 'spectrum/config/field_aggregator'
+
 require 'spectrum/config/field'
+require 'spectrum/config/basic_field'
+require 'spectrum/config/concat_field'
+require 'spectrum/config/bookplate_field'
+require 'spectrum/config/marcxml_field'
+require 'spectrum/config/parallel_merge_field'
+require 'spectrum/config/concatenate_merge_field'
+require 'spectrum/config/conditional_merge_field'
+require 'spectrum/config/pseudo_facet_field'
+require 'spectrum/config/summon_access_url_field'
+require 'spectrum/config/summon_date_field'
 require 'spectrum/config/field_list'
 
 require 'spectrum/config/facet'

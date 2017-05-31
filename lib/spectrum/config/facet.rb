@@ -21,7 +21,7 @@ module Spectrum
         @offset       = args['offset']   || 0
         @metadata     = Metadata.new(args['metadata'])
         @url          = url + '/' + @uid
-        @type         = args['type']
+        @type         = args['type'] || args.type
 
         sorts         = args['facet_sorts'] || DEFAULT_SORTS
         @sorts        = Spectrum::Config::SortList.new(sorts, sort_list)
