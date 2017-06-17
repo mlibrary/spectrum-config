@@ -10,6 +10,7 @@ module Spectrum
         __getobj__.values.each do |f|
           return f if f.uid == uid
         end
+        nil
       end
 
       def each
