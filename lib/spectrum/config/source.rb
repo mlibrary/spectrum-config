@@ -92,7 +92,7 @@ module Spectrum
         p[:fq] += focus.filters
         p[:sort] = (focus.sorts[request.sort] || focus.sorts.default).value
         engine = Spectrum::SearchEngines::Solr.new(p)
-        engine.documents.slice(*request.slice)
+        engine.results.slice(*request.slice)
         engine
       end
 
