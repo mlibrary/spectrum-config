@@ -69,6 +69,21 @@ module Spectrum
         end
       end
 
+      def unless9(data)
+        if data.respond_to?(:map)
+          list = data.map { |item| unless9(item) }.compact
+          if list.empty?
+            nil
+          else
+            list
+          end
+        elsif data.respond_to?(:length) && data.length == 9
+          nil
+        else
+          data
+        end
+      end
+
       def uniq(data)
         if data.respond_to?(:uniq)
           data.uniq
