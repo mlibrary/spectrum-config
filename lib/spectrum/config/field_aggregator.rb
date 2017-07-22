@@ -7,10 +7,10 @@ module Spectrum
         super
       end
 
-      def add(label, field, subfield)
+      def add(metadata, field, subfield)
         return unless subfield
         @ret[field] ||= []
-        @ret[field] << [label, subfield]
+        @ret[field] << [metadata[:label], subfield]
       end
 
       def to_value

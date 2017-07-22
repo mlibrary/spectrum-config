@@ -3,7 +3,7 @@ module Spectrum
     class CollapsingAggregator < Aggregator
       type 'collapsing'
 
-      def add(label, field, subfield)
+      def add(metadata, field, subfield)
         @ret[field] ||= []
         @ret[field] << subfield.value
       end

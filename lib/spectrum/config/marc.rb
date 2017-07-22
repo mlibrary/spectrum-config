@@ -13,7 +13,7 @@ module Spectrum
         fields.each do |field_matcher|
           record.find_all { |field| field_matcher.match_field(field) }.each do |field|
             field.find_all { |subfield| field_matcher.match_subfield(subfield) }.each do |subfield|
-              aggregator.add(field_matcher.label, field, subfield)
+              aggregator.add(field_matcher.metadata, field, subfield)
             end
           end
         end

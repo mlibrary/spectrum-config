@@ -35,6 +35,7 @@ require 'spectrum/config/condition'
 require 'spectrum/config/aggregator'
 require 'spectrum/config/collapsing_aggregator'
 require 'spectrum/config/field_aggregator'
+require 'spectrum/config/labeling_aggregator'
 
 require 'spectrum/config/field'
 require 'spectrum/config/basic_field'
