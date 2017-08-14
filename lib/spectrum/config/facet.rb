@@ -3,7 +3,7 @@ module Spectrum
     class Facet
       attr_accessor :weight, :id, :limit, :mincount, :offset
 
-      attr_reader :uid, :field
+      attr_reader :uid, :field, :type
 
       DEFAULT_SORTS = {'count' => 'count', 'index' => 'index'}
 
@@ -21,7 +21,8 @@ module Spectrum
         @offset       = args['offset']   || 0
         @metadata     = Metadata.new(args['metadata'])
         @url          = url + '/' + @uid
-        @type         = args['type'] || args.type
+        @type         = args['facet'].type || args['type'] || args.type
+        @ranges       = args['facet'].ranges
 
         sorts         = args['facet_sorts'] || DEFAULT_SORTS
         @sorts        = Spectrum::Config::SortList.new(sorts, sort_list)
@@ -30,6 +31,11 @@ module Spectrum
 
       def pseudo_facet?
         @type == 'pseudo_facet'
+      end
+
+      def rff
+        return nil if @ranges.nil? || @ranges.empty?
+        [field, *@ranges.map {|r| r['value']}].join(',')
       end
 
       def routes(source, focus, app)

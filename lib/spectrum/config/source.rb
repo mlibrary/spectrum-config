@@ -125,8 +125,11 @@ module Spectrum
 
       def params(focus, request, controller = nil)
         new_params = super
-        new_params['s.fvf'] = request.fvf(focus.facet_map)
         new_params.delete(:fq)
+
+        new_params['s.fvf'] = request.fvf
+        new_params['s.rff'] = request.rff
+        new_params['s.rf']  = request.rf
 
         # The Summon API support authenticated or un-authenticated roles,
         # with Authenticated having access to more searchable metadata.

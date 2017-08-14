@@ -17,6 +17,34 @@ module Spectrum
         }
       }
 
+      def fvf(values)
+        values.data.inject([]) do |acc, kv|
+          k, v = kv
+          if @facets[k] && @facets[k].type != 'range'
+            Array(v).each do |val|
+              acc << "#{@facets[k].field},#{val}"
+            end
+            acc
+          end
+        end
+      end
+
+      def rf(values)
+        values.data.inject([]) do |acc, kv|
+          k, v = kv
+          if @facets[k] && @facets[k].type == 'range'
+            Array(v).each do |val|
+              acc << "#{@facets[k].field},#{val}"
+            end
+          end
+          acc
+        end
+      end
+
+      def rff
+        @facets.values.map(&:rff).compact
+      end
+
       def filter_facets(facets)
         if facets
           @facets.values.each do |facet|
@@ -193,6 +221,16 @@ module Spectrum
           end
         else
           @facet_values = {}
+        end
+
+        if results.respond_to?(:range_facets)
+          results.range_facets.each do |rf|
+            @facet_values[rf.src['displayName']] ||= []
+            rf.src['counts'].each do |count|
+              @facet_values[rf.src['displayName']] << "#{count['range']['minValue']}:#{count['range']['maxValue']}"
+              @facet_values[rf.src['displayName']] << count['count']
+            end
+          end
         end
         self
       end
