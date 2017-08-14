@@ -71,12 +71,28 @@ module Spectrum
         end
       end
 
+      def label(value)
+        if @type == 'range'
+          range = @ranges.find {|range| range['value'] == value }
+          return range['label'] if range && range['label']
+          range = value.split(/:/).map(&:to_i)
+          return range.first.to_s if range[0] == range[1]
+        end
+        return value
+      end
+
       def values(data)
         if data.length > @limit * 2
           data.slice(0, @limit * 2)
         else
           data
-        end.each_slice(2).map { |kv| {value: kv[0], name: kv[0], count: kv[1]} }
+        end.each_slice(2).map { |kv|
+          {
+            value: kv[0],
+            name: label(kv[0]),
+            count: kv[1]
+          }
+        }
       end
 
       def spectrum(data, base_url)
