@@ -41,8 +41,8 @@ module Spectrum
         end
       end
 
-      def rff
-        @facets.values.map(&:rff).compact
+      def rff(values)
+        @facets.values.map { |facet| facet.rff(values) }.compact
       end
 
       def filter_facets(facets)

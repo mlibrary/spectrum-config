@@ -33,9 +33,22 @@ module Spectrum
         @type == 'pseudo_facet'
       end
 
-      def rff
+      def rff(applied)
         return nil if @ranges.nil? || @ranges.empty?
-        [field, *@ranges.map {|r| r['value']}].join(',')
+        return [field, *@ranges.map {|r| r['value']}].join(',') unless applied.data[@uid]
+
+        values = Array(applied.data[@uid])
+        range_matches = @ranges.find_all {|r| values.include?(r['value'])}
+        return nil if range_matches.length != values.length
+        return nil unless range_matches.all? {|r| r['divisible']}
+        list = [field]
+        values.each do |value|
+          start, finish = value.split(/:/).map(&:to_i)
+          (start..finish).each do |i|
+            list << "#{i}:#{i}"
+          end
+        end
+        list.join(",")
       end
 
       def routes(source, focus, app)
