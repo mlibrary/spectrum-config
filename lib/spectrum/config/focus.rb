@@ -80,11 +80,11 @@ module Spectrum
         @path           = args['path'] || args['id']
         @source         = args['source']
         @weight         = args['weight'] || 0
-        @holdings       = args['holdings']
         @url            = (@id == @source) ? @id : @source + '/' + @id
         @id_field       = args['id_field'] || 'id'
         @metadata       = Spectrum::Config::Metadata.new(args['metadata'])
         @href           = Spectrum::Config::Href.new('prefix' => @url, 'field' => @id_field)
+        @has_holdings   = args['has_holdings']
         @holdings       = Spectrum::Config::HoldingsURL.new('prefix' => @url, 'field' => @id_field)
         @sorts          = Spectrum::Config::SortList.new(args['sorts'], config.sorts)
         @fields         = Spectrum::Config::FieldList.new(args['fields'], config.fields)
@@ -126,13 +126,17 @@ module Spectrum
         @holdings.apply(data, base_url)
       end
 
+      def has_holdings?
+        @has_holdings
+      end
+
       def apply_fields(data, base_url)
         if data === Array
           data.map {|item| apply_fields(item, base_url) }.compact
         else
           ret = []
           ret << href_field(data, base_url)
-          ret << holdings_field(data, base_url)
+          ret << holdings_field(data, base_url) if has_holdings?
           @fields.each_value do |field|
             ret << field.apply(data)
           end
@@ -159,7 +163,7 @@ module Spectrum
           sorts: @sorts.spectrum,
           fields: @fields.spectrum,
           facets: @facets.spectrum(@facet_values, base_url),
-          holdings: (@holdings ? base_url + url + '/holdings' : nil)
+          holdings: (has_holdings? ? base_url + url + '/holdings' : nil)
         }
       end
 
@@ -258,10 +262,12 @@ module Spectrum
           defaults: { source: source, focus: @id, type: 'Record', id_field: id_field },
           via: [ :get, :options ]
 
-        app.match "#{url}/holdings/:id",
-          to: 'json#holdings',
-          defaults: { source: source, focus: @id, type: 'Holdings', id_field: id_field },
-          via: [ :get, :options ]
+        if has_holdings?
+          app.match "#{url}/holdings/:id",
+            to: 'json#holdings',
+            defaults: { source: source, focus: @id, type: 'Holdings', id_field: id_field },
+            via: [ :get, :options ]
+        end
 
         app.get @url, to: 'json#bad_request'
         @facets.routes(source, @id, app)
