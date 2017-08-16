@@ -20,19 +20,23 @@ module Spectrum
       def fvf(values)
         values.data.inject([]) do |acc, kv|
           k, v = kv
-          if @facets[k] && @facets[k].type != 'range'
+          @facets.values.each do |facet|
+            next if facet.type == 'range'
+            next unless facet.uid == k
             Array(v).each do |val|
-              acc << "#{@facets[k].field},#{val}"
+              acc << "#{facet.field},#{val}"
             end
-            acc
           end
+          acc
         end
       end
 
       def rf(values)
         values.data.inject([]) do |acc, kv|
           k, v = kv
-          if @facets[k] && @facets[k].type == 'range'
+          @facets.values.each do |facet|
+            next if facet.type != 'range'
+            next unless facet.uid == k
             Array(v).each do |val|
               acc << "#{@facets[k].field},#{val}"
             end

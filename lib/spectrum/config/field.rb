@@ -55,7 +55,8 @@ module Spectrum
                     :has_html, :metadata, :facet, :filters
 
       attr_reader :list, :full, :viewable, :searchable, :uid,
-                  :field, :sorts, :fields, :query_params, :values
+                  :field, :sorts, :fields, :query_params, :values,
+                  :query_field
 
       type 'default'
 
@@ -79,6 +80,7 @@ module Spectrum
         @query_params = i.query_params
         @values = i.values
         @origin = 'instance'
+        @query_field = i.query_field
       end
 
       def initialize_from_hash(args, config)
@@ -97,6 +99,7 @@ module Spectrum
         @facet      = FieldFacet.new(args['facet'])
         @metadata   = Metadata.new(args['metadata'])
         @field      = args['field'] || args['id']
+        @query_field = args['query_field'] || @field
         @uid        = args['uid'] || args['id']
         @query_params = args['query_params'] || {}
         @values = args['values'] || []
