@@ -90,7 +90,7 @@ module Spectrum
           focus.configure_blacklight(config, request)
         end
         p[:fq] += focus.filters
-        p[:sort] = (focus.sorts[request.sort] || focus.sorts.default).value
+        p[:sort] = (focus.sorts.values.find { |sort| sort.uid == request.sort} || focus.sorts.default).value
         engine = Spectrum::SearchEngines::Solr.new(p)
         engine.results.slice(*request.slice)
         engine

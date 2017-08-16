@@ -1,9 +1,11 @@
 module Spectrum
   module Config
     class Sort
-      attr_accessor :weight, :id, :value, :metadata
+      attr_accessor :weight, :id, :value, :metadata, :uid
+
       def initialize args = {}
         @id       = args['id']
+        @uid      = args['uid'] || @id
         @value    = args['value']  || args['id']
         @group    = args['group']  || args['id']
         @weight   = args['weight'] || 0
@@ -12,7 +14,7 @@ module Spectrum
 
       def spectrum
         {
-           uid: @id,
+           uid: @uid,
            metadata: @metadata.spectrum,
            group: @group
         }
