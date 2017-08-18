@@ -170,6 +170,7 @@ module Spectrum
           new_params['q'] = new_params['s.q'] unless new_params['q']
           new_params.delete('s.q')
         end
+        new_params['s.sort'] = (focus.sorts.values.find { |sort| sort.uid == request.sort} || focus.sorts.default).value
 
         #   # LibraryWeb QuickSearch will pass us "search_field=all_fields",
         #   # which means to do a Summon search against 's.q'

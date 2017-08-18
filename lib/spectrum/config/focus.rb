@@ -310,9 +310,9 @@ module Spectrum
             }
         end
 
-        @sorts.values.each do |sort|
-          config.add_sort_field sort: sort.value, label: sort.metadata.name
-        end
+        #@sorts.values.each do |sort|
+        #  config.add_sort_field sort: sort.value, label: sort.metadata.name
+        #end
 
         config.max_per_page = @max_per_page
       end
