@@ -91,6 +91,12 @@ module Spectrum
         end
         p[:fq] += focus.filters
         p[:sort] = (focus.sorts.values.find { |sort| sort.uid == request.sort} || focus.sorts.default).value
+        p[:config].default_solr_params = focus.solr_params
+        p[:qt] = focus.solr_params['qt'] if focus.solr_params['qt']
+        p[:qf] = focus.solr_params['qf'] if focus.solr_params['qf']
+        p[:pf] = focus.solr_params['pf'] if focus.solr_params['pf']
+        p[:mm] = focus.solr_params['mm'] if focus.solr_params['mm']
+        p[:tie] = focus.solr_params['tie'] if focus.solr_params['tie']
         engine = Spectrum::SearchEngines::Solr.new(p)
         engine.results.slice(*request.slice)
         engine

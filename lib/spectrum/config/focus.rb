@@ -7,7 +7,7 @@ module Spectrum
       attr_accessor :id, :name, :weight, :title, :source,
         :placeholder, :warning, :description, :viewstyles,
         :layout, :default_viewstyle, :category, :base,
-        :fields, :url, :filters, :sorts, :id_field
+        :fields, :url, :filters, :sorts, :id_field, :solr_params
 
       HREF_DATA = {
         'id' => 'href',
@@ -94,6 +94,7 @@ module Spectrum
         @fields         = Spectrum::Config::FieldList.new(args['fields'], config.fields)
         @facets         = Spectrum::Config::FacetList.new(args['facets'], config.fields, config.sorts, facet_url)
         @default_sort   = @sorts[args['default_sort']] || @sorts.default
+        @solr_params    = args['solr_params'] || {}
 
         @filters        = args['filters'] || []
 
@@ -285,7 +286,6 @@ module Spectrum
       end
 
       def configure_blacklight config, request
-
         added = {}
         @fields.each do |f|
           fname = f.field
