@@ -8,14 +8,13 @@ module Spectrum
       def initialize_from_instance(i)
         super
         @marc = i.marc
-        @searchable = false
         @sortable = false
       end
 
       def initialize_from_hash(args, config)
         super
         @marc = Marc.new(args['marc'])
-        @searchable = false
+        @searchable = args['query_field'].nil? ? false : true
         @sortable = false
       end
 
