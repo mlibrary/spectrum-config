@@ -9,7 +9,7 @@ module Spectrum
       end
 
       def to_value
-         @ret.values
+         @ret.values.map { |value| value.join(' ') }
       end
     end
   end
