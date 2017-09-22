@@ -38,6 +38,18 @@ module Spectrum
             next if facet.type != 'range'
             next unless facet.uid == k
             Array(v).each do |val|
+              val.match(/^before(\d+)$/) do |m|
+                val = "0000:#{m[1]}"
+              end
+              val.match(/^after(\d+)$/) do |m|
+                val = "#{m[1]}:3000"
+              end
+              val.match(/^(\d+)to(\d+)$/) do |m|
+                val = "#{m[1]}:#{m[2]}"
+              end
+              val.match(/^\d+$/) do |m|
+                val = "#{val}:#{val}"
+              end
               acc << "#{@facets[k].field},#{val}"
             end
           end
@@ -158,7 +170,7 @@ module Spectrum
         end
       end
 
-      def spectrum(base_url = '')
+      def spectrum(base_url = '', args = {})
         @get_null_facets.call if @get_null_facets
         {
           uid: @id,
@@ -167,7 +179,7 @@ module Spectrum
           default_sort: @default_sort.id,
           sorts: @sorts.spectrum,
           fields: @fields.spectrum,
-          facets: @facets.spectrum(@facet_values, base_url),
+          facets: @facets.spectrum(@facet_values, base_url, args),
           holdings: (has_holdings? ? base_url + url + '/holdings' : nil)
         }
       end

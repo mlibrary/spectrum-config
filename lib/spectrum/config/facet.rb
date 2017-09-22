@@ -81,9 +81,10 @@ module Spectrum
         return value
       end
 
-      def values(data)
-        if data.length > @limit * 2
-          data.slice(0, @limit * 2)
+      def values(data, lim = nil)
+        lim ||= @limit
+        if (lim >= 0 && data.length > lim * 2)
+          data.slice(0, lim * 2)
         else
           data
         end.each_slice(2).map { |kv|
@@ -95,13 +96,13 @@ module Spectrum
         }
       end
 
-      def spectrum(data, base_url)
+      def spectrum(data, base_url, args = {})
         data ||= []
         data = @values if data.empty?
         {
           uid: @uid,
           default_value: @default,
-          values: values(data),
+          values: values(data, args[:filter_limit]),
           fixed: @fixed,
           required: @required,
           more: more(data, base_url),

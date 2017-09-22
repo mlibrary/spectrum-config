@@ -21,8 +21,8 @@ module Spectrum
         __getobj__[name].spectrum(data[@mapping.invert[name]], base_url)
       end
 
-      def spectrum(data, base_url)
-        __getobj__.to_a.map {|kv| kv[1].spectrum(data[@mapping.invert[kv[0]]], base_url)}
+      def spectrum(data, base_url, args = {})
+        __getobj__.to_a.map {|kv| kv[1].spectrum(data[@mapping.invert[kv[0]]], base_url, args)}
       end
 
       def routes(source, focus, app)
