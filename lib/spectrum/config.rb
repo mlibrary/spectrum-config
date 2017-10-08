@@ -4,7 +4,8 @@
 require 'yaml'
 require 'delegate'
 
-require "spectrum/config/version"
+require 'spectrum/config/version'
+require 'spectrum/config/hierarchy'
 require 'spectrum/config/source'
 require 'spectrum/config/row'
 require 'spectrum/config/row_list'

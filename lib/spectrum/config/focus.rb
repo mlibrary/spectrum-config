@@ -91,28 +91,29 @@ module Spectrum
         @url + '/facet'
       end
 
-      def initialize args, config
-        @id             = args['id']
-        @path           = args['path'] || args['id']
-        @source         = args['source']
-        @weight         = args['weight'] || 0
-        @url            = (@id == @source) ? @id : @source + '/' + @id
-        @id_field       = args['id_field'] || 'id'
-        @metadata       = Spectrum::Config::Metadata.new(args['metadata'])
-        @href           = Spectrum::Config::Href.new('prefix' => @url, 'field' => @id_field)
-        @has_holdings   = args['has_holdings']
-        @holdings       = Spectrum::Config::HoldingsURL.new('prefix' => @url, 'field' => @id_field)
-        @sorts          = Spectrum::Config::SortList.new(args['sorts'], config.sorts)
-        @fields         = Spectrum::Config::FieldList.new(args['fields'], config.fields)
-        @facets         = Spectrum::Config::FacetList.new(args['facets'], config.fields, config.sorts, facet_url)
-        @default_sort   = @sorts[args['default_sort']] || @sorts.default
-        @solr_params    = args['solr_params'] || {}
+      def initialize(args, config)
+        @id              = args['id']
+        @path            = args['path'] || args['id']
+        @source          = args['source']
+        @weight          = args['weight'] || 0
+        @url             = (@id == @source) ? @id : @source + '/' + @id
+        @id_field        = args['id_field'] || 'id'
+        @metadata        = Spectrum::Config::Metadata.new(args['metadata'])
+        @href            = Spectrum::Config::Href.new('prefix' => @url, 'field' => @id_field)
+        @has_holdings    = args['has_holdings']
+        @holdings        = Spectrum::Config::HoldingsURL.new('prefix' => @url, 'field' => @id_field)
+        @sorts           = Spectrum::Config::SortList.new(args['sorts'], config.sorts)
+        @fields          = Spectrum::Config::FieldList.new(args['fields'], config.fields)
+        @facets          = Spectrum::Config::FacetList.new(args['facets'], config.fields, config.sorts, facet_url)
+        @default_sort    = @sorts[args['default_sort']] || @sorts.default
+        @solr_params     = args['solr_params'] || {}
 
-        @filters        = args['filters'] || []
+        @filters         = args['filters'] || []
 
-        @max_per_page   = args['max_per_page'] || 50000
-        @default_facets = args['default_facets'] || {}
+        @max_per_page    = args['max_per_page'] || 50000
+        @default_facets  = args['default_facets'] || {}
         @get_null_facets = nil
+        @hierarchy       = Hierarchy.new(args['hierarchy']) if args['hierarchy']
       end
 
       def default_facets
@@ -180,7 +181,8 @@ module Spectrum
           sorts: @sorts.spectrum,
           fields: @fields.spectrum,
           facets: @facets.spectrum(@facet_values, base_url, args),
-          holdings: (has_holdings? ? base_url + url + '/holdings' : nil)
+          holdings: (has_holdings? ? base_url + url + '/holdings' : nil),
+          hierarchy: (@hierarchy && @hierarchy.spectrum),
         }
       end
 
@@ -317,7 +319,7 @@ module Spectrum
             include_in_request: true,
             solr_params: {
               'facet.mincount' => facet.mincount,
-              'facet.limit' => (request.facet_limit  || facet.limit) + 1,
+              'facet.limit' => (request.facet_limit  || facet.limit),
               'facet.offset' => request.facet_offset || facet.offset,
             }
         end

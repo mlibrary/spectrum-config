@@ -104,9 +104,12 @@ module Spectrum
 
       def params(focus, request, controller = nil)
         new_params = super
-        #unless request.search_only?
-          #new_params[:fq] << "search_only:false"
-        #end
+        if request.search_only?
+          new_params[:fq] << 'ht_searchonly:false'
+        end
+        if request.available_online?
+          new_params[:fq] << 'availability:"Available online"'
+        end
         new_params
       end
     end
@@ -190,6 +193,18 @@ module Spectrum
         end
 
         new_params['s.ho'] = request.holdings_only? ? 'true' : 'false'
+
+        if request.is_scholarly?
+          new_params['s.fvf'] << 'IsScholarly,true'
+        end
+
+        if request.exclude_newspapers?
+          new_params['s.fvf'] << 'ContentType,Newspaper\ Article,true'
+        end
+
+        if request.available_online?
+          new_params['s.fvf'] << 'IsFulltext,true'
+        end
 
         new_params['s.bookMark'] = request.book_mark if request.book_mark?
 
