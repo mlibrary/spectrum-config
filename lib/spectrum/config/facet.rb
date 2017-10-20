@@ -93,7 +93,7 @@ module Spectrum
             name: label(kv[0]),
             count: kv[1]
           }
-        }
+        }.reject {|i| i[:count] <= 0 }
       end
 
       def spectrum(data, base_url, args = {})
