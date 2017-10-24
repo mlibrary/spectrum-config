@@ -28,6 +28,7 @@ module Spectrum
         @value_mapping = aliases.fetch('tr', {})
         inst = YAML.load_file(hierarchy_def['load_inst'])
         coll = YAML.load_file(hierarchy_def['load_coll'])
+        @handled_uids.each {|uid| @value_mapping[uid] ||= {} }
         inst.each_pair do |inst, inst_info|
           #@value_mapping[aliases['top'][inst] || inst] = inst
           top_val = {
@@ -38,7 +39,7 @@ module Spectrum
             values: []
           }
           inst_info['sublibs'].each_pair do |loc_id, loc_name|
-            @value_mapping[loc_name] ||= loc_id
+            @value_mapping['location'][loc_name] ||= loc_id
             middle_val = {
               value: loc_id,
               label: loc_name,
@@ -47,7 +48,7 @@ module Spectrum
               values: []
             }
             coll[loc_id]['collections'].each_pair do |coll_id, coll_name|
-              @value_mapping[coll_name] ||= coll_id
+              @value_mapping['collection'][coll_name] ||= coll_id
               middle_val[:values] << {label: coll_name, value: coll_id}
             end
             top_val[:values] << middle_val
