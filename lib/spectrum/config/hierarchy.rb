@@ -38,7 +38,7 @@ module Spectrum
             values: []
           }
           inst_info['sublibs'].each_pair do |loc_id, loc_name|
-            @value_mapping[loc_name] = loc_id
+            @value_mapping[loc_name] ||= loc_id
             middle_val = {
               value: loc_id,
               label: loc_name,
@@ -47,7 +47,7 @@ module Spectrum
               values: []
             }
             coll[loc_id]['collections'].each_pair do |coll_id, coll_name|
-              @value_mapping[coll_name] = coll_id
+              @value_mapping[coll_name] ||= coll_id
               middle_val[:values] << {label: coll_name, value: coll_id}
             end
             top_val[:values] << middle_val
