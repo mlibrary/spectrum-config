@@ -1,13 +1,40 @@
 module Spectrum
   module Config
+    class NullFacet
+      attr_accessor :weight, :id, :limit, :mincount, :offset
+      attr_reader :uid, :field, :type
+      DEFAULT_SORTS = {}
+      def initialize
+        @facet_field = @field = @uid = @id = 'null'
+        @more = false
+        @fixed = false
+        @values = []
+        @default = false
+        @required = false
+        @mincount = 1
+        @limit = 20
+        @offset = 0
+        @metadata = Metadata.new({'name' => 'Null Facet'})
+        @url = 'null'
+        @type = 'null'
+        @sorts = SortList.new
+        @default_sort = nil
+        @ranges = nil
+      end
+
+      [:pseudo_facet?, :rff, :routes, :sort, :label, :values, :spectrum, :name, :<=>, :more].each do |fn|
+        define_method(fn) { |*arg| }
+      end
+    end
+
     class Facet
       attr_accessor :weight, :id, :limit, :mincount, :offset
 
-      attr_reader :uid, :field, :type
+      attr_reader :uid, :field, :type, :facet_field
 
       DEFAULT_SORTS = {'count' => 'count', 'index' => 'index'}
 
-      def initialize args = {}, sort_list = [], url = ''
+      def initialize(args = {}, sort_list = [], url = '')
         @id           = args['id']
         @uid          = args['uid'] || @id
         @field        = args['field'] || @uid

@@ -171,6 +171,10 @@ module Spectrum
         end
       end
 
+      def value_map
+        (@hierarchy && @hierarchy.value_map) || {}
+      end
+
       def spectrum(base_url = '', args = {})
         @get_null_facets.call if @get_null_facets
         {

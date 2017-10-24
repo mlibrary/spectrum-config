@@ -6,6 +6,36 @@ module Spectrum
     class FacetList < MappedConfigList
       CONTAINS = Facet
 
+      def initialize(*args)
+        if Array === args.first
+          begin
+            uids = args.shift
+            fields = args.shift.values.select { |f| uids.include?(f.id) }
+            @mapping     = {}
+            @reverse_map = {}
+            obj          = {}
+            fields.each do |f|
+              @mapping[f.facet_field] = f.id
+              @reverse_map[f.id] = f.facet_field
+              obj[f.id] = if f.class == self.class::CONTAINS
+                f
+              else
+                self.class::CONTAINS.new(f, *args)
+              end
+            end
+            available_uids = fields.map {|f| f.id}
+            raise "Missing mapped #{self.class::CONTAINS} id(s) #{(@mapping.values - available_ids).join(', ')}" unless (@mapping.values - available_uids).empty?
+            __setobj__(obj)
+          rescue
+            STDERR.puts self.class
+            STDERR.puts self.class::CONTAINS
+            raise
+          end
+        else
+          super(*args)
+        end
+      end
+
       #initialize_copy wasn't being triggered.
       def clone
         newobj = super

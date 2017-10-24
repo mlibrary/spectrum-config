@@ -11,14 +11,25 @@ module Spectrum
         }
       end
 
+      def handles?(item)
+        @handled_uids.include?(item)
+      end
+
+      def value_map
+        @value_mapping
+      end
+
       def initialize(hierarchy_def = {})
         @values = []
         @field  = hierarchy_def['field']
         @uid    = hierarchy_def['uid']
+        @handled_uids = [@uid, 'location', 'collection']
+        @value_mapping = {}
         aliases = hierarchy_def['aliases']
         inst = YAML.load_file(hierarchy_def['load_inst'])
         coll = YAML.load_file(hierarchy_def['load_coll'])
         inst.each_pair do |inst, inst_info|
+          #@value_mapping[aliases['top'][inst] || inst] = inst
           top_val = {
             value: inst,
             label: aliases['top'][inst] || inst,
@@ -27,6 +38,7 @@ module Spectrum
             values: []
           }
           inst_info['sublibs'].each_pair do |loc_id, loc_name|
+            @value_mapping[loc_name] = loc_id
             middle_val = {
               value: loc_id,
               label: loc_name,
@@ -35,6 +47,7 @@ module Spectrum
               values: []
             }
             coll[loc_id]['collections'].each_pair do |coll_id, coll_name|
+              @value_mapping[coll_name] = coll_id
               middle_val[:values] << {label: coll_name, value: coll_id}
             end
             top_val[:values] << middle_val
