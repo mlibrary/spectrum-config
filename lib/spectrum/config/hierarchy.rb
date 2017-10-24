@@ -24,8 +24,8 @@ module Spectrum
         @field  = hierarchy_def['field']
         @uid    = hierarchy_def['uid']
         @handled_uids = [@uid, 'location', 'collection']
-        @value_mapping = {}
         aliases = hierarchy_def['aliases']
+        @value_mapping = aliases.fetch('tr', {})
         inst = YAML.load_file(hierarchy_def['load_inst'])
         coll = YAML.load_file(hierarchy_def['load_coll'])
         inst.each_pair do |inst, inst_info|
