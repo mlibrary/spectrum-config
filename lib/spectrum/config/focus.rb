@@ -280,7 +280,7 @@ module Spectrum
           defaults: { source: source, focus: @id, type: 'DataStore' },
           via: [ :post, :options ]
 
-        app.match "#{@url}/record/:id",
+        app.match "#{@url}/record/*id",
           to: 'json#record',
           defaults: { source: source, focus: @id, type: 'Record', id_field: id_field },
           via: [ :get, :options ]
