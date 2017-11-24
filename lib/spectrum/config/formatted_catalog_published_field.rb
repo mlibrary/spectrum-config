@@ -21,14 +21,11 @@ module Spectrum
       end
 
       def value(data)
-        ret = ''
         date = @fields['pub_date'].value(data)
-        date = date.first unless date.nil?
+        date = date.first.strip unless date.nil?
         pub  = @fields['publisher'].value(data)
-        pub  = pub.join(' ') unless pub.nil?
-        ret << date if String === date
-        ret << " - " + pub if String === pub
-        ret
+        pub  = pub.join(' ').strip unless pub.nil?
+        [date, pub].reject {|str| str.nil? || !(String === str) || str.empty?}.join(' - ')
       end
 
     end
