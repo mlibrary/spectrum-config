@@ -1,0 +1,11 @@
+module Spectrum
+  module Config
+    class SolrDayField < Field
+      type 'solr_day'
+
+      def transform(value)
+        value.slice(8, 2).sub(/^0*/, '') if value
+      end
+    end
+  end
+end
