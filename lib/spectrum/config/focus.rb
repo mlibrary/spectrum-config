@@ -102,6 +102,8 @@ module Spectrum
         @href            = Spectrum::Config::Href.new('prefix' => @url, 'field' => @id_field)
         @has_holdings    = args['has_holdings']
         @holdings        = Spectrum::Config::HoldingsURL.new('prefix' => @url, 'field' => @id_field)
+        @has_get_this    = args['has_get_this']
+        @get_this        = Spectrum::Config::GetThisURL.new('prefix' => @url, 'field' => @id_field)
         @sorts           = Spectrum::Config::SortList.new(args['sorts'], config.sorts)
         @fields          = Spectrum::Config::FieldList.new(args['fields'], config.fields)
         @facets          = Spectrum::Config::FacetList.new(args['facets'], config.fields, config.sorts, facet_url)
@@ -144,8 +146,16 @@ module Spectrum
         @holdings.apply(data, base_url)
       end
 
+      def get_this_field(data, base_url)
+        @get_this.apply(data, base_url)
+      end
+
       def has_holdings?
         @has_holdings
+      end
+
+      def has_get_this?
+        @has_get_this
       end
 
       def apply_fields(data, base_url)
@@ -155,6 +165,7 @@ module Spectrum
           ret = []
           ret << href_field(data, base_url)
           ret << holdings_field(data, base_url) if has_holdings?
+          ret << get_this_field(data, base_url) if has_get_this?
           @fields.each_value do |field|
             ret << field.apply(data)
           end
@@ -289,6 +300,10 @@ module Spectrum
           app.match "#{url}/holdings/:id",
             to: 'json#holdings',
             defaults: { source: source, focus: @id, type: 'Holdings', id_field: id_field },
+            via: [ :get, :options ]
+          app.match "#{url}/get-this/:id/:barcode",
+            to: 'json#get_this',
+            defaults: { source: source, focus: @id, type: 'GetThis', id_field: id_field },
             via: [ :get, :options ]
         end
 
