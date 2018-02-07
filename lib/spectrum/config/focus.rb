@@ -309,6 +309,10 @@ module Spectrum
             to: 'json#hold',
             defaults: { source: source, focus: @id, type: 'PlaceHold', id_field: id_field },
             via: [ :post, :options ]
+          app.match "#{url}/hold",
+            to: 'json#hold_redirect',
+            defaults: { source: source, focus: @id, type: 'PlaceHold', id_field: id_field },
+            via: [ :post, :options ]
         end
 
         app.get @url, to: 'json#bad_request'
