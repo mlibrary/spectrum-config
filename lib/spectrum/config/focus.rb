@@ -305,6 +305,10 @@ module Spectrum
             to: 'json#get_this',
             defaults: { source: source, focus: @id, type: 'GetThis', id_field: id_field },
             via: [ :get, :options ]
+          app.match "#{url}/hold/:record/:item/:pickup_location/:not_needed_after",
+            to: 'json#hold',
+            defaults: { source: source, focus: @id, type: 'PlaceHold', id_field: id_field },
+            via: [ :post, :options ]
         end
 
         app.get @url, to: 'json#bad_request'
