@@ -123,7 +123,7 @@ module Spectrum
             value: kv[0],
             name: label(kv[0]),
             count: kv[1],
-            parent: parents(kv[0]),
+            parents: parents(kv[0]),
           }
         }.reject {|i| i[:count] <= 0 }
       end
