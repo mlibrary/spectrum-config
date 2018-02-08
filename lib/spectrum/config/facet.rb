@@ -108,6 +108,10 @@ module Spectrum
         return value
       end
 
+      def parents(value)
+        Spectrum::Config::FacetParents.find(uid, value)
+      end
+
       def values(data, lim = nil)
         lim ||= @limit
         if (lim >= 0 && data.length > lim * 2)
@@ -118,7 +122,8 @@ module Spectrum
           {
             value: kv[0],
             name: label(kv[0]),
-            count: kv[1]
+            count: kv[1],
+            parent: parents(kv[0]),
           }
         }.reject {|i| i[:count] <= 0 }
       end

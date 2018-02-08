@@ -63,6 +63,7 @@ require 'spectrum/config/formatted_page_range_field'
 require 'spectrum/config/formatted_full_title_field'
 require 'spectrum/config/field_list'
 
+require 'spectrum/config/facet_parents'
 require 'spectrum/config/facet'
 require 'spectrum/config/facet_list'
 
