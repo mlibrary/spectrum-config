@@ -301,14 +301,14 @@ module Spectrum
             to: 'json#holdings',
             defaults: { source: source, focus: @id, type: 'Holdings', id_field: id_field },
             via: [ :get, :options ]
+          app.match "#{url}/holdings/:record/:item/:pickup_location/:not_needed_after",
+            to: 'json#hold',
+            defaults: { source: source, focus: @id, type: 'PlaceHold', id_field: id_field },
+            via: [ :post, :options ]
           app.match "#{url}/get-this/:id/:barcode",
             to: 'json#get_this',
             defaults: { source: source, focus: @id, type: 'GetThis', id_field: id_field },
             via: [ :get, :options ]
-          app.match "#{url}/hold/:record/:item/:pickup_location/:not_needed_after",
-            to: 'json#hold',
-            defaults: { source: source, focus: @id, type: 'PlaceHold', id_field: id_field },
-            via: [ :post, :options ]
           app.match "#{url}/hold",
             to: 'json#hold_redirect',
             defaults: { source: source, focus: @id, type: 'PlaceHold', id_field: id_field },
