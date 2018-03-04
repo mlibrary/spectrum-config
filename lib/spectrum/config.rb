@@ -26,6 +26,7 @@ require 'spectrum/config/href'
 require 'spectrum/config/holdings_url'
 require 'spectrum/config/get_this_url'
 
+require 'spectrum/config/highly_recommended'
 require 'spectrum/config/sort'
 require 'spectrum/config/sort_list'
 

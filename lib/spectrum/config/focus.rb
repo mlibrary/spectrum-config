@@ -7,7 +7,8 @@ module Spectrum
       attr_accessor :id, :name, :weight, :title, :source,
         :placeholder, :warning, :description, :viewstyles,
         :layout, :default_viewstyle, :category, :base,
-        :fields, :url, :filters, :sorts, :id_field, :solr_params
+        :fields, :url, :filters, :sorts, :id_field, :solr_params,
+        :highly_recommended
 
       HREF_DATA = {
         'id' => 'href',
@@ -116,6 +117,7 @@ module Spectrum
         @default_facets  = args['default_facets'] || {}
         @get_null_facets = nil
         @hierarchy       = Hierarchy.new(args['hierarchy']) if args['hierarchy']
+        @highly_recommended = HighlyRecommended.new(args['highly_recommended'])
       end
 
       def default_facets
@@ -331,7 +333,7 @@ module Spectrum
         @fields.each do |f|
           fname = f.field
           fname = fname.last if Array === fname
-          unless added[fname] 
+          unless added[fname]
             config.add_search_field fname, label: f.name if f.searchable?
             config.add_index_field fname, label: f.name
             config.add_show_field fname, label: f.name
@@ -351,10 +353,6 @@ module Spectrum
             }
         end
 
-        #@sorts.values.each do |sort|
-        #  config.add_sort_field sort: sort.value, label: sort.metadata.name
-        #end
-
         config.max_per_page = @max_per_page
       end
 
@@ -368,6 +366,14 @@ module Spectrum
 
       def <=> other
         self.weight <=> other.weight
+      end
+
+      def get_basic_sorts(request)
+        sorts.values.find {|sort| sort.uid == request.sort} || sorts.default
+      end
+
+      def get_sorts(request)
+        highly_recommended.get_sorts(get_basic_sorts(request), request.facets)
       end
     end
   end
