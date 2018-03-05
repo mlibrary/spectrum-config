@@ -90,7 +90,7 @@ module Spectrum
           focus.configure_blacklight(config, request)
         end
         p[:fq] += focus.filters
-        p[:sort] = focus.get_sorts(request)
+        p[:sort] = focus.get_sorts(request) if request.can_sort?
         p[:config].default_solr_params = focus.solr_params
         p[:qt] = focus.solr_params['qt'] if focus.solr_params['qt']
         p[:qf] = focus.solr_params['qf'] if focus.solr_params['qf']
