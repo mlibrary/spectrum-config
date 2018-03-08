@@ -1,7 +1,7 @@
 module Spectrum
   module Config
     class MarcMatcher
-      attr_reader :label, :join
+      attr_reader :label, :join, :default
 
       def metadata
         {
@@ -17,6 +17,7 @@ module Spectrum
         @sub   = %r{#{arg['sub'] || '.'}}
         @ind1  = %r{#{arg['ind1'] || '.'}}
         @ind2  = %r{#{arg['ind2'] || '.'}}
+        @default = arg['default']
       end
 
        def match_field(field)

@@ -12,8 +12,11 @@ module Spectrum
         aggregator = Aggregator.new(aggregator_type)
         fields.each do |field_matcher|
           record.find_all { |field| field_matcher.match_field(field) }.each do |field|
-            field.find_all { |subfield| field_matcher.match_subfield(subfield) }.each do |subfield|
+            subfields = field.find_all { |subfield| field_matcher.match_subfield(subfield) }.each do |subfield|
               aggregator.add(field_matcher.metadata, field, subfield)
+            end
+            if subfields.empty? && field_matcher.default
+              aggregator.add(field_matcher.metadata, field, Struct.new(:value).new(field_matcher.default))
             end
           end
         end
