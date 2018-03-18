@@ -8,7 +8,7 @@ module Spectrum
         :placeholder, :warning, :description, :viewstyles,
         :layout, :default_viewstyle, :category, :base,
         :fields, :url, :filters, :sorts, :id_field, :solr_params,
-        :highly_recommended
+        :highly_recommended, :base_url
 
       HREF_DATA = {
         'id' => 'href',
@@ -84,7 +84,7 @@ module Spectrum
         return []
       end
 
-      def facet(name, base_url)
+      def facet(name, _ = nil)
         @facets.facet(name, @facet_values, base_url)
       end
 
@@ -94,6 +94,7 @@ module Spectrum
 
       def initialize(args, config)
         @id              = args['id']
+        @base_url        = config.base_url
         @path            = args['path'] || args['id']
         @source          = args['source']
         @weight          = args['weight'] || 0
@@ -136,19 +137,19 @@ module Spectrum
         value(data, @id_field)
       end
 
-      def get_url(data, base_url)
+      def get_url(data, _ = nil)
         @href.get_url(data, base_url)
       end
 
-      def href_field(data, base_url)
+      def href_field(data, _ = nil)
         @href.apply(data, base_url)
       end
 
-      def holdings_field(data, base_url)
+      def holdings_field(data, _ = nil)
         @holdings.apply(data, base_url)
       end
 
-      def get_this_field(data, base_url)
+      def get_this_field(data, _ = nil)
         @get_this.apply(data, base_url)
       end
 
@@ -160,14 +161,14 @@ module Spectrum
         @has_get_this
       end
 
-      def apply_fields(data, base_url)
+      def apply_fields(data, _ = nil)
         if data === Array
-          data.map {|item| apply_fields(item, base_url) }.compact
+          data.map {|item| apply_fields(item) }.compact
         else
           ret = []
-          ret << href_field(data, base_url)
-          ret << holdings_field(data, base_url) if has_holdings?
-          ret << get_this_field(data, base_url) if has_get_this?
+          ret << href_field(data)
+          ret << holdings_field(data) if has_holdings?
+          ret << get_this_field(data) if has_get_this?
           @fields.each_value do |field|
             ret << field.apply(data)
           end
@@ -188,7 +189,7 @@ module Spectrum
         (@hierarchy && @hierarchy.value_map) || {}
       end
 
-      def spectrum(base_url = '', args = {})
+      def spectrum(_ = nil, args = {})
         @get_null_facets.call if @get_null_facets
         {
           uid: @id,
