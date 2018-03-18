@@ -365,6 +365,10 @@ module Spectrum
         end
       end
 
+      def fetch_record(sources, id)
+        apply_fields(sources[source].fetch_record(id))
+      end
+
       def <=> other
         self.weight <=> other.weight
       end

@@ -18,6 +18,15 @@ module Spectrum
         @holdings  = args['holdings']
       end
 
+      def fetch_record(id)
+        client = driver.constantize.connect(url: url)
+        result = client.get('select', params: {q: "id:#{RSolr.solr_escape(id)}"})
+        return {} unless result &&
+          result["response"] &&
+          result["response"]["docs"]
+        result["response"]["docs"].first || {}
+      end
+
       def link_to base, doc
         send @link_type, base, doc
       end

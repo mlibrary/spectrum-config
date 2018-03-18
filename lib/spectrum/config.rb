@@ -76,6 +76,10 @@ require 'spectrum/config/filter_list'
 require 'spectrum/config/bookplate'
 require 'spectrum/config/bookplate_list'
 
+require 'spectrum/config/credentials'
+require 'spectrum/config/action'
+require 'spectrum/config/action_list'
+
 module Spectrum
   module Config
     # Your code goes here...
