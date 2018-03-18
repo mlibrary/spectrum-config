@@ -6,12 +6,12 @@ module Spectrum
         data ||= {}
         self.id          = data['id']
         self.type        = data['type']
-        self.driver      = data['driver']
+        self.driver      = data['driver'].constantize
         self.credentials = Credentials.new(data['credentials'])
       end
 
       def configure!
-        driver.constantize.configure!(credentials)
+        driver.configure!(credentials)
       end
 
       def <=>(other)
