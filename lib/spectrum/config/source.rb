@@ -137,6 +137,17 @@ module Spectrum
         @session_id = args['session_id'] || nil
       end
 
+      def fetch_record(id)
+        engine = Spectrum::SearchEngines::Summon.new({
+          's.fids' => id,
+          's.role' => 'authenticated',
+          'source' => self,
+          source: self
+        })
+        return {} unless engine && engine.documents
+        engine.documents.first || {}
+      end
+
       def engine focus, request, controller
         Spectrum::SearchEngines::Summon.new(params(focus, request, controller))
       end
