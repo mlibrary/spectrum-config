@@ -141,6 +141,15 @@ module Spectrum
         @href.get_url(data, base_url)
       end
 
+      def datastore_field(data)
+        {
+          uid: 'datastore',
+          name: 'Datastore',
+          value: id,
+          value_has_html: false,
+        }
+      end
+
       def href_field(data, _ = nil)
         @href.apply(data, base_url)
       end
@@ -167,6 +176,7 @@ module Spectrum
         else
           ret = []
           ret << href_field(data)
+          ret << datastore_field(data)
           ret << holdings_field(data) if has_holdings?
           ret << get_this_field(data) if has_get_this?
           @fields.each_value do |field|
