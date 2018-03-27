@@ -204,12 +204,12 @@ module Spectrum
         {
           uid: @id,
           metadata: @metadata.spectrum,
-          url: base_url + url,
+          url: "#{base_url}/#{url}",
           default_sort: @default_sort.id,
           sorts: @sorts.spectrum,
           fields: @fields.spectrum,
           facets: @facets.spectrum(@facet_values, base_url, args),
-          holdings: (has_holdings? ? base_url + url + '/holdings' : nil),
+          holdings: (has_holdings? ? "#{base_url}/#{url}/holdings" : nil),
           hierarchy: (@hierarchy && @hierarchy.spectrum),
         }
       end
