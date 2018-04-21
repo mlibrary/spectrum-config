@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Copyright (c) 2015, Regents of the University of Michigan.
 # All rights reserved. See LICENSE.txt for details.
 
@@ -6,7 +7,7 @@ module Spectrum
     class FilterList < MappedConfigList
       CONTAINS = Filter
 
-      def apply data
+      def apply(data)
         if __getobj__.empty?
           data
         else

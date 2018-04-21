@@ -1,7 +1,8 @@
+# frozen_string_literal: true
 module Spectrum
   module Config
     class ConcatenateMergeField < Field
-      type "concatenate_merge"
+      type 'concatenate_merge'
 
       attr_reader :fields
 
@@ -20,20 +21,20 @@ module Spectrum
         [
           @fields.map do |field|
             if field['preferred']
-              val = field['preferred'].map {|fld| resolve_key(data, fld)}.join('')
+              val = field['preferred'].map { |fld| resolve_key(data, fld) }.join('')
             else
               val = nil
             end
 
             if val.nil? || val.empty?
-              val = field['fields'].map {|fld| resolve_key(data, fld) }.join('')
+              val = field['fields'].map { |fld| resolve_key(data, fld) }.join('')
             end
 
             {
               'uid' =>  field['uid'],
               'name' => field['name'],
               'value' => val,
-              'value_has_html' => true,
+              'value_has_html' => true
             }
           end
         ]

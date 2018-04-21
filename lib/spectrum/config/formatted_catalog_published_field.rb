@@ -1,7 +1,8 @@
+# frozen_string_literal: true
 module Spectrum
   module Config
     class FormattedCatalogPublishedField < Field
-      type "formatted_catalog_published"
+      type 'formatted_catalog_published'
 
       attr_reader :fields
       def initialize_from_instance(i)
@@ -14,7 +15,7 @@ module Spectrum
         @fields = {}
         args['fields'].each_pair do |fname, fdef|
           @fields[fname] = Field.new(
-            fdef.merge({'id' => SecureRandom.uuid, 'metadata' => {}}),
+            fdef.merge('id' => SecureRandom.uuid, 'metadata' => {}),
             config
           )
         end
@@ -25,10 +26,8 @@ module Spectrum
         date = date.first.strip unless date.nil?
         pub  = @fields['publisher'].value(data)
         pub  = pub.join(' ').strip unless pub.nil?
-        [date, pub].reject {|str| str.nil? || !(String === str) || str.empty?}.join(' - ')
+        [date, pub].reject { |str| str.nil? || !(String === str) || str.empty? }.join(' - ')
       end
-
     end
   end
 end
-    

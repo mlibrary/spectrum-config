@@ -1,7 +1,8 @@
+# frozen_string_literal: true
 module Spectrum
   module Config
     class BookplateField < Field
-      type "bookplate"
+      type 'bookplate'
 
       attr_reader :bookplates
 
@@ -36,7 +37,6 @@ module Spectrum
           end
         end
       end
-
     end
   end
 end

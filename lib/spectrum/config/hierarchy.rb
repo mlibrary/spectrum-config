@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Spectrum
   module Config
     class Hierarchy
@@ -28,9 +29,9 @@ module Spectrum
         @value_mapping = aliases.fetch('tr', {})
         inst = YAML.load_file(hierarchy_def['load_inst'])
         coll = YAML.load_file(hierarchy_def['load_coll'])
-        @handled_uids.each {|uid| @value_mapping[uid] ||= {} }
+        @handled_uids.each { |uid| @value_mapping[uid] ||= {} }
         inst.each_pair do |inst, inst_info|
-          #@value_mapping[aliases['top'][inst] || inst] = inst
+          # @value_mapping[aliases['top'][inst] || inst] = inst
           top_val = {
             value: inst,
             label: aliases['top'][inst] || inst,
@@ -49,7 +50,7 @@ module Spectrum
             }
             coll[loc_id]['collections'].each_pair do |coll_id, coll_name|
               @value_mapping['collection'][coll_name] ||= coll_id
-              middle_val[:values] << {label: coll_name, value: coll_id}
+              middle_val[:values] << { label: coll_name, value: coll_id }
             end
             top_val[:values] << middle_val
           end

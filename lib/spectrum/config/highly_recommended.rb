@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Spectrum
   module Config
     class HighlyRecommended
@@ -5,11 +6,11 @@ module Spectrum
 
       def initialize(config = nil)
         config ||= {}
-        @field    = config['field']
+        @field = config['field']
       end
 
       def map(value)
-        "isfield-order-#{value.downcase.gsub(/[^a-z&]/, '_').gsub(/_+/, '_').sub(/_+$/, '')} asc" 
+        "isfield-order-#{value.downcase.gsub(/[^a-z&]/, '_').gsub(/_+/, '_').sub(/_+$/, '')} asc"
       end
 
       def get_sorts(sort, facets)
@@ -19,7 +20,7 @@ module Spectrum
       end
 
       def get_sorts_from_facets(facets)
-        Array(facets.data[field]).compact.map {|value| map(value)}
+        Array(facets.data[field]).compact.map { |value| map(value) }
       end
     end
   end

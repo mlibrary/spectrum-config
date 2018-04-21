@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Spectrum
   module Config
     class Marc
@@ -22,7 +23,6 @@ module Spectrum
         end
         aggregator.to_value
       end
-
     end
   end
 end

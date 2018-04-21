@@ -1,7 +1,8 @@
+# frozen_string_literal: true
 module Spectrum
   module Config
     class FormattedArticlePublishedField < Field
-      type "formatted_article_published"
+      type 'formatted_article_published'
 
       attr_reader :fields
       def initialize_from_instance(i)
@@ -14,7 +15,7 @@ module Spectrum
         @fields = {}
         args['fields'].each_pair do |fname, fdef|
           @fields[fname] = Field.new(
-            fdef.merge({'id' => SecureRandom.uuid, 'metadata' => {}}),
+            fdef.merge('id' => SecureRandom.uuid, 'metadata' => {}),
             config
           )
         end
@@ -27,12 +28,10 @@ module Spectrum
 
         ret = ''
         ret << pub_title if pub_title
-        ret << " Vol. " + volume if volume
-        ret << ", Issue " + issue if issue
+        ret << ' Vol. ' + volume if volume
+        ret << ', Issue ' + issue if issue
         ret
       end
-
     end
   end
 end
-    

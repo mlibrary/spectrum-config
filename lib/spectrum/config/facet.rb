@@ -1,9 +1,10 @@
+# frozen_string_literal: true
 module Spectrum
   module Config
     class NullFacet
       attr_accessor :weight, :id, :limit, :mincount, :offset
       attr_reader :uid, :field, :type
-      DEFAULT_SORTS = {}
+      DEFAULT_SORTS = {}.freeze
       def initialize
         @facet_field = @field = @uid = @id = 'null'
         @more = false
@@ -14,7 +15,7 @@ module Spectrum
         @mincount = 1
         @limit = 20
         @offset = 0
-        @metadata = Metadata.new({'name' => 'Null Facet'})
+        @metadata = Metadata.new('name' => 'Null Facet')
         @url = 'null'
         @type = 'null'
         @sorts = SortList.new
@@ -32,7 +33,7 @@ module Spectrum
 
       attr_reader :uid, :field, :type, :facet_field
 
-      DEFAULT_SORTS = {'count' => 'count', 'index' => 'index'}
+      DEFAULT_SORTS = { 'count' => 'count', 'index' => 'index' }.freeze
 
       def initialize(args = {}, sort_list = [], url = '')
         @id           = args['id']
@@ -62,12 +63,12 @@ module Spectrum
 
       def rff(applied)
         return nil if @ranges.nil? || @ranges.empty?
-        return [field, *@ranges.map {|r| r['value']}].join(',') unless applied.data[@uid]
+        return [field, *@ranges.map { |r| r['value'] }].join(',') unless applied.data[@uid]
 
         values = Array(applied.data[@uid])
-        range_matches = @ranges.find_all {|r| values.include?(r['value'])}
+        range_matches = @ranges.find_all { |r| values.include?(r['value']) }
         return nil if range_matches.length != values.length
-        return nil unless range_matches.all? {|r| r['divisible']}
+        return nil unless range_matches.all? { |r| r['divisible'] }
         list = [field]
         values.each do |value|
           start, finish = value.split(/:/).map(&:to_i)
@@ -75,14 +76,14 @@ module Spectrum
             list << "#{i}:#{i}"
           end
         end
-        list.join(",")
+        list.join(',')
       end
 
       def routes(source, focus, app)
         app.match @url,
-          to: 'json#facet',
-          defaults: { source: source, focus: focus, facet: @id, type: 'Facet' },
-          via: [:post, :options]
+                  to: 'json#facet',
+                  defaults: { source: source, focus: focus, facet: @id, type: 'Facet' },
+                  via: [:post, :options]
         app.get @url, to: 'json#bad_request'
       end
 
@@ -90,7 +91,7 @@ module Spectrum
         @default_sort.id
       end
 
-      def more data, base_url
+      def more(data, base_url)
         if data.length > @limit * 2
           base_url + @url
         else
@@ -100,12 +101,12 @@ module Spectrum
 
       def label(value)
         if @type == 'range'
-          range = @ranges.find {|range| range['value'] == value }
+          range = @ranges.find { |range| range['value'] == value }
           return range['label'] if range && range['label']
           range = value.split(/:/).map(&:to_i)
           return range.first.to_s if range[0] == range[1]
         end
-        return value
+        value
       end
 
       def parents(value)
@@ -114,18 +115,18 @@ module Spectrum
 
       def values(data, lim = nil)
         lim ||= @limit
-        if (lim >= 0 && data.length > lim * 2)
+        if lim >= 0 && data.length > lim * 2
           data.slice(0, lim * 2)
         else
           data
-        end.each_slice(2).map { |kv|
+        end.each_slice(2).map do |kv|
           {
             value: kv[0],
             name: label(kv[0]),
             count: kv[1],
-            parents: parents(kv[0]),
+            parents: parents(kv[0])
           }
-        }.reject {|i| i[:count] <= 0 }
+        end.reject { |i| i[:count] <= 0 }
       end
 
       def spectrum(data, base_url, args = {})
@@ -148,8 +149,8 @@ module Spectrum
         @metadata.name
       end
 
-      def <=> other
-        self.weight <=> other.weight
+      def <=>(other)
+        weight <=> other.weight
       end
     end
   end

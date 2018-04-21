@@ -1,8 +1,9 @@
+# frozen_string_literal: true
 module Spectrum
   module Config
     class Credentials
       attr_accessor :type, :token, :account, :service,
-        :subject, :text_header, :text_footer, :html_header, :html_footer
+                    :subject, :text_header, :text_footer, :html_header, :html_footer
       def initialize(data)
         data ||= {}
         self.type = data['type']

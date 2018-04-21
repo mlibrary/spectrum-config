@@ -1,7 +1,8 @@
+# frozen_string_literal: true
 module Spectrum
   module Config
     class FormattedPageRangeField < Field
-      type "formatted_page_range"
+      type 'formatted_page_range'
 
       attr_reader :fields
       def initialize_from_instance(i)
@@ -14,7 +15,7 @@ module Spectrum
         @fields = {}
         args['fields'].each_pair do |fname, fdef|
           @fields[fname] = Field.new(
-            fdef.merge({'id' => SecureRandom.uuid, 'metadata' => {}}),
+            fdef.merge('id' => SecureRandom.uuid, 'metadata' => {}),
             config
           )
         end
@@ -33,13 +34,8 @@ module Spectrum
         else
           if end_page
             end_page
-          else
-            nil
           end
-        end
       end
-
     end
   end
 end
-    

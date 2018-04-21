@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Copyright (c) 2015, Regents of the University of Michigan.
 # All rights reserved. See LICENSE.txt for details.
 
@@ -18,12 +19,12 @@ module Spectrum
               @mapping[f.facet_field] = f.id
               @reverse_map[f.id] = f.facet_field
               obj[f.id] = if f.class == self.class::CONTAINS
-                f
-              else
-                self.class::CONTAINS.new(f, *args)
+                            f
+                          else
+                            self.class::CONTAINS.new(f, *args)
               end
             end
-            available_uids = fields.map {|f| f.id}
+            available_uids = fields.map(&:id)
             raise "Missing mapped #{self.class::CONTAINS} id(s) #{(@mapping.values - available_ids).join(', ')}" unless (@mapping.values - available_uids).empty?
             __setobj__(obj)
           rescue
@@ -36,11 +37,11 @@ module Spectrum
         end
       end
 
-      #initialize_copy wasn't being triggered.
+      # initialize_copy wasn't being triggered.
       def clone
         newobj = super
         newobj.instance_eval do
-          __getobj__.each_pair do |k,v|
+          __getobj__.each_pair do |k, v|
             __getobj__[k] = v.clone
           end
         end
@@ -52,13 +53,12 @@ module Spectrum
       end
 
       def spectrum(data, base_url, args = {})
-        __getobj__.to_a.map {|kv| kv[1].spectrum(data[@mapping.invert[kv[0]]], base_url, args)}
+        __getobj__.to_a.map { |kv| kv[1].spectrum(data[@mapping.invert[kv[0]]], base_url, args) }
       end
 
       def routes(source, focus, app)
-        __getobj__.values.each { |facet| facet.routes(source, focus, app)}
+        __getobj__.values.each { |facet| facet.routes(source, focus, app) }
       end
-
     end
   end
 end

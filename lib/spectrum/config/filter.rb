@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Copyright (c) 2015, Regents of the University of Michigan.
 # All rights reserved. See LICENSE.txt for details.
 
@@ -6,10 +7,9 @@ require 'htmlentities'
 module Spectrum
   module Config
     class Filter
-
       attr_accessor :id, :method
 
-      def initialize data
+      def initialize(data)
         @id     = data['id']
         @method = data['method']
         @decoder = HTMLEntities.new
@@ -36,7 +36,7 @@ module Spectrum
           else
             data
           end
-        elsif data.respond_to?(:map) && data.all? {|item| String === item}
+        elsif data.respond_to?(:map) && data.all? { |item| String === item }
           data.map do |item|
             truncate(item)
           end
@@ -48,7 +48,7 @@ module Spectrum
       def trim(data)
         if String === data
           data.sub(%r{(\S{3,})\s*[/.,:]$}, '\1')
-        elsif data.respond_to?(:map) && data.all? {|item| String === item}
+        elsif data.respond_to?(:map) && data.all? { |item| String === item }
           data.map do |item|
             trim(item)
           end
@@ -60,9 +60,9 @@ module Spectrum
       def decode(data)
         if String === data
           @decoder.decode(data)
-        elsif data.respond_to?(:map) && data.all? {|item| String === item}
+        elsif data.respond_to?(:map) && data.all? { |item| String === item }
           data.map do |item|
-           @decoder.decode(item)
+            @decoder.decode(item)
           end
         else
           data

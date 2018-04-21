@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Spectrum
   module Config
     class SummonAccessUrlField < Field
@@ -22,7 +23,7 @@ module Spectrum
       end
 
       def value(data)
-        if (data.src[@model_field].first == 'OpenURL')
+        if data.src[@model_field].first == 'OpenURL'
           @openurl_root + '?' + data.send(@openurl_field)
         else
           data.send(@direct_link_field)

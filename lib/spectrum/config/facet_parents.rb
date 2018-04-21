@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Spectrum
   module Config
     module FacetParents
@@ -7,8 +8,8 @@ module Spectrum
 
       def self.find(uid, value)
         return [] unless @parents_lists
-        return [] unless @parents_lists.has_key? uid
-        return [] unless @parents_lists[uid].has_key? value
+        return [] unless @parents_lists.key? uid
+        return [] unless @parents_lists[uid].key? value
         @parents_lists[uid][value]
       end
     end

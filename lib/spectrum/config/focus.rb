@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Copyright (c) 2015, Regents of the University of Michigan.
 # All rights reserved. See LICENSE.txt for details.
 
@@ -5,21 +6,21 @@ module Spectrum
   module Config
     class Focus
       attr_accessor :id, :name, :weight, :title, :source,
-        :placeholder, :warning, :description, :viewstyles,
-        :layout, :default_viewstyle, :category, :base,
-        :fields, :url, :filters, :sorts, :id_field, :solr_params,
-        :highly_recommended, :base_url
+                    :placeholder, :warning, :description, :viewstyles,
+                    :layout, :default_viewstyle, :category, :base,
+                    :fields, :url, :filters, :sorts, :id_field, :solr_params,
+                    :highly_recommended, :base_url
 
       HREF_DATA = {
         'id' => 'href',
         'metadata' => {
           'name' => 'HREF',
-          'short_desc' => 'The link to the thing in the native interface',
+          'short_desc' => 'The link to the thing in the native interface'
         }
-      }
+      }.freeze
 
       def fvf(values)
-        values.data.inject([]) do |acc, kv|
+        values.data.each_with_object([]) do |kv, acc|
           k, v = kv
           @facets.values.each do |facet|
             next if facet.type == 'range'
@@ -28,12 +29,11 @@ module Spectrum
               acc << "#{facet.field},#{val}"
             end
           end
-          acc
         end
       end
 
       def rf(values)
-        values.data.inject([]) do |acc, kv|
+        values.data.each_with_object([]) do |kv, acc|
           k, v = kv
           @facets.values.each do |facet|
             next if facet.type != 'range'
@@ -48,13 +48,12 @@ module Spectrum
               val.match(/^(\d+)to(\d+)$/) do |m|
                 val = "#{m[1]}:#{m[2]}"
               end
-              val.match(/^\d+$/) do |m|
+              val.match(/^\d+$/) do |_m|
                 val = "#{val}:#{val}"
               end
               acc << "#{@facets[k].field},#{val}"
             end
           end
-          acc
         end
       end
 
@@ -65,7 +64,7 @@ module Spectrum
       def filter_facets(facets)
         if facets
           @facets.values.each do |facet|
-            if facets.has_key?(facet.uid) && facet.pseudo_facet?
+            if facets.key?(facet.uid) && facet.pseudo_facet?
               facets = facets.reject { |key, _| key == facet.uid }
             end
           end
@@ -74,14 +73,12 @@ module Spectrum
       end
 
       def names(fields)
-        ['names', 'title'].each do |name|
+        %w(names title).each do |name|
           fields.each do |field|
-            if field[:uid] == name
-              return field[:value]
-            end
+            return field[:value] if field[:uid] == name
           end
         end
-        return []
+        []
       end
 
       def facet(name, _ = nil)
@@ -98,7 +95,7 @@ module Spectrum
         @path            = args['path'] || args['id']
         @source          = args['source']
         @weight          = args['weight'] || 0
-        @url             = (@id == @source) ? @id : @source + '/' + @id
+        @url             = @id == @source ? @id : @source + '/' + @id
         @id_field        = args['id_field'] || 'id'
         @metadata        = Spectrum::Config::Metadata.new(args['metadata'])
         @href            = Spectrum::Config::Href.new('prefix' => @url, 'field' => @id_field)
@@ -114,7 +111,7 @@ module Spectrum
 
         @filters         = args['filters'] || []
 
-        @max_per_page    = args['max_per_page'] || 50000
+        @max_per_page    = args['max_per_page'] || 50_000
         @default_facets  = args['default_facets'] || {}
         @get_null_facets = nil
         @hierarchy       = Hierarchy.new(args['hierarchy']) if args['hierarchy']
@@ -141,12 +138,12 @@ module Spectrum
         @href.get_url(data, base_url)
       end
 
-      def datastore_field(data)
+      def datastore_field(_data)
         {
           uid: 'datastore',
           name: 'Datastore',
           value: id,
-          value_has_html: false,
+          value_has_html: false
         }
       end
 
@@ -172,7 +169,7 @@ module Spectrum
 
       def apply_fields(data, _ = nil)
         if data === Array
-          data.map {|item| apply_fields(item) }.compact
+          data.map { |item| apply_fields(item) }.compact
         else
           ret = []
           ret << href_field(data)
@@ -190,8 +187,6 @@ module Spectrum
         if name
           data.respond_to?(:[]) ? data[name] :
            (data.respond_to?(name.to_sym) ? data.send(name.to_sym) : nil)
-        else
-          nil
         end
       end
 
@@ -200,7 +195,7 @@ module Spectrum
       end
 
       def spectrum(_ = nil, args = {})
-        @get_null_facets.call if @get_null_facets
+        @get_null_facets&.call
         {
           uid: @id,
           metadata: @metadata.spectrum,
@@ -210,7 +205,7 @@ module Spectrum
           fields: @fields.spectrum,
           facets: @facets.spectrum(@facet_values, base_url, args),
           holdings: (has_holdings? ? "#{base_url}/#{url}/holdings" : nil),
-          hierarchy: (@hierarchy && @hierarchy.spectrum),
+          hierarchy: (@hierarchy && @hierarchy.spectrum)
         }
       end
 
@@ -222,7 +217,7 @@ module Spectrum
         !!viewstyles
       end
 
-      def path query
+      def path(query)
         if query.empty?
           "/#{base}"
         else
@@ -230,7 +225,7 @@ module Spectrum
         end
       end
 
-      def initialize_copy(source)
+      def initialize_copy(_source)
         @facets = @facets.clone
       end
 
@@ -257,17 +252,17 @@ module Spectrum
 
       def apply_facets!(results)
         if results.respond_to? :[]
-          @facet_values = results["facet_counts"]["facet_fields"]
+          @facet_values = results['facet_counts']['facet_fields']
         elsif results.respond_to? :facets
           @facet_values = {}
           # TODO: Make a facet values object or something.
           results.facets.each do |facet|
             @facet_values[facet.display_name] = []
             facet.counts.each do |count|
-              #unless count.applied?
-                @facet_values[facet.display_name] << count.value
-                @facet_values[facet.display_name] << count.count
-              #end
+              # unless count.applied?
+              @facet_values[facet.display_name] << count.value
+              @facet_values[facet.display_name] << count.count
+              # end
             end
           end
         else
@@ -291,41 +286,41 @@ module Spectrum
       end
 
       # These need to be lazy-loaded so that rake routes will work.
-      def get_null_facets &block
-        @get_null_facets = Proc.new do
-          block.call
+      def get_null_facets
+        @get_null_facets = proc do
+          yield
           @get_null_facets = nil
         end
       end
 
-      def routes app
+      def routes(app)
         app.match @url,
-          to: 'json#search',
-          defaults: { source: source, focus: @id, type: 'DataStore' },
-          via: [ :post, :options ]
+                  to: 'json#search',
+                  defaults: { source: source, focus: @id, type: 'DataStore' },
+                  via: [:post, :options]
 
         app.match "#{@url}/record/*id",
-          to: 'json#record',
-          defaults: { source: source, focus: @id, type: 'Record', id_field: id_field },
-          via: [ :get, :options ]
+                  to: 'json#record',
+                  defaults: { source: source, focus: @id, type: 'Record', id_field: id_field },
+                  via: [:get, :options]
 
         if has_holdings?
           app.match "#{url}/holdings/:id",
-            to: 'json#holdings',
-            defaults: { source: source, focus: @id, type: 'Holdings', id_field: id_field },
-            via: [ :get, :options ]
+                    to: 'json#holdings',
+                    defaults: { source: source, focus: @id, type: 'Holdings', id_field: id_field },
+                    via: [:get, :options]
           app.match "#{url}/holdings/:record/:item/:pickup_location/:not_needed_after",
-            to: 'json#hold',
-            defaults: { source: source, focus: @id, type: 'PlaceHold', id_field: id_field },
-            via: [ :post, :options ]
+                    to: 'json#hold',
+                    defaults: { source: source, focus: @id, type: 'PlaceHold', id_field: id_field },
+                    via: [:post, :options]
           app.match "#{url}/get-this/:id/:barcode",
-            to: 'json#get_this',
-            defaults: { source: source, focus: @id, type: 'GetThis', id_field: id_field },
-            via: [ :get, :options ]
+                    to: 'json#get_this',
+                    defaults: { source: source, focus: @id, type: 'GetThis', id_field: id_field },
+                    via: [:get, :options]
           app.match "#{url}/hold",
-            to: 'json#hold_redirect',
-            defaults: { source: source, focus: @id, type: 'PlaceHold', id_field: id_field },
-            via: [ :post, :options ]
+                    to: 'json#hold_redirect',
+                    defaults: { source: source, focus: @id, type: 'PlaceHold', id_field: id_field },
+                    via: [:post, :options]
         end
 
         app.get @url, to: 'json#bad_request'
@@ -339,52 +334,47 @@ module Spectrum
         }
       end
 
-      def configure_blacklight config, request
+      def configure_blacklight(config, request)
         added = {}
         @fields.each do |f|
           fname = f.field
           fname = fname.last if Array === fname
-          unless added[fname]
-            config.add_search_field fname, label: f.name if f.searchable?
-            config.add_index_field fname, label: f.name
-            config.add_show_field fname, label: f.name
-            added[fname] = true
-          end
+          next if added[fname]
+          config.add_search_field fname, label: f.name if f.searchable?
+          config.add_index_field fname, label: f.name
+          config.add_show_field fname, label: f.name
+          added[fname] = true
         end
 
         @facets.native_pair do |solr_name, facet|
           config.add_facet_field solr_name,
-            label:  facet.name,
-            sort:   request.facet_sort || facet.sort,
-            include_in_request: true,
-            solr_params: {
-              'facet.mincount' => facet.mincount,
-              'facet.limit' => (request.facet_limit  || facet.limit),
-              'facet.offset' => request.facet_offset || facet.offset,
-            }
+                                 label:  facet.name,
+                                 sort:   request.facet_sort || facet.sort,
+                                 include_in_request: true,
+                                 solr_params: {
+                                   'facet.mincount' => facet.mincount,
+                                   'facet.limit' => (request.facet_limit  || facet.limit),
+                                   'facet.offset' => request.facet_offset || facet.offset
+                                 }
         end
 
         config.max_per_page = @max_per_page
       end
 
-      def category_match cat
-        if cat == :all || cat == category
-          self
-        else
-          nil
-        end
+      def category_match(cat)
+        self if cat == :all || cat == category
       end
 
       def fetch_record(sources, id)
         apply_fields(sources[source].fetch_record(id))
       end
 
-      def <=> other
-        self.weight <=> other.weight
+      def <=>(other)
+        weight <=> other.weight
       end
 
       def get_basic_sorts(request)
-        sorts.values.find {|sort| sort.uid == request.sort} || sorts.default
+        sorts.values.find { |sort| sort.uid == request.sort } || sorts.default
       end
 
       def get_sorts(request)

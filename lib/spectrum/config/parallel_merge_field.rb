@@ -1,7 +1,8 @@
+# frozen_string_literal: true
 module Spectrum
   module Config
     class ParallelMergeField < Field
-      type "parallel_merge"
+      type 'parallel_merge'
 
       attr_reader :fields
 
@@ -26,7 +27,7 @@ module Spectrum
               'uid' => field['uid'],
               'name' => field['name'],
               'value' => flds[field['uid']][i],
-              'value_has_html' => true,
+              'value_has_html' => true
             }
           end
         end

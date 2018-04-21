@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Spectrum
   module Config
     class Href
@@ -9,7 +10,7 @@ module Spectrum
       DEFAULT_FIELD = 'id'
       DEFAULT_PREFIX = ''
 
-      def initialize args = {}
+      def initialize(args = {})
         args ||= {}
         @field  = args['field'] || DEFAULT_FIELD
         @prefix = args['prefix'] || DEFAULT_PREFIX
@@ -20,16 +21,14 @@ module Spectrum
           uid: UID,
           name: NAME,
           value: get_url(data, base_url),
-          value_has_html: HAS_HTML,
+          value_has_html: HAS_HTML
         }
       end
 
       def apply_object(data, base_url)
         value = data.send(@field.to_sym)
 
-        if value.nil?
-          value = data.send(DEFAULT_FIELD.to_sym)
-        end
+        value = data.send(DEFAULT_FIELD.to_sym) if value.nil?
 
         apply_value(value, base_url)
       end
@@ -37,14 +36,11 @@ module Spectrum
       def apply_hash(data, base_url)
         value = data[@field]
 
-        if value.nil?
-          value = data[DEFAULT_FIELD]
-        end
+        value = data[DEFAULT_FIELD] if value.nil?
         apply_value(value, base_url)
       end
 
       def apply_value(value, base_url)
-
         if value.nil?
           value = ''
         elsif value === Array
@@ -61,7 +57,6 @@ module Spectrum
           apply_object(data, base_url)
         end
       end
-
     end
   end
 end

@@ -1,12 +1,12 @@
+# frozen_string_literal: true
 module Spectrum
   module Config
     class Field
       class << self
-
         def new(field_def, config)
           type = get_type(field_def, config)
           return type.new(field_def, config) if type
-          obj = self.allocate
+          obj = allocate
           obj.send(:initialize, field_def, config)
           obj
         end
@@ -27,7 +27,7 @@ module Spectrum
           return index[field_def['type']] if index[field_def['type']]
           return index[field_def.type] if field_def.respond_to?(:type) && index[field_def.type]
           return index[config[field_def].type] if config.respond_to?(:[]) && config[field_def]
-          return registry.first if registry.length > 0
+          return registry.first unless registry.empty?
           nil
         end
 
@@ -90,9 +90,9 @@ module Spectrum
         @id         = args['id']
         @fixed      = args['fixed']      || false
         @weight     = args['weight']     || 0
-        @default    = args['default']    || ""
+        @default    = args['default']    || ''
         @required   = args['required']   || false
-        @has_html   = true #args['has_html']   || false
+        @has_html   = true # args['has_html']   || false
         @list       = args['list']       || true
         @full       = args['full']       || true
         @viewable   = args['viewable'].nil?   ? true : args['viewable']
@@ -102,15 +102,15 @@ module Spectrum
         @field      = args['field'] || args['id']
         @facet_field = args['facet_field'] || args['field'] || args['id']
         @query_field = args['query_field'] || @field
-        @uid        = args['uid'] || args['id']
+        @uid = args['uid'] || args['id']
         @query_params = args['query_params'] || {}
         @values = args['values'] || []
 
-        @sorts      = (args['sorts'] || [])
+        @sorts = (args['sorts'] || [])
         raise "Missing sort id(s): #{(@sorts - config.sorts.keys).join(', ')}" unless (@sorts - config.sorts.keys).empty?
         @sorts.map! { |sort| config.sorts[sort] }
 
-        @filters = FilterList.new((args['filters'] || []) + [{"id" => "decode", "method" => "decode"}])
+        @filters = FilterList.new((args['filters'] || []) + [{ 'id' => 'decode', 'method' => 'decode' }])
       end
 
       def type
@@ -131,7 +131,7 @@ module Spectrum
 
       def initialize(args = {}, config = {})
         if String === args
-          raise "Unknown field type '#{args}'" unless config.has_key?(args)
+          raise "Unknown field type '#{args}'" unless config.key?(args)
           initialize_from_instance(config[args])
         else
           initialize_from_hash(args, config)
@@ -146,12 +146,8 @@ module Spectrum
         @full
       end
 
-      def [] field
-        if respond_to?(field.to_sym)
-          self.send(field.to_sym)
-        else
-          nil
-        end
+      def [](field)
+        send(field.to_sym) if respond_to?(field.to_sym)
       end
 
       def name
@@ -165,10 +161,8 @@ module Spectrum
             metadata: @metadata.spectrum,
             required: @required,
             fixed: @fixed,
-            default_value: @default,
+            default_value: @default
           }
-        else
-          nil
         end
       end
 
@@ -182,11 +176,11 @@ module Spectrum
 
       def resolve_key(data, name)
         if data.respond_to?(:[])
-          return transform(data[name])
+          transform(data[name])
         elsif data.respond_to?(name)
-          return transform(data.send(name))
+          transform(data.send(name))
         elsif data.respond_to?(:src)
-          return transform(data.src[name])
+          transform(data.src[name])
         end
       end
 
@@ -197,18 +191,17 @@ module Spectrum
             uid: @uid,
             name: @metadata.name,
             value: val,
-            value_has_html: @has_html,
+            value_has_html: @has_html
           }
-        else
-          nil
         end
       end
 
-      def <=> other
-        self.weight <=> other.weight
+      def <=>(other)
+        weight <=> other.weight
       end
 
       private
+
       def valid_data?(data)
         if data.nil?
           false
@@ -217,7 +210,7 @@ module Spectrum
             if data.all? { |item| item.respond_to?(:empty?) && !item.empty? }
               true
             else
-              data.length > 0
+              !data.empty?
             end
           else
             !data.empty?
@@ -226,7 +219,6 @@ module Spectrum
           data
         end
       end
-
     end
   end
 end

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Spectrum
   module Config
     class FieldAggregator < Aggregator
@@ -19,12 +20,12 @@ module Spectrum
           val = []
           pairs.each do |pair|
             label, subfield = pair
-              val << {
-                uid: label || "#{field.tag}#{subfield.code}",
-                name: label,
-                value: subfield.value,
-                value_has_html: true
-              }
+            val << {
+              uid: label || "#{field.tag}#{subfield.code}",
+              name: label,
+              value: subfield.value,
+              value_has_html: true
+            }
           end
           ret << val unless val.empty?
         end

@@ -1,9 +1,10 @@
+# frozen_string_literal: true
 module Spectrum
   module Config
     class Sort
       attr_accessor :weight, :id, :value, :metadata, :uid
 
-      def initialize args = {}
+      def initialize(args = {})
         @id       = args['id']
         @uid      = args['uid'] || @id
         @value    = args['value']  || args['id']
@@ -14,24 +15,19 @@ module Spectrum
 
       def spectrum
         {
-           uid: @uid,
-           metadata: @metadata.spectrum,
-           group: @group
+          uid: @uid,
+          metadata: @metadata.spectrum,
+          group: @group
         }
       end
 
-      def <=> other
-        self.weight <=> other.weight
+      def <=>(other)
+        weight <=> other.weight
       end
 
-      def [] field
-        if respond_to?(field.to_sym)
-          self.send(field.to_sym)
-        else
-          nil
-        end
+      def [](field)
+        send(field.to_sym) if respond_to?(field.to_sym)
       end
-
     end
   end
 end

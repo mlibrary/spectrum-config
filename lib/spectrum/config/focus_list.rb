@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Copyright (c) 2015, Regents of the University of Michigan.
 # All rights reserved. See LICENSE.txt for details.
 
@@ -6,26 +7,24 @@ module Spectrum
     class FocusList < ConfigList
       CONTAINS = Focus
 
-      def routes app
+      def routes(app)
         __getobj__.each_value do |focus|
           focus.routes(app)
         end
       end
 
-      def by_category cat
-        __getobj__.values.map {|item| item.category_match(cat)}.compact
+      def by_category(cat)
+        __getobj__.values.map { |item| item.category_match(cat) }.compact
       end
 
-      def match arg
+      def match(arg)
         case arg
         when Hash
-          arg.has_key?('active_source') ? match(arg['active_source']) : nil
+          arg.key?('active_source') ? match(arg['active_source']) : nil
         when String
           key = arg.gsub(/^\//, '').gsub(/\/advanced/, '')
 
-          has_key?(key) ? key : nil
-        else
-          nil
+          key?(key) ? key : nil
         end
       end
 

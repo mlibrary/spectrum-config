@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Spectrum
   module Config
     class Aggregator
@@ -5,7 +6,7 @@ module Spectrum
         def new(type)
           klass = get_class(type)
           return klass.new(type) if klass
-          obj = self.allocate
+          obj = allocate
           obj.send(:initialize)
           obj
         end
@@ -20,10 +21,11 @@ module Spectrum
         end
 
         private
+
         def get_class(type)
           reindex!
           return index[type] if index[type]
-          return registry.first if registry.length > 0
+          return registry.first unless registry.empty?
           nil
         end
 

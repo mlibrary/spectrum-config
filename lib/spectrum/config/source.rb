@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Copyright (c) 2015, Regents of the University of Michigan.
 # All rights reserved. See LICENSE.txt for details.
 
@@ -5,7 +6,7 @@ module Spectrum
   module Config
     class BaseSource
       attr_accessor :url, :type, :id, :driver, :path, :id_field, :holdings
-      def initialize args
+      def initialize(args)
         @id        = args['id']
         @id_field  = args['id_field'] || 'id'
         @name      = args['name']
@@ -20,14 +21,14 @@ module Spectrum
 
       def fetch_record(id)
         client = driver.constantize.connect(url: url)
-        result = client.get('select', params: {q: "id:#{RSolr.solr_escape(id)}"})
+        result = client.get('select', params: { q: "id:#{RSolr.solr_escape(id)}" })
         return {} unless result &&
-          result["response"] &&
-          result["response"]["docs"]
-        result["response"]["docs"].first || {}
+                         result['response'] &&
+                         result['response']['docs']
+        result['response']['docs'].first || {}
       end
 
-      def link_to base, doc
+      def link_to(base, doc)
         send @link_type, base, doc
       end
 
@@ -35,54 +36,53 @@ module Spectrum
         false
       end
 
-      def <=> b
-        self.id <=> b.id
+      def <=>(b)
+        id <=> b.id
       end
 
-      def merge! args = {}
-        args.each_pair do |k,v|
+      def merge!(args = {})
+        args.each_pair do |k, v|
           send (k.to_s + '=').to_sym, v
         end
       end
 
-      def [] key
+      def [](key)
         send key.to_sym
       end
 
-      def params(focus, request, controller = nil)
-        request.query(focus.fields, focus.facet_map).merge({
-          source: self,
-          'source' => self
-        })
+      def params(focus, request, _controller = nil)
+        request.query(focus.fields, focus.facet_map).merge(source: self,
+                                                           'source' => self)
       end
 
-      def engine focus, request, controller = nil
+      def engine(_focus, _request, _controller = nil)
         nil
       end
 
       private
-      def first_value doc, key
+
+      def first_value(doc, key)
         doc[key].listify.first
       end
 
-      def rebase base, doc
+      def rebase(_base, doc)
         relative @link_base, doc
       end
 
-      def relative base, doc
+      def relative(base, doc)
         "#{base}/#{first_value(doc, @link_key)}"
       end
 
-      def absolute base, doc
+      def absolute(_base, doc)
         first_value doc, @link_key
       end
     end
 
     class SolrSource < BaseSource
       attr_accessor :truncate
-      def initialize args
+      def initialize(args)
         super
-        @truncate  = args['truncate']
+        @truncate = args['truncate']
       end
 
       def is_solr?
@@ -93,7 +93,7 @@ module Spectrum
         @truncate || false
       end
 
-      def engine focus, request, controller = nil
+      def engine(focus, request, controller = nil)
         p = params(focus, request, controller)
         p[:config] = ::Blacklight::Configuration.new do |config|
           focus.configure_blacklight(config, request)
@@ -113,9 +113,7 @@ module Spectrum
 
       def params(focus, request, controller = nil)
         new_params = super
-        if request.search_only?
-          new_params[:fq] << 'ht_searchonly:false'
-        end
+        new_params[:fq] << 'ht_searchonly:false' if request.search_only?
         if request.available_online?
           new_params[:fq] << 'availability:"Available online"'
         end
@@ -125,8 +123,8 @@ module Spectrum
 
     class SummonSource < BaseSource
       attr_accessor :access_id, :client_key, :secret_key, :log, :benchmark,
-        :transport, :session_id
-      def initialize args
+                    :transport, :session_id
+      def initialize(args)
         super
         @log        = args['log']        || nil
         @benchmark  = args['benchmark']  || nil
@@ -138,17 +136,15 @@ module Spectrum
       end
 
       def fetch_record(id)
-        engine = Spectrum::SearchEngines::Summon.new({
-          's.fids' => id,
-          's.role' => 'authenticated',
-          'source' => self,
-          source: self
-        })
+        engine = Spectrum::SearchEngines::Summon.new('s.fids' => id,
+                                                     's.role' => 'authenticated',
+                                                     'source' => self,
+                                                     source: self)
         return {} unless engine && engine.documents
         engine.documents.first || {}
       end
 
-      def engine focus, request, controller
+      def engine(focus, request, controller)
         Spectrum::SearchEngines::Summon.new(params(focus, request, controller))
       end
 
@@ -169,27 +165,21 @@ module Spectrum
         # a persisent browser setting
         if new_params['s.ps'] && (new_params['s.ps'].to_i > 1)
           # Store it, if passed
-          #controller.set_browser_option('summon_per_page', new_params['s.ps'])
-        else
-          # Retrieve and use previous value, if not passed
-          #summon_per_page = controller.get_browser_option('summon_per_page')
-          #if summon_per_page && (summon_per_page.to_i > 1)
-          #  new_params['s.ps'] = summon_per_page
-          #end
+          # controller.set_browser_option('summon_per_page', new_params['s.ps'])
         end
 
         # Article searches within QuickSearch should act as New searches
-        #new_params['new_search'] = 'true' if controller.active_source == 'quicksearch'
+        # new_params['new_search'] = 'true' if controller.active_source == 'quicksearch'
         # QuickSearch is only one of may possible Aggregates - so maybe this instead?
         # params['new_search'] = 'true' if @search_style == 'aggregate'
 
         # If we're coming from the LWeb Search Widget - or any other external
         # source - mark it as a New Search for the Summon search engine.
         # (fixes NEXT-948 Article searches from LWeb do not exclude newspapers)
-        #clios = ['http://clio', 'https://clio', 'http://localhost', 'https://localhost']
-        #params['new_search'] = true unless request.referrer && clios.any? do |prefix|
-          #request.referrer.starts_with? prefix
-        #end
+        # clios = ['http://clio', 'https://clio', 'http://localhost', 'https://localhost']
+        # params['new_search'] = true unless request.referrer && clios.any? do |prefix|
+        # request.referrer.starts_with? prefix
+        # end
         new_params['new_search'] = true
 
         # New approach, 5/14 - params will always be "q".
@@ -199,7 +189,7 @@ module Spectrum
           new_params['q'] = new_params['s.q'] unless new_params['q']
           new_params.delete('s.q')
         end
-        new_params['s.sort'] = (focus.sorts.values.find { |sort| sort.uid == request.sort} || focus.sorts.default).value
+        new_params['s.sort'] = (focus.sorts.values.find { |sort| sort.uid == request.sort } || focus.sorts.default).value
 
         #   # LibraryWeb QuickSearch will pass us "search_field=all_fields",
         #   # which means to do a Summon search against 's.q'
@@ -214,17 +204,13 @@ module Spectrum
 
         new_params['s.ho'] = request.holdings_only? ? 'true' : 'false'
 
-        if request.is_scholarly?
-          new_params['s.fvf'] << 'IsScholarly,true'
-        end
+        new_params['s.fvf'] << 'IsScholarly,true' if request.is_scholarly?
 
         if request.exclude_newspapers?
           new_params['s.fvf'] << 'ContentType,Newspaper\ Article,true'
         end
 
-        if request.available_online?
-          new_params['s.fvf'] << 'IsFulltext,true'
-        end
+        new_params['s.fvf'] << 'IsFulltext,true' if request.available_online?
 
         new_params['s.bookMark'] = request.book_mark if request.book_mark?
 
@@ -239,7 +225,7 @@ module Spectrum
     end
 
     module Source
-      def self.new args
+      def self.new(args)
         case args['type']
         when 'summon', :summon
           SummonSource.new args

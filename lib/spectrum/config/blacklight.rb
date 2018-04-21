@@ -1,15 +1,15 @@
+# frozen_string_literal: true
 # Copyright (c) 2015, Regents of the University of Michigan.
 # All rights reserved. See LICENSE.txt for details.
 
 module Spectrum
   module Config
     class Blacklight
-   
-      def initialize obj = {}
+      def initialize(obj = {})
         set(obj)
       end
 
-      def init_with obj
+      def init_with(obj)
         set(obj)
       end
 
@@ -17,7 +17,7 @@ module Spectrum
         !@facet_fields.empty?
       end
 
-      def configure config, search_fields
+      def configure(config, search_fields)
         config.per_page                      = @per_page
         config.spell_max                     = @spell_max
         config.default_solr_params           = @default_solr_params
@@ -33,8 +33,8 @@ module Spectrum
 
         @index_field.each do |field|
           options = {}
-          options[:label] = field['label'] if field.has_key? 'label'
-          options[:separator] = field['separator'] if field.has_key? 'separator'
+          options[:label] = field['label'] if field.key? 'label'
+          options[:separator] = field['separator'] if field.key? 'separator'
           config.add_index_field(field['name'], options)
         end
 
@@ -44,7 +44,7 @@ module Spectrum
 
         @facet_fields.each do |field|
           options = {}
-					options[:show]  = field['show']  || true
+          options[:show] = field['show'] || true
           options[:sort]  = field['sort']  || true
           options[:label] = field['label'] || field['name']
           options[:limit] = field['limit'] || true
@@ -55,7 +55,8 @@ module Spectrum
       end
 
       private
-      def set obj
+
+      def set(obj)
         @show            = obj['show'] || {}
         @index           = obj['index'] || {}
         @per_page        = obj['per_page'] || [10, 25, 50, 100]
@@ -64,7 +65,7 @@ module Spectrum
         @facet_fields    = obj['facet_fields'] || []
         @search_fields   = obj['search_fields'] || []
         @request_handler = obj['request_handler'] || 'document'
-        @default_solr_params  = obj['default_solr_params']
+        @default_solr_params = obj['default_solr_params']
       end
     end
   end

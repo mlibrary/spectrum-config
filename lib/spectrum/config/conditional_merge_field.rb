@@ -1,7 +1,8 @@
+# frozen_string_literal: true
 module Spectrum
   module Config
     class ConditionalMergeField < Field
-      type "conditional_merge"
+      type 'conditional_merge'
 
       attr_reader :conditions
 
