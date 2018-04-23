@@ -19,7 +19,7 @@ module Spectrum
         @holdings  = args['holdings']
       end
 
-      def fetch_record(id)
+      def fetch_record(id, _ = nil)
         client = driver.constantize.connect(url: url)
         result = client.get('select', params: { q: "id:#{RSolr.solr_escape(id)}" })
         return {} unless result &&
@@ -135,9 +135,9 @@ module Spectrum
         @session_id = args['session_id'] || nil
       end
 
-      def fetch_record(id)
+      def fetch_record(id, role = 'authenticated')
         engine = Spectrum::SearchEngines::Summon.new('s.fids' => id,
-                                                     's.role' => 'authenticated',
+                                                     's.role' => role,
                                                      'source' => self,
                                                      source: self)
         return {} unless engine && engine.documents
