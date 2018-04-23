@@ -14,17 +14,19 @@ module Spectrum
             fields = args.shift.values.select { |f| uids.include?(f.id) }
             @mapping     = {}
             @reverse_map = {}
+            @native_pair = {}
             obj          = {}
             fields.each do |f|
-              @mapping[f.facet_field] = f.id
-              @reverse_map[f.id] = f.facet_field
+              @native_pair[f.facet_field] = f.id
+              @mapping[f.facet_field] = f.uid
+              @reverse_map[f.uid] = f.facet_field
               obj[f.id] = if f.class == self.class::CONTAINS
                             f
                           else
                             self.class::CONTAINS.new(f, *args)
               end
             end
-            available_uids = fields.map(&:id)
+            available_uids = fields.map(&:uid)
             raise "Missing mapped #{self.class::CONTAINS} id(s) #{(@mapping.values - available_ids).join(', ')}" unless (@mapping.values - available_uids).empty?
             __setobj__(obj)
           rescue
@@ -46,6 +48,12 @@ module Spectrum
           end
         end
         newobj
+      end
+
+      def native_pair
+        @native_pair.each_pair do |native, logical|
+          yield native, __getobj__[logical]
+        end
       end
 
       def facet(name, data, base_url)
