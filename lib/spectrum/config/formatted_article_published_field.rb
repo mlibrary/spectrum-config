@@ -26,7 +26,7 @@ module Spectrum
         volume = @fields['volume'].value(data)
         issue = @fields['issue'].value(data)
 
-        ret = ''
+        ret = String.new('')
         ret << pub_title if pub_title
         ret << ' Vol. ' + volume if volume
         ret << ', Issue ' + issue if issue
