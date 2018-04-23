@@ -35,6 +35,7 @@ module Spectrum
           if end_page
             end_page
           end
+        end
       end
     end
   end
