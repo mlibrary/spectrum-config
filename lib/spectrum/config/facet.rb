@@ -39,6 +39,7 @@ module Spectrum
         @id           = args['id']
         @uid          = args['uid'] || @id
         @field        = args['field'] || @uid
+        @facet_field  = args['facet_field'] || @field
         @more         = args['more']     || false
         @fixed        = args['fixed']    || false
         @values       = args['values']   || []
