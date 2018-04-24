@@ -36,6 +36,7 @@ module Spectrum
           end
         else
           super(*args)
+          @native_pair = @mapping
         end
       end
 
