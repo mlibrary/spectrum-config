@@ -11,8 +11,34 @@ module Spectrum
 
       def initialize(data)
         @id     = data['id']
-        @method = data['method']
+        @method = data['method'].to_sym
         @decoder = HTMLEntities.new
+      end
+
+      def proxy_prefix(value, request)
+        case value
+        when Array
+          value.map { |val| proxy_prefix(val, request) }
+        when String
+          add_prefix(request.proxy_prefix, value)
+        when Hash
+          if value['uid'] == 'href'
+            value.merge('value' => add_prefix(request.proxy_prefix, value['value']))
+          elsif value[:uid] == 'href'
+            value.merge(value: add_prefix(request.proxy_prefix, value[:value]))
+          else
+            value
+          end
+        else
+          value
+        end
+      end
+
+      def add_prefix(prefix, value)
+        return value unless value
+        return value if value.include?('proxy.lib.umich.edu')
+        return value if value.include?('libproxy.umflint.edu')
+        prefix + value
       end
 
       def <=>(other)
@@ -25,80 +51,80 @@ module Spectrum
         end
       end
 
-      def apply(data)
-        send(@method.to_sym, data)
+      def apply(value, request)
+        send(method, value, request)
       end
 
-      def truncate(data)
-        if String === data
-          if data.length > 128
-            data[0, 127] + "\u2026"
+      def truncate(value, _)
+        if String === value
+          if value.length > 128
+            value[0, 127] + "\u2026"
           else
-            data
+            value
           end
-        elsif data.respond_to?(:map) && data.all? { |item| String === item }
-          data.map do |item|
-            truncate(item)
+        elsif value.respond_to?(:map) && value.all? { |item| String === item }
+          value.map do |item|
+            truncate(item, nil)
           end
         else
-          data
+          value
         end
       end
 
-      def trim(data)
-        if String === data
-          data.sub(%r{(\S{3,})\s*[/.,:]$}, '\1')
-        elsif data.respond_to?(:map) && data.all? { |item| String === item }
-          data.map do |item|
-            trim(item)
+      def trim(value, _)
+        if String === value
+          value.sub(%r{(\S{3,})\s*[/.,:]$}, '\1')
+        elsif value.respond_to?(:map) && value.all? { |item| String === item }
+          value.map do |item|
+            trim(item, nil)
           end
         else
-          data
+          value
         end
       end
 
-      def decode(data)
-        if String === data
-          @decoder.decode(data)
-        elsif data.respond_to?(:map) && data.all? { |item| String === item }
-          data.map do |item|
+      def decode(value, _)
+        if String === value
+          @decoder.decode(value)
+        elsif value.respond_to?(:map) && value.all? { |item| String === item }
+          value.map do |item|
             @decoder.decode(item)
           end
         else
-          data
+          value
         end
       end
 
-      def unless9(data)
-        if data.respond_to?(:map)
-          list = data.map { |item| unless9(item) }.compact
+      def unless9(value, _)
+        if value.respond_to?(:map)
+          list = value.map { |item| unless9(item, nil) }.compact
           if list.empty?
             nil
           else
             list
           end
-        elsif data.respond_to?(:length) && data.length == 9
+        elsif value.respond_to?(:length) && value.length == 9
           nil
         else
-          data
+          value
         end
       end
 
-      def uniq(data)
-        if data.respond_to?(:uniq)
-          data.uniq
+      def uniq(value, _)
+        if value.respond_to?(:uniq)
+          value.uniq
         else
-          data
+          value
         end
       end
 
-      def fullname(data)
-        if data.respond_to?(:map)
-          data.map(&:fullname)
-        elsif data.respond_to?(:fullname)
-          data.fullname
+      def fullname(value, _)
+        if value.respond_to?(:map)
+          value.map(&:fullname)
+        elsif value.respond_to?(:fullname)
+          value.fullname
         else
-          data
+          value
         end
       end
     end

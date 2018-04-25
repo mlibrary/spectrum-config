@@ -184,8 +184,8 @@ module Spectrum
         end
       end
 
-      def apply(data)
-        val = @filters.apply(value(data))
+      def apply(data, request)
+        val = @filters.apply(value(data), request)
         if @viewable && valid_data?(val)
           {
             uid: @uid,

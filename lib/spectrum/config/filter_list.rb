@@ -7,11 +7,11 @@ module Spectrum
     class FilterList < MappedConfigList
       CONTAINS = Filter
 
-      def apply(data)
+      def apply(value, request)
         if __getobj__.empty?
-          data
+          value
         else
-          __getobj__.values.inject(data) { |memo, filter| filter.apply(memo) }
+          __getobj__.values.inject(value) { |memo, filter| filter.apply(memo, request) }
         end
       end
     end

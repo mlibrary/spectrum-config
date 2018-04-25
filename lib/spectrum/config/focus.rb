@@ -167,9 +167,9 @@ module Spectrum
         @has_get_this
       end
 
-      def apply_fields(data, _ = nil)
+      def apply_fields(data, _ = nil, request = nil)
         if data === Array
-          data.map { |item| apply_fields(item) }.compact
+          data.map { |item| apply_fields(item, nil, request) }.compact
         else
           ret = []
           ret << href_field(data)
@@ -177,7 +177,7 @@ module Spectrum
           ret << holdings_field(data) if has_holdings?
           ret << get_this_field(data) if has_get_this?
           @fields.each_value do |field|
-            ret << field.apply(data)
+            ret << field.apply(data, request)
           end
           ret.compact
         end
