@@ -20,6 +20,7 @@ module Spectrum
       end
 
       def get_sorts_from_facets(facets)
+        return [] unless facets.data
         Array(facets.data[field]).compact.map { |value| map(value) }
       end
     end
