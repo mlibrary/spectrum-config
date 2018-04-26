@@ -16,7 +16,7 @@ module Spectrum
         @bookplates = config.bookplates
       end
 
-      def value(data)
+      def value(data, request = nil)
         return nil unless data[@field].respond_to?(:each)
         data[@field].each do |fund|
           if @bookplates[fund]

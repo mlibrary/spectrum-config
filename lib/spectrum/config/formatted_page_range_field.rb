@@ -21,7 +21,7 @@ module Spectrum
         end
       end
 
-      def value(data)
+      def value(data, request = nil)
         start_page = @fields['start_page'].value(data)
         end_page = @fields['end_page'].value(data)
 

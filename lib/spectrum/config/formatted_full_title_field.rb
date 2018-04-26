@@ -21,7 +21,7 @@ module Spectrum
         end
       end
 
-      def value(data)
+      def value(data, request = nil)
         @fields['title'].value(data).map do |row|
           kv = row.each_with_object({}) { |i, acc| acc[i[:uid]] = Array(i[:value]).join(' '); }
           [kv['first'], kv['last']].compact.join(': ')

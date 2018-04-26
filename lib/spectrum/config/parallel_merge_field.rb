@@ -16,8 +16,7 @@ module Spectrum
         @fields = args['fields']
       end
 
-      def value(data)
-binding.pry if data.empty?
+      def value(data, request = nil)
         ret = []
         return ret if data.empty?
         flds = @fields.map do |field|

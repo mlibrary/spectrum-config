@@ -21,7 +21,7 @@ module Spectrum
         end
       end
 
-      def value(data)
+      def value(data, request = nil)
         pub_title = @fields['publication_title'].value(data)
         volume = @fields['volume'].value(data)
         issue = @fields['issue'].value(data)

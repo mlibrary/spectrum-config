@@ -22,7 +22,7 @@ module Spectrum
         @direct_link_field = args['direct_link_field']
       end
 
-      def value(data)
+      def value(data, request = nil)
         if data.src[@model_field].first == 'OpenURL'
           @openurl_root + '?' + data.send(@openurl_field)
         else

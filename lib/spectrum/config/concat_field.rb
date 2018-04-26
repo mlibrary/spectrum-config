@@ -4,7 +4,7 @@ module Spectrum
     class ConcatField < Field
       type 'concat'
 
-      def value(data)
+      def value(data, request = nil)
         @field.map { |name| resolve_key(data, name) }.join('')
       end
     end

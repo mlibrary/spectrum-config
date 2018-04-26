@@ -21,7 +21,7 @@ module Spectrum
         end
       end
 
-      def value(data)
+      def value(data, request = nil)
         date = @fields['pub_date'].value(data)
         date = date.first.strip unless date.nil?
         pub  = @fields['publisher'].value(data)

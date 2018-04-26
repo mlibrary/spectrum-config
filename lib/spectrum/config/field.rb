@@ -170,7 +170,7 @@ module Spectrum
         value
       end
 
-      def value(data)
+      def value(data, request = nil)
         resolve_key(data, @field)
       end
 
@@ -185,7 +185,7 @@ module Spectrum
       end
 
       def apply(data, request)
-        val = @filters.apply(value(data), request)
+        val = @filters.apply(value(data, request), request)
         if @viewable && valid_data?(val)
           {
             uid: @uid,

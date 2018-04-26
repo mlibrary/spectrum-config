@@ -63,6 +63,7 @@ require 'spectrum/config/formatted_catalog_published_field'
 require 'spectrum/config/formatted_article_published_field'
 require 'spectrum/config/formatted_page_range_field'
 require 'spectrum/config/formatted_full_title_field'
+require 'spectrum/config/highly_recommended_field'
 require 'spectrum/config/field_list'
 
 require 'spectrum/config/facet_parents'

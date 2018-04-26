@@ -16,7 +16,7 @@ module Spectrum
         @fields = args['fields']
       end
 
-      def value(data)
+      def value(data, request = nil)
         # Wrap the result in an array for parity with ParallelMergeField.
         [
           @fields.map do |field|

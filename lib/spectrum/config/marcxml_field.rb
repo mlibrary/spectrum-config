@@ -19,7 +19,7 @@ module Spectrum
         @sortable = false
       end
 
-      def value(data)
+      def value(data, request = nil)
         record = data[@field + '_parsed'] ||= MARC::XMLReader.new(StringIO.new(super)).first
         marc.aggregate(record)
       end

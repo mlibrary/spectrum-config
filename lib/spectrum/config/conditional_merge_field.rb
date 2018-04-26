@@ -18,7 +18,7 @@ module Spectrum
         end
       end
 
-      def value(data)
+      def value(data, request = nil)
         @conditions.map do |condition|
           condition.value do |key|
             resolve_key(data, key)

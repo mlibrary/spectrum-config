@@ -4,7 +4,7 @@ module Spectrum
     class MarcJSONField < Field
       type 'marcjson'
 
-      def value(data)
+      def value(data, request = nil)
         MARC::XMLReader.new(StringIO.new(super)).first.to_hash
       end
     end
