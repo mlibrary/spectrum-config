@@ -365,8 +365,8 @@ module Spectrum
         self if cat == :all || cat == category
       end
 
-      def fetch_record(sources, id, role = 'authenticated')
-        apply_fields(sources[source].fetch_record(id, role))
+      def fetch_record(sources, id, role = 'authenticated', request = nil)
+        apply_fields(sources[source].fetch_record(id_field, id, role), nil, request)
       end
 
       def <=>(other)

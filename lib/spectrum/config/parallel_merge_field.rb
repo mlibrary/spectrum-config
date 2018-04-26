@@ -17,7 +17,9 @@ module Spectrum
       end
 
       def value(data)
+binding.pry if data.empty?
         ret = []
+        return ret if data.empty?
         flds = @fields.map do |field|
           [field['uid'], resolve_key(data, field['field'])]
         end.to_h
