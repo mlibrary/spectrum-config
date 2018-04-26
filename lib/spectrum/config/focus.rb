@@ -191,7 +191,7 @@ module Spectrum
       end
 
       def value_map
-        (@hierarchy && @hierarchy.value_map) || {}
+        @hierarchy&.value_map || {}
       end
 
       def spectrum(_ = nil, args = {})
