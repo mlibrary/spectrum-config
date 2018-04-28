@@ -40,7 +40,6 @@ module Spectrum
             values: []
           }
           inst_info['sublibs'].each_pair do |loc_id, loc_name|
-            @value_mapping['location'][loc_name] ||= loc_id
             middle_val = {
               value: loc_id,
               label: loc_name,
@@ -48,7 +47,7 @@ module Spectrum
               uid: 'collection',
               values: []
             }
-            coll[loc_id]['collections'].each_pair do |coll_id, coll_name|
+            (coll[loc_id] || {})['collections']&.each_pair do |coll_id, coll_name|
               @value_mapping['collection'][coll_name] ||= coll_id
               middle_val[:values] << { label: coll_name, value: coll_id }
             end
