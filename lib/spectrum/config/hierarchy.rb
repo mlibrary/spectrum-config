@@ -31,7 +31,6 @@ module Spectrum
         coll = YAML.load_file(hierarchy_def['load_coll'])
         @handled_uids.each { |uid| @value_mapping[uid] ||= {} }
         inst.each_pair do |inst, inst_info|
-          # @value_mapping[aliases['top'][inst] || inst] = inst
           top_val = {
             value: inst,
             label: aliases['top'][inst] || inst,
@@ -40,6 +39,7 @@ module Spectrum
             values: []
           }
           inst_info['sublibs'].each_pair do |loc_id, loc_name|
+            @value_mapping['location'][loc_name] ||= loc_id
             middle_val = {
               value: loc_id,
               label: loc_name,
