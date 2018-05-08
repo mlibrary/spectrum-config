@@ -5,6 +5,7 @@ module Spectrum
       type 'summon_date'
 
       def transform(value)
+        return nil unless value
         [value.day, value.month, value.year].compact.join('/')
       end
     end
