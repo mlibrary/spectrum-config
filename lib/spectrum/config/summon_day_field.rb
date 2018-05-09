@@ -5,6 +5,7 @@ module Spectrum
       type 'summon_day'
 
       def transform(value)
+        return nil unless value
         value.day
       end
     end

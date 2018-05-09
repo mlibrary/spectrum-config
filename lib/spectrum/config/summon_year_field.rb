@@ -5,6 +5,7 @@ module Spectrum
       type 'summon_year'
 
       def transform(value)
+        return nil unless value
         value.year
       end
     end

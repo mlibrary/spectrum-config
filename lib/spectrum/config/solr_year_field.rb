@@ -5,6 +5,7 @@ module Spectrum
       type 'solr_year'
 
       def transform(value)
+        return nil unless value
         value&.slice(0, 4)
       end
     end

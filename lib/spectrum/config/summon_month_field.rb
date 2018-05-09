@@ -5,6 +5,7 @@ module Spectrum
       type 'summon_month'
 
       def transform(value)
+        return nil unless value
         value.month
       end
     end
