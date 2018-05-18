@@ -22,9 +22,9 @@ module Spectrum
       end
 
       def value(data, request = nil)
-        date = @fields['pub_date'].value(data)
-        date = date.first.strip unless date.nil?
-        pub  = @fields['publisher'].value(data)
+        date = [@fields['pub_date'].value(data)].flatten.first
+        date = date.strip unless date.nil?
+        pub  = [@fields['publisher'].value(data)].flatten.compact.reject(&:empty?)
         pub  = pub.join(' ').strip unless pub.nil?
         [date, pub].reject { |str| str.nil? || !(String === str) || str.empty? }.join(' - ')
       end
