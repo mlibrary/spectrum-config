@@ -294,6 +294,17 @@ module Spectrum
       end
 
       def routes(app)
+
+        app.match "#{@url}/ids",
+          to: 'json#ids',
+          defaults: {source: source, focus: @id, type: 'Ids' },
+          via: [:get, :options]
+
+        app.match "#{@url}/debug",
+          to: 'json#debug',
+          defaults: {source: source, focus: @id, type: 'Debug' },
+          via: [:get, :options]
+
         app.match @url,
                   to: 'json#search',
                   defaults: { source: source, focus: @id, type: 'DataStore' },
