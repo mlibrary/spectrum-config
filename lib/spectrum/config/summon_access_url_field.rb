@@ -24,6 +24,7 @@ module Spectrum
 
       def value(data, request = nil)
         return nil unless data
+        return nil if data.respond_to?(:empty?) && data.empty?
         if data.src[@model_field].first == 'OpenURL'
           @openurl_root + '?' + data.send(@openurl_field)
         else
