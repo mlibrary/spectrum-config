@@ -3,14 +3,14 @@ module Spectrum
     class ResourceAccessField < Field
       type 'resource_access'
 
-      attr_reader :fields, :caption, :header, :caption_link, :notes, :name
+      attr_reader :fields, :caption, :headings, :caption_link, :notes, :name
 
       def initialize_from_instance(i)
         super
         @name = i.name
         @notes = i.notes
         @fields = i.fields
-        @header = i.header
+        @headings = i.headings
         @caption = i.caption
         @caption_link = i.caption_link
       end
@@ -20,7 +20,7 @@ module Spectrum
         @name = args['name']
         @notes = args['notes']
         @fields = args['fields']
-        @header = args['header']
+        @headings = args['headings']
         @caption = args['caption']
         @caption_link = args['caption_link']
       end
@@ -46,7 +46,7 @@ module Spectrum
         end
         {
           caption: caption,
-          header: header,
+          headings: headings,
           captionLink: caption_link,
           notes: notes,
           name: name,
