@@ -34,8 +34,8 @@ module Spectrum
               text: link['link_text'],
               href: link['href']
             },
-            link['description'] || 'N/A',
-            link['relationship'] || 'N/A'
+            {text: link['description'] || 'N/A'},
+            {text: link['relationship'] || 'N/A'}
           ]
         end
         resource
