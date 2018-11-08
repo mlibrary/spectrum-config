@@ -48,9 +48,9 @@ module Spectrum
           notes: notes,
           name: name,
           rows: [
-            {href: href, text: 'Go to item'}
+            [ {href: href, text: 'Go to item'} ]
           ]
-        }
+        }.delete_if { |k,v| v.nil? }
       end
     end
   end

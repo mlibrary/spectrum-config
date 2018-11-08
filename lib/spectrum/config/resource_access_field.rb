@@ -51,7 +51,7 @@ module Spectrum
           notes: notes,
           name: name,
           rows: []
-        }.tap do |ret|
+        }.delete_if { |k,v| v.nil? }.tap do |ret|
           if values['href'].respond_to? :each
             values['href'].each_with_index do |href, index|
               row = []
