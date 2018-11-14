@@ -44,38 +44,40 @@ module Spectrum
 
           values[field['uid']] = val
         end
+
+        rows = []
+        if values['href'].respond_to? :each
+          values['href'].each_with_index do |href, index|
+            row = []
+            link_text = values['link_text'].respond_to?(:each) ?
+              values['link_text'][index] :
+              values['link_text']
+            relationship = values['relationship'].respond_to?(:each) ?
+              values['relationship'][index] :
+              values['relationship']
+            row << {href: href, text: link_text}
+            row << {text: relationship} if relationship
+            rows << row.map { |cell| cell.delete_if { |k,v| v.nil? } }
+          end
+        else
+          row = []
+          if values['href'] && values['link_text']
+            row << { href: values['href'], text: values['link_text']}
+          end
+          if values['relationship']
+            row << { text: values['relationship']}
+          end
+          rows << row.map { |cell| cell.delete_if { |k,v| v.nil? } }
+        end
+        return nil if rows.nil? || rows.empty?
         {
           caption: caption,
           headings: headings,
           captionLink: caption_link,
           notes: notes,
           name: name,
-          rows: []
-        }.delete_if { |k,v| v.nil? }.tap do |ret|
-          if values['href'].respond_to? :each
-            values['href'].each_with_index do |href, index|
-              row = []
-              link_text = values['link_text'].respond_to?(:each) ?
-                values['link_text'][index] :
-                values['link_text']
-              relationship = values['relationship'].respond_to?(:each) ?
-                values['relationship'][index] :
-                values['relationship']
-              row << {href: href, text: link_text}
-              row << {text: relationship} if relationship
-              ret[:rows] << row
-            end
-          else
-            row = []
-            if values['href'] && values['link_text']
-              row << { href: values['href'], text: values['link_text']}
-            end
-            if values['relationship']
-              row << { text: values['relationship']}
-            end
-            ret[:rows] << row
-          end
-        end
+          rows: rows
+        }.delete_if { |k,v| v.nil? }
       end
     end
   end

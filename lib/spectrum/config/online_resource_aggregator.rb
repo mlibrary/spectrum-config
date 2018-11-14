@@ -16,11 +16,7 @@ module Spectrum
 
       def to_value
         headings = ['Link', 'Description', 'Source']
-        resource = {
-          caption: 'Online Resources',
-          headings: headings,
-          rows: [ ]
-        }
+        rows = []
         @ret.each_pair do |field, pairs|
           link = {}
           pairs.each do |pair|
@@ -29,7 +25,7 @@ module Spectrum
           end
           next unless link['href']
 
-          resource[:rows] << [
+          rows << [
             {
               text: link['link_text'],
               href: link['href']
@@ -38,7 +34,12 @@ module Spectrum
             {text: link['relationship'] || 'N/A'}
           ]
         end
-        resource
+        return nil if rows.nil? || rows.empty?
+        {
+          caption: 'Online Resources',
+          headings: headings,
+          rows: rows
+        }
       end
     end
   end
