@@ -26,6 +26,10 @@ module Spectrum
             value.merge('value' => add_prefix(request.proxy_prefix, value['value']))
           elsif value[:uid] == 'href'
             value.merge(value: add_prefix(request.proxy_prefix, value[:value]))
+          elsif value[:rows]
+            value[:rows] = value[:rows].map { |row| proxy_prefix(row, request) }
+          elsif value[:href]
+            value.merge(href: add_prefix(request.proxy_prefix, value[:href]))
           else
             value
           end
