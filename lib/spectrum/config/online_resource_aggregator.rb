@@ -31,7 +31,7 @@ module Spectrum
               href: link['href']
             },
             {text: link['description'] || 'N/A'},
-            {text: link['relationship'] || 'N/A'}
+            {text: link['source'] || 'N/A'}
           ]
         end
         return nil if rows.nil? || rows.empty?
