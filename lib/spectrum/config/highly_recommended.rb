@@ -10,7 +10,7 @@ module Spectrum
       end
 
       def map(value)
-        "isfield-order-#{value.downcase.gsub(/[^a-z&]/, '_').gsub(/_+/, '_').sub(/_+$/, '')} asc"
+        "isfield-order-#{value.downcase.gsub(/[^a-z&']/, '_').gsub(/_+/, '_').sub(/_+$/, '')} asc"
       end
 
       def get_sorts(sort, facets)
