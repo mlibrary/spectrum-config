@@ -52,7 +52,7 @@ module Spectrum
       end
 
       attr_accessor :weight, :id, :fixed, :weight, :default, :required,
-                    :has_html, :metadata, :facet, :filters
+                    :has_html, :metadata, :facet, :filters, :ris
 
       attr_reader :list, :full, :viewable, :searchable, :uid,
                   :field, :sorts, :fields, :query_params, :values,
@@ -82,6 +82,7 @@ module Spectrum
         @origin = 'instance'
         @query_field = i.query_field
         @facet_field = i.facet_field
+        @ris = i.ris
       end
 
       def initialize_from_hash(args, config)
@@ -111,6 +112,7 @@ module Spectrum
         @sorts.map! { |sort| config.sorts[sort] }
 
         @filters = FilterList.new((args['filters'] || []) + [{ 'id' => 'decode', 'method' => 'decode' }])
+        @ris = args['ris'] || []
       end
 
       def type
