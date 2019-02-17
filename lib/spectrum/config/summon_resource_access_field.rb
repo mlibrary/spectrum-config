@@ -7,6 +7,18 @@ module Spectrum
       attr_reader :model_field, :openurl_root, :openurl_field, :direct_link_field,
         :name, :notes, :headings, :caption, :caption_link
 
+      FULLTEXT = {
+        text: 'Full text available',
+        intent: 'success',
+        icon: 'check_circle',
+      }
+
+      CITATION_ONLY = {
+        text: 'Citation only',
+        intent: 'error',
+        icon: 'error',
+      }
+
       def initialize_from_instance(i)
         super
         @name = i.name
@@ -48,9 +60,20 @@ module Spectrum
           notes: notes,
           name: name,
           rows: [
-            [ {href: href, text: 'Go to item'} ]
+            [
+              {href: href, text: 'Go to item'},
+              description(data),
+            ]
           ]
         }.delete_if { |k,v| v.nil? }
+      end
+
+      def description(data)
+        if data.respond_to?(:fulltext) && data.fulltext
+          FULLTEXT
+        else
+          CITATION_ONLY
+        end
       end
     end
   end
