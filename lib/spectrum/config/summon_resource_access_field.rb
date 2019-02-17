@@ -1,4 +1,6 @@
 # frozen_string_literal: true
+require 'htmlentities'
+
 module Spectrum
   module Config
     class SummonResourceAccessField < Field
@@ -54,7 +56,7 @@ module Spectrum
           data.send(@direct_link_field)
         end
         {
-          headings: headings,
+          headings: headings + report_a_problem_heading(data),
           caption: caption,
           captionLink: caption_link,
           notes: notes,
@@ -63,9 +65,41 @@ module Spectrum
             [
               {href: href, text: 'Go to item'},
               description(data),
-            ]
+            ] + report_a_problem(data),
           ]
         }.delete_if { |k,v| v.nil? }
+      end
+
+      def report_a_problem(data)
+        if data.respond_to?(:fulltext) && data.fulltext
+          [{
+            html: '<strong>Found a problem?</strong> ' +
+               "<a href=\"#{HTMLEntities.new.encode(report_a_problem_url(data))}\">Let our team of fixers know.</a>"
+          }]
+        else
+          []
+        end
+      end
+
+      def report_a_problem_url(data)
+        URI::HTTPS.build(
+          scheme: 'https',
+          host: 'umich.quatrics.com',
+          path: '/jfe/form/SV_2broDMHlZrBYwJL',
+          query: {
+            DocumentID: "https://search.lib.umich.edu/articles/record/#{data.id}",
+            LinkModel: 'unknown',
+            ReportSource: 'ArticlesSearch'
+          }.to_query
+        ).to_s
+      end
+
+      def report_a_problem_heading(data)
+        if data.respond_to?(:fulltext) && data.fulltext
+          ['Improving access']
+        else
+          []
+        end
       end
 
       def description(data)
