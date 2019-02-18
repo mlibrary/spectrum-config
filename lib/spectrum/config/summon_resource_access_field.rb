@@ -84,7 +84,7 @@ module Spectrum
       def report_a_problem_url(data)
         URI::HTTPS.build(
           scheme: 'https',
-          host: 'umich.quatrics.com',
+          host: 'umich.qualtrics.com',
           path: '/jfe/form/SV_2broDMHlZrBYwJL',
           query: {
             DocumentID: "https://search.lib.umich.edu/articles/record/#{data.id}",
