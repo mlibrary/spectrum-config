@@ -73,8 +73,8 @@ module Spectrum
       def report_a_problem(data)
         if data.respond_to?(:fulltext) && data.fulltext
           [{
-            html: '<strong>Found a problem?</strong> ' +
-               "<a href=\"#{HTMLEntities.new.encode(report_a_problem_url(data))}\">Let our team of fixers know.</a>"
+            html: 'Full text link not working? ' +
+               "<a href=\"#{HTMLEntities.new.encode(report_a_problem_url(data))}\">Report a problem.</a>"
           }]
         else
           []
