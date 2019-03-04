@@ -68,6 +68,7 @@ require 'spectrum/config/highly_recommended_field'
 require 'spectrum/config/field_list'
 require 'spectrum/config/resource_access_field'
 require 'spectrum/config/summon_resource_access_field'
+require 'spectrum/config/more_information_field'
 
 require 'spectrum/config/facet_parents'
 require 'spectrum/config/facet'

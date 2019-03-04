@@ -30,6 +30,10 @@ module Spectrum
             value.merge(rows: value[:rows].map { |row| proxy_prefix(row, request) } )
           elsif value[:href]
             value.merge(href: add_prefix(request.proxy_prefix, value[:href]))
+          elsif value['href']
+            value.merge('href' => add_prefix(request.proxy_prefix, value['href']))
+          elsif value[:description]
+            value.merge(description: proxy_prefix(value[:description], request))
           else
             value
           end
