@@ -27,6 +27,12 @@ require 'spectrum/config/href'
 require 'spectrum/config/holdings_url'
 require 'spectrum/config/get_this_url'
 
+require 'spectrum/config/csl_base'
+require 'spectrum/config/csl_literal'
+require 'spectrum/config/csl_array'
+require 'spectrum/config/csl_null'
+require 'spectrum/config/csl'
+
 require 'spectrum/config/highly_recommended'
 require 'spectrum/config/sort'
 require 'spectrum/config/sort_list'
