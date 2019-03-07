@@ -6,6 +6,12 @@ module Spectrum
         case hsh['type']
         when 'array'
           CSLArray
+        when 'author'
+          CSLAuthor
+        when 'date'
+          CSLDate
+        when 'type'
+          CSLType
         else
           CSLLiteral
         end.new(hsh['id'])
