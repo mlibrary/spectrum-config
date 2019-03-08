@@ -5,9 +5,10 @@ module Spectrum
       type 'more_information'
 
       def value(value, request)
+        return nil unless (values = super(value, request))
         {
           term: name,
-          description: super(value, request).map { |val| JSON.parse(val) }
+          description: values.map { |val| JSON.parse(val) }
         }
       end
     end
