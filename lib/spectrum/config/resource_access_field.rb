@@ -26,6 +26,7 @@ module Spectrum
       end
 
       def value(data, request = nil)
+        extra_headings = []
         values = {}
         @fields&.each do |field|
           if field['value']
@@ -40,6 +41,8 @@ module Spectrum
             val = field['fields'].map { |fld| resolve_key(data, fld) }.join('')
           elsif field['parallel']
             val = resolve_key(data, field['parallel'])
+          elsif field['spaced']
+            val = [resolve_key(data, field['spaced'])].flatten.join(' ')
           end
 
           values[field['uid']] = val
@@ -67,12 +70,16 @@ module Spectrum
           if values['relationship']
             row << { text: values['relationship']}
           end
+          if values['outage'] && !values['outage'].empty?
+            extra_headings << 'Status' unless extra_headings.include?('Status')
+            row << {text: values['outage'], icon: 'error', intent: 'error' }
+          end
           rows << row.map { |cell| cell.delete_if { |k,v| v.nil? } }
         end
         return nil if rows.nil? || rows.empty?
         {
           caption: caption,
-          headings: headings,
+          headings: headings + extra_headings,
           captionLink: caption_link,
           notes: notes,
           name: name,
