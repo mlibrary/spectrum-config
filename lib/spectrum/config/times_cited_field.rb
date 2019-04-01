@@ -18,7 +18,7 @@ module Spectrum
       end
 
       def value(data, request = nil)
-        encoder = HTMLentities.new
+        encoder = HTMLEntities.new
         fields.map do |field|
           if (count = [data.src[field['count']]].flatten.first)
             if (href = [data.src[field['href']]].flatten.first)
