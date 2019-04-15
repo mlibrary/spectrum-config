@@ -52,7 +52,8 @@ module Spectrum
       end
 
       attr_accessor :weight, :id, :fixed, :weight, :default, :required,
-                    :has_html, :metadata, :facet, :filters, :ris, :csl
+                    :has_html, :metadata, :facet, :filters, :ris, :csl,
+                    :z3988
 
       attr_reader :list, :full, :viewable, :searchable, :uid,
                   :field, :sorts, :fields, :query_params, :values,
@@ -84,6 +85,7 @@ module Spectrum
         @facet_field = i.facet_field
         @ris = i.ris
         @csl = i.csl
+        @z3988 = i.z3988
       end
 
       def initialize_from_hash(args, config)
@@ -115,6 +117,7 @@ module Spectrum
         @filters = FilterList.new((args['filters'] || []) + [{ 'id' => 'decode', 'method' => 'decode' }])
         @ris = args['ris'] || []
         @csl = CSL.new(args['csl'])
+        @z3988 = Z3988.new(args['z3988'])
       end
 
       def type

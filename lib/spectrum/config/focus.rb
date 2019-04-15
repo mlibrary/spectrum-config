@@ -172,6 +172,7 @@ module Spectrum
           data.map { |item| apply_fields(item, nil, request) }.compact
         else
           csl = {}
+          z3988 = []
           ret = []
           ret << href_field(data)
           ret << datastore_field(data)
@@ -179,10 +180,12 @@ module Spectrum
           ret << get_this_field(data) if has_get_this?
           @fields.each_value do |field|
             val = field.apply(data, request)
+            z3988 << field.z3988.value(val)
             csl.merge!(field.csl.value(val))
             ret << val
           end
           ret << { uid: 'csl', value: csl, name: 'CSL' , value_has_html: true }
+          ret << { uid: 'z3988', value: z3988.flatten.join("&"), name: 'Z3988', value_has_html: true }
           ret.compact
         end
       end
