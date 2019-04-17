@@ -172,7 +172,11 @@ module Spectrum
           data.map { |item| apply_fields(item, nil, request) }.compact
         else
           csl = {}
-          z3988 = []
+          z3988 = [
+            'ctx_ver=Z39.88-2004',
+            'rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook',
+            'rft.genre=book'
+          ]
           ret = []
           ret << href_field(data)
           ret << datastore_field(data)
