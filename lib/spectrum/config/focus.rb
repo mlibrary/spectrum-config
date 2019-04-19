@@ -201,7 +201,7 @@ module Spectrum
         @hierarchy&.value_map || {}
       end
 
-      def spectrum(_ = nil, args = {})
+      def spectrum(base_url = nil, args = {})
         @get_null_facets&.call
         {
           uid: @id,
