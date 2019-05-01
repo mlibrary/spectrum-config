@@ -62,6 +62,10 @@ module Spectrum
         @type == 'pseudo_facet'
       end
 
+      def true_facet?
+        !pseudo_facet?
+      end
+
       def rff(applied)
         return nil if @ranges.nil? || @ranges.empty?
         return [field, *@ranges.map { |r| r['value'] }].join(',') unless applied.data[@uid]

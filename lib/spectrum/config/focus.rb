@@ -62,14 +62,9 @@ module Spectrum
       end
 
       def filter_facets(facets)
-        if facets
-          @facets.values.each do |facet|
-            if facets.key?(facet.uid) && facet.pseudo_facet?
-              facets = facets.reject { |key, _| key == facet.uid }
-            end
-          end
-        end
-        facets
+        return facets unless facets
+        allowed_facet_uids = @facets.values.find_all(&:true_facet?).map(&:uid)
+        facets.select { |key, _| allowed_facet_uids.include?(key) }
       end
 
       def names(fields)
