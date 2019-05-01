@@ -22,7 +22,12 @@ module Spectrum
       end
 
       def match_field(field)
-        @tag.match(field.tag) && @ind1.match(field.indicator1) && @ind2.match(field.indicator2)
+        if @tag.match(field.tag)
+          return true unless field.respond_to?(:indicator1) && field.respond_to?(:indicator2)
+          @ind1.match(field.indicator1) && @ind2.match(field.indicator2)
+        else
+          false
+        end
       end
 
       def match_subfield(subfield)

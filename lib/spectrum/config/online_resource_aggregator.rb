@@ -6,25 +6,45 @@ module Spectrum
 
       def initialize
         super
+        @links = {}
+        @metadata = {}
       end
 
       def add(metadata, field, subfield)
         return unless subfield
-        @ret[field] ||= []
-        @ret[field] << [metadata[:label], subfield]
+        if field.tag == "856"
+          @links[field] ||= {}
+          @links[field][metadata[:label]] = subfield.value
+        else
+          @metadata[metadata[:label]] ||= []
+          @metadata[metadata[:label]] << subfield.value
+        end
       end
 
       def to_value
+        table = if is_book? && is_only_electronic?
+          to_book_value
+        else
+          to_other_value
+        end
+        return nil if table[:rows].empty?
+        table.merge({caption: 'Online Resources'})
+     end
+
+     def is_book?
+       @metadata['format']&.all? { |format| format == 'Book' }
+     end
+
+     def is_only_electronic?
+       return true unless @metadata['location']
+       @metadata['location'].all? { |format| format == 'ELEC' }
+     end
+
+     def to_other_value
         headings = ['Link', 'Description', 'Source']
         rows = []
-        @ret.each_pair do |field, pairs|
-          link = {}
-          pairs.each do |pair|
-            label, subfield = pair
-            link[label] = subfield.value
-          end
+        @links.each_pair do |field, link|
           next unless link['href']
-
           rows << [
             {
               text: link['link_text'],
@@ -34,12 +54,35 @@ module Spectrum
             {text: link['source'] || 'N/A'}
           ]
         end
-        return nil if rows.nil? || rows.empty?
-        {
-          caption: 'Online Resources',
-          headings: headings,
-          rows: rows
-        }
+        {headings: headings, rows: rows}
+     end
+
+     def to_book_value
+        headings = ['Link', 'Action', 'Description', 'Source']
+        rows = []
+
+        @links.each_pair do |field, link|
+          next unless link['href']
+
+          rows << [
+            {
+              text: link['link_text'],
+              href: link['href']
+            },
+            {
+              text: 'Get This',
+              to: {
+                barcode: 'available-online',
+                action: 'get-this',
+                record: @metadata['id'].first,
+                datastore: 'mirlyn'
+              }
+            },
+            {text: link['description'] || 'N/A'},
+            {text: link['source'] || 'N/A'}
+          ]
+        end
+        {headings: headings, rows: rows}
       end
     end
   end
