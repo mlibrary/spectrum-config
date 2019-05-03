@@ -37,7 +37,13 @@ module Spectrum
 
      def is_only_electronic?
        return true unless @metadata['location']
-       @metadata['location'].all? { |format| format == 'ELEC' }
+       @metadata['location'].reject do |location|
+         location == 'FLINT'
+       end.all? do |location|
+         ['ELEC', 'SDR'].any? do |match|
+           location.include?(match)
+         end
+       end
      end
 
      def to_other_value
