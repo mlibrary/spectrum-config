@@ -167,11 +167,7 @@ module Spectrum
           data.map { |item| apply_fields(item, nil, request) }.compact
         else
           csl = {}
-          z3988 = [
-            'ctx_ver=Z39.88-2004',
-            'rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook',
-            'rft.genre=book'
-          ]
+          z3988 = [ 'ctx_ver=Z39.88-2004', 'ctx_enc=info%3Aofi%2Fenc%3AUTF-8' ]
           ret = []
           ret << href_field(data)
           ret << datastore_field(data)
@@ -184,7 +180,22 @@ module Spectrum
             ret << val
           end
           ret << { uid: 'csl', value: csl, name: 'CSL' , value_has_html: true }
-          ret << { uid: 'z3988', value: z3988.flatten.join("&"), name: 'Z3988', value_has_html: true }
+          if openurl = ret.find { |val| val&.fetch(:uid) == 'openurl' }&.fetch(:value)
+            record_id = ret.find { |val| val&.fetch(:uid) == 'id' }&.fetch(:value) || '404-not-found'
+            record_url = 'https://search.lib.umich.edu/articles/record/' + record_id
+            ret << {
+              uid: 'z3988',
+              value: [
+                openurl,
+                'sid=U-M%20Library%20Search',
+                "rfr_id=#{URI::encode_www_form_component(record_url)}"
+              ].join('&'),
+              name: 'Z3988',
+              value_has_html: true
+            }
+          else
+            ret << { uid: 'z3988', value: z3988.flatten.join("&"), name: 'Z3988', value_has_html: true }
+          end
           ret.compact
         end
       end

@@ -36,6 +36,11 @@ require 'spectrum/config/csl_author'
 require 'spectrum/config/csl_null'
 require 'spectrum/config/csl'
 
+require 'spectrum/config/z3988_literal'
+require 'spectrum/config/z3988_rft_val_fmt'
+require 'spectrum/config/z3988_rft_genre'
+require 'spectrum/config/z3988_constant'
+require 'spectrum/config/z3988_null'
 require 'spectrum/config/z3988'
 
 require 'spectrum/config/highly_recommended'

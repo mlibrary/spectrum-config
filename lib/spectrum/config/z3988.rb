@@ -1,23 +1,18 @@
-require 'uri'
-
 module Spectrum
   module Config
-    class Z3988
-      attr_accessor :id, :namespace
-
-      def initialize(args)
-        self.id = args['id'] if args
-        self.namespace = args['namespace'] || '' if args
-      end
-
-      def value(data)
-        if id && data && data[:value]
-          [data[:value]].flatten.map do |val|
-            "#{URI::encode(id)}=#{URI::encode(namespace + val)}"
-          end
+    module Z3988
+      def self.new(hsh)
+        return Z3988Null unless hsh
+        case hsh['type']
+        when 'constant'
+          Z3988Constant
+        when 'rft_genre'
+          Z3988RftGenre
+        when 'rft_val_fmt'
+          Z3988RftValFmt
         else
-          [ ]
-        end
+          Z3988Literal
+        end.new(hsh)
       end
     end
   end
