@@ -32,7 +32,7 @@ module Spectrum
      end
 
      def is_book?
-       @metadata['format']&.all? { |format| format == 'Book' }
+       @metadata['format']&.any? { |format| format == 'Book' }
      end
 
      def is_only_electronic?
