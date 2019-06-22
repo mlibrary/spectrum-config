@@ -3,6 +3,7 @@
 # All rights reserved. See LICENSE.txt for details.
 
 require 'htmlentities'
+require 'rails/html/sanitizer'
 
 module Spectrum
   module Config
@@ -61,6 +62,18 @@ module Spectrum
 
       def apply(value, request)
         send(method, value, request)
+      end
+
+      def sanitize(value, _)
+        if String === value
+          Rails::Html::FullSanitizer.new.sanitize(value)
+        elsif value.respond_to?(:map) && value.all? { |item| String === item }
+          value.map do |item|
+            sanitize(item, nil)
+          end
+        else
+          value
+        end
       end
 
       def truncate(value, _)
