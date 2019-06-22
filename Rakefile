@@ -14,7 +14,8 @@ begin
     t.verbose = true
   end
   tasks.unshift(:spec)
-  tasks << :quality
+  # Disabled until we can focus in improving code quality.
+  # tasks << :quality
 rescue LoadError => e
   e
 end
