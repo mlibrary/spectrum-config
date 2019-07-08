@@ -6,6 +6,7 @@ module Spectrum
   module Config
     class SearchFieldList < SimpleDelegator
       def self.load(file)
+        require 'pry'; binding.pry
         new YAML.safe_load(ERB.new(File.read(file)).result)
       end
 
