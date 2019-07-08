@@ -6,8 +6,7 @@ module Spectrum
   module Config
     class SearchFieldList < SimpleDelegator
       def self.load(file)
-        puts "Loading file '#{file}'"
-        new YAML.safe_load(ERB.new(File.read(file)))
+        new YAML.safe_load(ERB.new(File.read(file)).result)
       end
 
       def initialize(field_list)
