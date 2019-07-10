@@ -66,7 +66,7 @@ module Spectrum
 
       def sanitize(value, _)
         if String === value
-          Rails::Html::FullSanitizer.new.sanitize(value)
+          @decoder.decode(Rails::Html::FullSanitizer.new.sanitize(value))
         elsif value.respond_to?(:map) && value.all? { |item| String === item }
           value.map do |item|
             sanitize(item, nil)
