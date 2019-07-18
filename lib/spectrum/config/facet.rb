@@ -3,7 +3,7 @@ module Spectrum
   module Config
     class NullFacet
       attr_accessor :weight, :id, :limit, :mincount, :offset
-      attr_reader :uid, :field, :type
+      attr_reader :uid, :field, :type, :expanded
       DEFAULT_SORTS = {}.freeze
       def initialize
         @facet_field = @field = @uid = @id = 'null'
@@ -52,6 +52,7 @@ module Spectrum
         @url          = url + '/' + @uid
         @type         = args['facet'].type || args['type'] || args.type
         @ranges       = args['facet'].ranges
+        @expanded     = args['facet'].expanded || false
 
         sorts         = args['facet_sorts'] || DEFAULT_SORTS
         @sorts        = Spectrum::Config::SortList.new(sorts, sort_list)
@@ -146,6 +147,7 @@ module Spectrum
           more: more(data, base_url),
           sorts: @sorts.spectrum,
           default_sort: @default_sort.id,
+          preExpanded: @expanded,
           metadata: @metadata.spectrum
         }
       end
