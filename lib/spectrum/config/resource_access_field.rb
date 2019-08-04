@@ -83,7 +83,8 @@ module Spectrum
           captionLink: caption_link,
           notes: notes,
           name: name,
-          rows: rows
+          rows: rows,
+          preExpanded: true
         }.delete_if { |k,v| v.nil? }
       end
     end

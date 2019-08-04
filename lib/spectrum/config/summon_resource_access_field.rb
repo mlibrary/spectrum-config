@@ -66,7 +66,8 @@ module Spectrum
               {href: href, text: 'Go to item'},
               description(data),
             ] + report_a_problem(data),
-          ]
+          ],
+          preExpanded: true
         }.delete_if { |k,v| v.nil? }
       end
 
