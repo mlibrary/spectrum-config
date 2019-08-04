@@ -84,7 +84,8 @@ module Spectrum
           notes: notes,
           name: name,
           rows: rows,
-          preExpanded: true
+          preExpanded: true,
+          type: 'online'
         }.delete_if { |k,v| v.nil? }
       end
     end

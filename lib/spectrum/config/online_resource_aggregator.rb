@@ -28,7 +28,7 @@ module Spectrum
           to_other_value
         end
         return nil if table[:rows].empty?
-        table.merge({caption: 'Online Resources', preExpanded: true})
+        table.merge({caption: 'Online Resources', preExpanded: true, type: 'online'})
      end
 
      def is_book?

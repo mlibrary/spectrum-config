@@ -67,7 +67,8 @@ module Spectrum
               description(data),
             ] + report_a_problem(data),
           ],
-          preExpanded: true
+          preExpanded: true,
+          type: 'online'
         }.delete_if { |k,v| v.nil? }
       end
 
