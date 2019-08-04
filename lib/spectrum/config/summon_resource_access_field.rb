@@ -68,7 +68,7 @@ module Spectrum
             ] + report_a_problem(data),
           ],
           preExpanded: true,
-          type: 'online'
+          type: 'electronic',
         }.delete_if { |k,v| v.nil? }
       end
 

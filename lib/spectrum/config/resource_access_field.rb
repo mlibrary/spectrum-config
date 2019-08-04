@@ -85,7 +85,7 @@ module Spectrum
           name: name,
           rows: rows,
           preExpanded: true,
-          type: 'online'
+          type: 'electronic',
         }.delete_if { |k,v| v.nil? }
       end
     end
