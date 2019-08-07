@@ -11,7 +11,8 @@ module Spectrum
         if Array === args.first
           begin
             uids = args.shift
-            fields = args.shift.values.select { |f| uids.include?(f.id) }
+            all_fields = args.shift.values
+            fields = uids.map {|uid| all_fields.find {|f| f.id == uid}}
             @mapping     = {}
             @reverse_map = {}
             @native_pair = {}
@@ -21,9 +22,9 @@ module Spectrum
               @mapping[f.facet_field] = f.uid
               @reverse_map[f.uid] = f.facet_field
               obj[f.id] = if f.class == self.class::CONTAINS
-                            f
-                          else
-                            self.class::CONTAINS.new(f, *args)
+                f
+              else
+                self.class::CONTAINS.new(f, *args)
               end
             end
             available_uids = fields.map(&:uid)
