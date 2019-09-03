@@ -31,7 +31,7 @@ module Spectrum
     class Facet
       attr_accessor :weight, :id, :limit, :mincount, :offset
 
-      attr_reader :uid, :field, :type, :facet_field
+      attr_reader :uid, :field, :type, :facet_field, :selected
 
       DEFAULT_SORTS = { 'count' => 'count', 'index' => 'index' }.freeze
 
@@ -53,10 +53,20 @@ module Spectrum
         @type         = args['facet'].type || args['type'] || args.type
         @ranges       = args['facet'].ranges
         @expanded     = args['facet'].expanded || false
+        @selected     = args['facet'].selected || false
 
         sorts         = args['facet_sorts'] || DEFAULT_SORTS
         @sorts        = Spectrum::Config::SortList.new(sorts, sort_list)
         @default_sort = @sorts[args['default_facet_sort']] || @sorts.default
+      end
+
+      def spectrum_type
+        return 'checkbox' if checkbox?
+        'multiselect'
+      end
+
+      def checkbox?
+        pseudo_facet? || @type == 'checkbox'
       end
 
       def pseudo_facet?
@@ -148,7 +158,9 @@ module Spectrum
           sorts: @sorts.spectrum,
           default_sort: @default_sort.id,
           preExpanded: @expanded,
-          metadata: @metadata.spectrum
+          metadata: @metadata.spectrum,
+          type: spectrum_type,
+          preSelected: selected,
         }
       end
 

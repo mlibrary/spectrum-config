@@ -2,7 +2,7 @@
 module Spectrum
   module Config
     class FieldFacet
-      attr_reader :sorts, :ranges, :type, :expanded
+      attr_reader :sorts, :ranges, :type, :expanded, :selected
 
       def initialize(data = {})
         data ||= {}
@@ -10,6 +10,7 @@ module Spectrum
         @ranges = data['ranges']
         @type   = data['type']
         @expanded = data['expanded']
+        @selected = data['selected']
       end
     end
   end
