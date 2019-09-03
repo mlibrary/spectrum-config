@@ -205,6 +205,7 @@ module Spectrum
         new_params['s.ho'] = request.holdings_only? ? 'true' : 'false'
 
         new_params['s.fvf'] << 'IsScholarly,true' if request.is_scholarly?
+        new_params['s.fvf'] << 'IsOpenAccess,true' if request.is_open_access?
 
         if request.exclude_newspapers?
           new_params['s.fvf'] << 'ContentType,Newspaper\ Article,true'
