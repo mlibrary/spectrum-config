@@ -48,7 +48,8 @@ module Spectrum
               values: []
             }
             (coll[loc_id] || {})['collections']&.each_pair do |coll_id, coll_name|
-              @value_mapping['collection'][coll_name] ||= coll_id
+              @value_mapping['collection'][coll_name] ||= []
+              @value_mapping['collection'][coll_name] << coll_id
               middle_val[:values] << { label: coll_name, value: coll_id }
             end
             top_val[:values] << middle_val
