@@ -70,6 +70,10 @@ module Spectrum
           if values['relationship']
             row << { text: values['relationship']}
           end
+          if values['campus'] && !values['campus'].empty?
+            extra_headings << 'Access restriction' unless extra_headings.include?('Access restriction')
+            row << {text: values['campus'], icon: 'warning', intent: 'warning' }
+          end
           if values['outage'] && !values['outage'].empty?
             extra_headings << 'Status' unless extra_headings.include?('Status')
             row << {text: values['outage'], icon: 'error', intent: 'error' }
