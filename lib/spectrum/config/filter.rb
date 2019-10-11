@@ -148,6 +148,14 @@ module Spectrum
           value
         end
       end
+
+      def htso(value, request)
+        if request.htso?
+          value + ':htso'
+        else
+          value
+        end
+      end
     end
   end
 end

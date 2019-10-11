@@ -61,9 +61,13 @@ module Spectrum
         @facets.values.map { |facet| facet.rff(values) }.compact
       end
 
+      def queryable_uids
+        @facets.values.find_all(&:true_facet?).map(&:uid)
+      end
+
       def filter_facets(facets)
         return facets unless facets
-        allowed_facet_uids = @facets.values.find_all(&:true_facet?).map(&:uid)
+        allowed_facet_uids = @facets.values.map(&:uid)
         facets.select { |key, _| allowed_facet_uids.include?(key) }
       end
 
@@ -129,8 +133,8 @@ module Spectrum
         value(data, @id_field)
       end
 
-      def get_url(data, _ = nil)
-        @href.get_url(data, base_url)
+      def get_url(data, _, request)
+        @href.get_url(data, base_url, request)
       end
 
       def datastore_field(_data)
@@ -142,8 +146,8 @@ module Spectrum
         }
       end
 
-      def href_field(data, _ = nil)
-        @href.apply(data, base_url)
+      def href_field(data, request)
+        @href.apply(data, base_url, request)
       end
 
       def holdings_field(data, _ = nil)
@@ -169,7 +173,7 @@ module Spectrum
           csl = {}
           z3988 = [ 'ctx_ver=Z39.88-2004', 'ctx_enc=info%3Aofi%2Fenc%3AUTF-8' ]
           ret = []
-          ret << href_field(data)
+          ret << href_field(data, request)
           ret << datastore_field(data)
           ret << holdings_field(data) if has_holdings?
           ret << get_this_field(data) if has_get_this?
