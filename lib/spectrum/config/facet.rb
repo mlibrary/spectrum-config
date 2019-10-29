@@ -62,7 +62,12 @@ module Spectrum
 
       def spectrum_type
         return 'checkbox' if checkbox?
+        return 'hidden' if hidden?
         'multiselect'
+      end
+
+      def hidden?
+        @type == 'hidden'
       end
 
       def checkbox?
