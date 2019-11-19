@@ -134,7 +134,7 @@ module Spectrum
         Spectrum::Config::FacetParents.find(uid, value)
       end
 
-      def values(data, lim = nil)
+      def values(data, lim = nil, key_map = {})
         lim ||= @limit
         if lim >= 0 && data.length > lim * 2
           data.slice(0, lim * 2)
@@ -142,21 +142,26 @@ module Spectrum
           data
         end.each_slice(2).map do |kv|
           {
-            value: kv[0],
+            value: get_key(kv[0], key_map),
             name: label(kv[0]),
             count: kv[1],
             parents: parents(kv[0])
           }
-        end.reject { |i| i[:count] <= 0 }
+        end.reject { |i| i[:count] <= 0 || i[:value].nil? }
       end
 
-      def spectrum(data, base_url, args = {})
+      def get_key(key, key_map)
+        return key if key_map.nil? || key_map.empty?
+        key_map[key]
+      end
+
+      def spectrum(data, base_url, key_map, args = {})
         data ||= []
         data = @values if data.empty?
         {
           uid: @uid,
           default_value: @default,
-          values: values(data, args[:filter_limit]),
+          values: values(data, args[:filter_limit], key_map),
           fixed: @fixed,
           required: @required,
           more: more(data, base_url),

@@ -62,8 +62,8 @@ module Spectrum
         (this_facet = __getobj__[name]).spectrum(data[this_facet.facet_field], base_url)
       end
 
-      def spectrum(data, base_url, args = {})
-        __getobj__.values.map { |facet| facet.spectrum(data[facet.facet_field], base_url, args) }
+      def spectrum(data, base_url, key_map, args = {})
+        __getobj__.values.map { |facet| facet.spectrum(data[facet.facet_field], base_url, key_map, args) }
       end
 
       def routes(source, focus, app)

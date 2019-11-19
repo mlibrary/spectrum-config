@@ -207,6 +207,10 @@ module Spectrum
         end
       end
 
+      def key_map
+        @hierarchy&.key_map || {}
+      end
+
       def value_map
         @hierarchy&.value_map || {}
       end
@@ -220,9 +224,9 @@ module Spectrum
           default_sort: @default_sort.id,
           sorts: @sorts.spectrum,
           fields: @fields.spectrum,
-          facets: @facets.spectrum(@facet_values, base_url, args),
+          facets: @facets.spectrum(@facet_values, base_url, key_map, args),
           holdings: (has_holdings? ? "#{base_url}/#{url}/holdings" : nil),
-          hierarchy: (@hierarchy && @hierarchy.spectrum)
+          hierarchy: @hierarchy&.spectrum,
         }
       end
 
