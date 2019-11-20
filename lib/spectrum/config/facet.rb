@@ -152,7 +152,8 @@ module Spectrum
 
       def get_key(key, key_map)
         return key if key_map.nil? || key_map.empty?
-        key_map[key]
+        return key if key_map[id].nil? || key_map[id].empty?
+        key_map[id][key]
       end
 
       def spectrum(data, base_url, key_map, args = {})
