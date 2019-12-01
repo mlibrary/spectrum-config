@@ -54,7 +54,6 @@ module Spectrum
         else
           ''
         end
-        binding.pry
 
         "#{base_url}/#{@prefix}/record/#{value}#{htso}"
       end
