@@ -150,12 +150,12 @@ module Spectrum
         @href.apply(data, base_url, request)
       end
 
-      def holdings_field(data, _ = nil)
-        @holdings.apply(data, base_url)
+      def holdings_field(data, request)
+        @holdings.apply(data, base_url, request)
       end
 
-      def get_this_field(data, _ = nil)
-        @get_this.apply(data, base_url)
+      def get_this_field(data, request)
+        @get_this.apply(data, base_url, request)
       end
 
       def has_holdings?
@@ -175,8 +175,8 @@ module Spectrum
           ret = []
           ret << href_field(data, request)
           ret << datastore_field(data)
-          ret << holdings_field(data) if has_holdings?
-          ret << get_this_field(data) if has_get_this?
+          ret << holdings_field(data, request) if has_holdings?
+          ret << get_this_field(data, request) if has_get_this?
           @fields.each_value do |field|
             val = field.apply(data, request)
             z3988 << field.z3988.value(val)

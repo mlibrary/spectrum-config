@@ -16,11 +16,11 @@ module Spectrum
         @prefix = args['prefix'] || DEFAULT_PREFIX
       end
 
-      def apply(data, base_url)
+      def apply(data, base_url, request)
         if data.respond_to? :[]
-          apply_hash(data, base_url)
+          apply_hash(data, base_url, request)
         else
-          apply_object(data, base_url)
+          apply_object(data, base_url, request)
         end
       end
 
@@ -32,24 +32,29 @@ module Spectrum
         apply_value(value, base_url)
       end
 
-      def apply_hash(data, base_url)
+      def apply_hash(data, base_url, request)
         value = data[@field]
-
         value = data[DEFAULT_FIELD] if value.nil?
-        apply_value(value, base_url)
+        apply_value(value, base_url, request)
       end
 
-      def apply_value(value, base_url)
+      def apply_value(value, base_url, request)
         if value.nil?
           value = ''
         elsif value === Array
           value = value.join('/')
         end
 
+        htso = if request&.htso?
+          ':htso'
+        else
+          ''
+        end
+
         {
           uid: UID,
           name: NAME,
-          value: "#{base_url}/#{@prefix}/get-this/#{value}",
+          value: "#{base_url}/#{@prefix}/get-this/#{value}#{htso}",
           value_has_html: HAS_HTML
         }
       end
