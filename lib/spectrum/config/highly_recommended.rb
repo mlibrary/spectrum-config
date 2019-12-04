@@ -10,6 +10,7 @@ module Spectrum
       end
 
       def map(value)
+        return nil unless value.respond_to?(:downcase)
         "isfield-order-#{value.downcase.gsub(/[^a-z&']/, '_').gsub(/_+/, '_').sub(/_+$/, '')} asc"
       end
 
@@ -21,7 +22,7 @@ module Spectrum
 
       def get_sorts_from_facets(facets)
         return [] unless facets.data
-        facets.find(field).map { |value| map(value) }
+        facets.find(field).map { |value| map(value) }.compact
       end
     end
   end
