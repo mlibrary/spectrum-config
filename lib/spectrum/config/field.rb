@@ -57,7 +57,7 @@ module Spectrum
 
       attr_reader :list, :full, :viewable, :searchable, :uid,
                   :field, :sorts, :fields, :query_params, :values,
-                  :query_field, :facet_field
+                  :query_field, :facet_field, :metadata_component
 
       type 'default'
 
@@ -86,6 +86,7 @@ module Spectrum
         @ris = i.ris
         @csl = i.csl
         @z3988 = i.z3988
+        @metadata_component = i.metadata_component
       end
 
       def initialize_from_hash(args, config)
@@ -118,6 +119,13 @@ module Spectrum
         @ris = args['ris'] || []
         @csl = CSL.new(args['csl'])
         @z3988 = Z3988.new(args['z3988'])
+
+        mc = args['metadata_component'] || {}
+        @metadata_component = {
+          preview: MetadataComponent.new(name, mc['preview']),
+          medium: MetadataComponent.new(name, mc['medium']),
+          full: MetadataComponent.new(name, mc['full']),
+        }
       end
 
       def type
@@ -161,6 +169,12 @@ module Spectrum
         @metadata.name
       end
 
+      def display(mode, data, request)
+        mc = metadata_component[mode]
+        return nil unless mc
+        mc.resolve(filter(data, request))
+      end
+
       def spectrum
         if @searchable
           {
@@ -191,8 +205,12 @@ module Spectrum
         end
       end
 
+      def filter(data, request)
+        @filters.apply(value(data, request), request)
+      end
+
       def apply(data, request)
-        val = @filters.apply(value(data, request), request)
+        val = filter(data, request)
         if @viewable && valid_data?(val)
           {
             uid: @uid,

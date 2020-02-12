@@ -43,6 +43,12 @@ require 'spectrum/config/z3988_constant'
 require 'spectrum/config/z3988_null'
 require 'spectrum/config/z3988'
 
+require 'spectrum/config/metadata_component'
+require 'spectrum/config/plain_metadata_component'
+require 'spectrum/config/icon_metadata_component'
+require 'spectrum/config/href_linked_metadata_component'
+require 'spectrum/config/search_metadata_component'
+
 require 'spectrum/config/highly_recommended'
 require 'spectrum/config/sort'
 require 'spectrum/config/sort_list'

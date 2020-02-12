@@ -162,6 +162,22 @@ module Spectrum
         @has_get_this
       end
 
+      def metadata_component(data, _ = nil, request = nil)
+        return data.map {|item| metadata_component(item, nil, request)}.compact if data === Array
+        ret = {preview: [], medium: [], full: []}
+        @fields.each_value do |field|
+          if field.respond_to?(:display)
+            mc_preview = field.display(:preview, data, request)
+            mc_medium = field.display(:medium, data, request)
+            mc_full = field.display(:full, data, request)
+            ret[:preview] << mc_preview if mc_preview
+            ret[:medium] << mc_medium if mc_medium
+            ret[:full] << mc_full if mc_full
+          end
+        end
+        ret
+      end
+
       def apply_fields(data, _ = nil, request = nil)
         if data === Array
           data.map { |item| apply_fields(item, nil, request) }.compact
