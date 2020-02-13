@@ -7,13 +7,15 @@ describe Spectrum::Config::SearchMetadataComponent do
   let(:config) {{
     'scope' => 'SCOPE',
     'search_type' => 'filtered',
-    'text_field' => 'text',
-    'value_field' => 'value',
+    'text_field' => 'display',
+    'value_field' => 'search',
   }}
-  let(:data) {{
-    'text' => 'TEXT',
-    'value' => 'VALUE',
-  }}
+  let(:data) {
+    [[
+      { uid: 'display', name: 'display', value: 'TEXT'},
+      { uid: 'search', name: 'search', value: 'VALUE'},
+    ]]
+  }
 
   let(:result) {{
     term: 'Name',
