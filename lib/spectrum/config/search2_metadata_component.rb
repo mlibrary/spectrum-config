@@ -1,15 +1,15 @@
 module Spectrum
   module Config
-    class SearchMetadataComponent < MetadataComponent
-      type 'search'
+    class Search2MetadataComponent < MetadataComponent
+      type 'search2'
 
-      attr_accessor :name, :search_type, :scope, :text_field, :value_field
+      attr_accessor :name, :variant, :scope, :text_field, :value_field
 
       def initialize(name, config)
         config ||= {}
         self.name = name
         self.scope = config['scope']
-        self.search_type = config['search_type']
+        self.variant = config['variant']
         self.text_field = config['text_field']
         self.value_field = config['value_field']
       end
@@ -27,7 +27,7 @@ module Spectrum
             {
               text: text,
               search: {
-                type: search_type,
+                type: variant,
                 scope: scope,
                 value: value,
               }

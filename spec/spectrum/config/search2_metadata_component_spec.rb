@@ -1,12 +1,12 @@
 require_relative '../../spec_helper'
 require 'spectrum/config/metadata_component'
-require 'spectrum/config/search_metadata_component'
+require 'spectrum/config/search2_metadata_component'
 
-describe Spectrum::Config::SearchMetadataComponent do
+describe Spectrum::Config::Search2MetadataComponent do
   subject { described_class.new('Name', config) }
   let(:config) {{
     'scope' => 'SCOPE',
-    'search_type' => 'filtered',
+    'variant' => 'filtered',
     'text_field' => 'display',
     'value_field' => 'search',
   }}
