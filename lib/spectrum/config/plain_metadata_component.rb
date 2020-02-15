@@ -7,11 +7,21 @@ module Spectrum
         self.name = name
       end
 
-      def resolve(data)
-        return nil if data.nil?
-        description = [data].flatten(1).map {|item| {text: item}}
+      def get_description(data)
+        [data].flatten(1).map do |item|
+          item = item.to_s
+          if item.empty?
+            nil
+          else
+            {text: item}
+          end
+        end.compact
+      end
 
+      def resolve(data)
+        description = get_description(data)
         return nil if description.empty?
+
         {
           term: name,
           description: description,

@@ -13,12 +13,20 @@ describe Spectrum::Config::PlainMetadataComponent do
       expect(subject.resolve([])).to be(nil)
     end
 
+    it "returns nil when given [nil]" do
+      expect(subject.resolve([''])).to be(nil)
+    end
+
+    it "returns nil when given ['']" do
+      expect(subject.resolve([''])).to be(nil)
+    end
+
     it "returns data when given true" do
-      expect(subject.resolve(true)).to eq({term: 'Name', description: [{text: true}]})
+      expect(subject.resolve(true)).to eq({term: 'Name', description: [{text: 'true'}]})
     end
 
     it "returns data when given false" do
-      expect(subject.resolve(false)).to eq({term: 'Name', description: [{text: false}]})
+      expect(subject.resolve(false)).to eq({term: 'Name', description: [{text: 'false'}]})
     end
   end
 end
