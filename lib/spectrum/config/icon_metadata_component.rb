@@ -3,24 +3,71 @@ module Spectrum
     class IconMetadataComponent < MetadataComponent
       type 'icon'
 
-      attr_accessor :icon_field, :text_field
+      MAP = {
+        'Archive' => 'archive',
+        'Art' => 'photo',
+        'Article' => 'document',
+        'Audio' => 'volume_up',
+        'Audio (music)' => 'volume_up',
+        'Audio (spoken word)' => 'volume_up',
+        'Audio CD' => 'volume_up',
+        'Audio LP' => 'volume_up',
+        'Biography' => 'book',
+        'Book' => 'book',
+        'Book Chapter' => 'document',
+        'CDROM' => 'music_note',
+        'Conference' => 'book',
+        'Data File' => 'insert_drive_file',
+        'Dictionaries' => 'collection_bookmark',
+        'Directories' => 'collection_bookmark',
+        'eBook' => 'book',
+        'Electronic Resource' => 'web',
+        'Encyclopedias' => 'book',
+        'Journal' => 'collection_bookmark',
+        'Manuscript' => '',
+        'Map' => 'map',
+        'Maps-Atlas' => 'map',
+        'Microform' => 'theaters',
+        'Mixed Material' => 'filter',
+        'Motion Picture' => 'theaters',
+        'Music' => 'music_note',
+        'Musical Score' => 'music_note',
+        'Newspaper' => 'newspaper',
+        'Photographs & Pictorial Works' => 'photo_library',
+        'Serial' => 'collection_bookmark',
+        'Software' => 'code',
+        'Statistics' => 'timeline',
+        'Unknown' => '',
+        'Video (Blu-ray)' => 'play_circle',
+        'Video (DVD)' => 'play_circle',
+        'Video (VHS)' => 'play_circle',
+        'Video Games' => 'videogame_asset',
+        'Visual Material' => 'remove_red_eye',
+        'Website' => 'web',
+        'Web Resource' => 'web',
+      }
 
       def initialize(name, config)
         config ||= {}
         self.name = name
-        self.icon_field = config['icon_field'] || 'icon'
-        self.text_field = config['text_field'] || 'text'
+      end
+
+      def get_description(data)
+        [data].flatten(1).map { |item|
+          item = item.to_s
+          icon = MAP[item].to_s
+          if item.empty?
+            nil
+          elsif icon.empty?
+            {text: item}
+          else
+            {text: item, icon: icon}
+          end
+        }.compact
       end
 
       def resolve(data)
-        return nil if data.nil?
-        description = [data].flatten(1).map { |item|
-          if item.respond_to?(:[])
-            {text: item[text_field], icon: item[icon_field]}
-          else
-            nil
-          end
-        }.compact
+        description = get_description(data)
         return nil if description.empty?
         {
           term: name,
