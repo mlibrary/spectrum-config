@@ -9,5 +9,5 @@ gemspec
 
 group :test do
   gem 'rake'
-  gem 'simplecov', '= 0.18.0'
+  gem 'simplecov', '= 0.18.1'
 end
