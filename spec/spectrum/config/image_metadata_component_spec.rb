@@ -10,8 +10,8 @@ describe Spectrum::Config::ImageMetadataComponent do
   }}
   let(:data) {
     [
-      { uid: 'text', name: 'text', value: 'TEXT'},
-      { uid: 'image', name: 'image', value: 'IMAGE'},
+      { 'uid' => 'text', name: 'text', 'value' => 'TEXT'},
+      { 'uid' => 'image', name: 'image', 'value' => 'IMAGE'},
     ]
   }
 
