@@ -15,20 +15,17 @@ module Spectrum
 
       def resolve_value(item, uid)
         return nil unless item.respond_to?(:find)
-        (item.find {|attr| attr[:uid] == uid} || {})[:value]
+        (item.find {|attr| attr['uid'] == uid} || {})['value']
       end
 
       def resolve_description(item)
         text = resolve_value(item, text_field)
         image = resolve_value(item, image_field)
-        if text && image
-          [{
-            text: text_prefix + text,
-            image: image,
-          }]
-        else
-          []
-        end
+        return [] unless text && image
+        [{
+          text: text_prefix + text,
+          image: image,
+        }]
       end
 
       def resolve(data)
