@@ -3,12 +3,13 @@ module Spectrum
     class ImageMetadataComponent < MetadataComponent
       type 'image'
 
-      attr_accessor :name, :text_field, :image_field
+      attr_accessor :name, :text_field, :text_prefix, :image_field
 
       def initialize(name, config)
         config ||= {}
         self.name = name
         self.text_field = config['text_field']
+        self.text_prefix = config['text_prefix'] || ''
         self.image_field = config['image_field']
       end
 
@@ -17,19 +18,17 @@ module Spectrum
         (item.find {|attr| attr[:uid] == uid} || {})[:value]
       end
 
-      def resolve_description(data)
-        [data].flatten(1).map { |item|
-          text = resolve_value(item, text_field)
-          image = resolve_value(item, image_field)
-          if text && image
-            {
-              text: text,
-              image: image,
-            }
-          else
-            nil
-          end
-        }.compact
+      def resolve_description(item)
+        text = resolve_value(item, text_field)
+        image = resolve_value(item, image_field)
+        if text && image
+          [{
+            text: text_prefix + text,
+            image: image,
+          }]
+        else
+          []
+        end
       end
 
       def resolve(data)

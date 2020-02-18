@@ -9,10 +9,10 @@ describe Spectrum::Config::ImageMetadataComponent do
     'image_field' => 'image',
   }}
   let(:data) {
-    [[
+    [
       { uid: 'text', name: 'text', value: 'TEXT'},
       { uid: 'image', name: 'image', value: 'IMAGE'},
-    ]]
+    ]
   }
 
   let(:result) {{
