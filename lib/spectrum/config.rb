@@ -47,6 +47,7 @@ require 'spectrum/config/metadata_component'
 require 'spectrum/config/plain_metadata_component'
 require 'spectrum/config/icon_metadata_component'
 require 'spectrum/config/href_linked_metadata_component'
+require 'spectrum/config/image_linked_metadata_component'
 require 'spectrum/config/search1_metadata_component'
 require 'spectrum/config/search2_metadata_component'
 
