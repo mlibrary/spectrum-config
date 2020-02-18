@@ -7,7 +7,7 @@ module Spectrum
       def metadata
         {
           label: label,
-          join: join
+          join: join,
         }
       end
 
@@ -18,13 +18,13 @@ module Spectrum
         @sub   = /#{arg['sub'] || '.'}/
         @ind1  = /#{arg['ind1'] || '.'}/
         @ind2  = /#{arg['ind2'] || '.'}/
-        @where = arg['where']
+        @where = MarcMatcherWhere.new(arg['where'])
         @default = arg['default']
       end
 
       def match_field(field)
         if @tag.match(field.tag)
-          match_indicators(field) && match_where(field)
+          match_indicators(field) && @where.match?(field)
         else
           false
         end
@@ -39,28 +39,6 @@ module Spectrum
         @ind1.match(field.indicator1) && @ind2.match(field.indicator2)
       end
 
-      def match_where(field)
-        return true unless @where
-        return true unless field.respond_to?(:find_all)
-        @where.all? do |clause|
-          if clause['not']
-            ret = false
-            values = [clause['not']].flatten
-          elsif clause['is']
-            ret = true
-            values = [clause['is']].flatten
-          end
-          subfields = field.find_all do |subfield|
-            /#{clause['sub']}/.match(subfield.code) &&
-              values.include?(subfield.value)
-          end
-          if subfields.length > 0
-            ret
-          else
-            !ret
-          end
-        end
-      end
     end
   end
 end

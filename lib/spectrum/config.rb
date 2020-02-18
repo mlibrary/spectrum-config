@@ -55,6 +55,12 @@ require 'spectrum/config/highly_recommended'
 require 'spectrum/config/sort'
 require 'spectrum/config/sort_list'
 
+require 'spectrum/config/marc_matcher_where_clause'
+require 'spectrum/config/marc_matcher_where_is'
+require 'spectrum/config/marc_matcher_where_not'
+require 'spectrum/config/marc_matcher_where_exists'
+require 'spectrum/config/marc_matcher_where'
+
 require 'spectrum/config/marc'
 require 'spectrum/config/marc_matcher'
 
