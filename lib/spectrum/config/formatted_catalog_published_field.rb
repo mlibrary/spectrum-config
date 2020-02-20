@@ -24,9 +24,15 @@ module Spectrum
       def value(data, request = nil)
         date = [@fields['pub_date'].value(data)].flatten.first
         date = date.strip unless date.nil?
-        pub  = [@fields['publisher'].value(data)].flatten.compact.reject(&:empty?)
-        pub  = pub.join(' ').strip unless pub.nil?
-        [date, pub].reject { |str| str.nil? || !(String === str) || str.empty? }.join(' - ')
+        pub  = [@fields['publisher'].value(data)].flatten.reject do |item|
+          item.nil? || item.empty?
+        end.map do |item|
+          [date, item].reject do |str|
+            str.nil? || !(String === str) || str.empty?
+          end.join(' - ')
+        end
+        return nil if pub.empty?
+        pub
       end
     end
   end

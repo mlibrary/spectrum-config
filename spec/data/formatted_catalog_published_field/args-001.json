@@ -1,0 +1,18 @@
+{
+  "id": "published_brief",
+  "metadata":{"name":"Published/Created"},
+  "type":"formatted_catalog_published",
+  "fields": {
+    "publisher": {
+      "type":"marcxml",
+      "field":"fullrecord",
+      "marc": {
+        "fields": [
+          {"tag":"260", "sub":["ab"]},
+          {"tag":"264", "ind":"1", "sub":["ab"]}
+        ]
+      }
+    },
+    "pub_date":{"field":"display_date"}
+  }
+}
