@@ -18,7 +18,7 @@ describe Spectrum::Config::TimesCited2Field do
       let(:data) { SpecData.load_json('example-001.json', __FILE__) }
       let(:doc) { SummonDocumentStub.new(data) }
 
-      let(:results) { SpecData.load_bin('results-001.bin', __FILE__) }
+      let(:results) { SpecData.load_json('results-001.json', __FILE__) }
 
       it "returns multiple values" do
         expect(subject.value(doc)).to eq(results)

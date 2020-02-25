@@ -17,12 +17,12 @@ module Spectrum
 
       def value(data, request = nil)
         fields.map do |field|
-          hsh = {name: field['name']}
+          hsh = {'name' => field['name']}
           if (count = [data.src[field['count']]].flatten.first)
-            hsh[:count] = count
-            hsh[:text]  = "#{field['name']}: #{count}"
+            hsh['count'] = count
+            hsh['text']  = "#{field['name']}: #{count}"
             if (href = [data.src[field['href']]].flatten.first)
-              hsh[:href] = if request.respond_to?(:proxy_prefix)
+              hsh['href'] = if request.respond_to?(:proxy_prefix)
                 request.proxy_prefix + href
               else
                 href
