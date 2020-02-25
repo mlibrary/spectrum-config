@@ -100,6 +100,7 @@ require 'spectrum/config/resource_access_field'
 require 'spectrum/config/summon_resource_access_field'
 require 'spectrum/config/more_information_field'
 require 'spectrum/config/times_cited_field'
+require 'spectrum/config/times_cited2_field'
 
 require 'spectrum/config/facet_parents'
 require 'spectrum/config/facet'

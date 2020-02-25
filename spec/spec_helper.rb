@@ -18,6 +18,9 @@
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 $: << '../lib'
 
+require 'pry'
+require 'pry-byebug'
+
 require_relative 'spec_data'
 
 require 'coveralls'
