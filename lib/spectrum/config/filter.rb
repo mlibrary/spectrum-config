@@ -16,6 +16,19 @@ module Spectrum
         @decoder = HTMLEntities.new
       end
 
+      def boolean(value, request)
+        case value
+        when Array
+          value.map { |val| boolean(val, request) }
+        when 'true', true
+          'yes'
+        when 'false', false
+          'no'
+        else
+          value
+        end
+      end
+
       def proxy_prefix(value, request)
         case value
         when Array
