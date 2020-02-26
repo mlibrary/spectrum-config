@@ -4,6 +4,8 @@ require 'spectrum/config/plain_metadata_component'
 
 describe Spectrum::Config::PlainMetadataComponent do
   subject { described_class.new('Name', {'type' => 'plain'}) }
+  let(:true_result) {{ term: 'Name', description: [{text: 'true'}]}}
+  let(:false_result) {{term: 'Name', description: [{text: 'false'}]}}
   context "#resolve" do
     it "returns nil when given nil" do
       expect(subject.resolve(nil)).to be(nil)
@@ -22,11 +24,15 @@ describe Spectrum::Config::PlainMetadataComponent do
     end
 
     it "returns data when given true" do
-      expect(subject.resolve(true)).to eq({term: 'Name', description: [{text: 'true'}]})
+      expect(subject.resolve(true)).to eq(true_result)
     end
 
     it "returns data when given false" do
-      expect(subject.resolve(false)).to eq({term: 'Name', description: [{text: 'false'}]})
+      expect(subject.resolve(false)).to eq(false_result)
+    end
+
+    it "returns data when given a metadata component hash" do
+      expect(subject.resolve(true_result)).to eq(true_result)
     end
   end
 end

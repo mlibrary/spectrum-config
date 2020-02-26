@@ -19,6 +19,7 @@ module Spectrum
       end
 
       def resolve(data)
+        return data if Hash === data && data[:term] && data[:description]
         description = get_description(data)
         return nil if description.empty?
 
