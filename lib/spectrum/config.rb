@@ -74,6 +74,7 @@ require 'spectrum/config/online_resource_aggregator'
 
 require 'spectrum/config/field'
 require 'spectrum/config/basic_field'
+require 'spectrum/config/constant_field'
 require 'spectrum/config/concat_field'
 require 'spectrum/config/bookplate_field'
 require 'spectrum/config/marcxml_field'
