@@ -1,7 +1,7 @@
 module Spectrum
   module Config
-    class Image1MetadataComponent < MetadataComponent
-      type 'image1'
+    class MailtoMetadataComponent < MetadataComponent
+      type 'mailto'
 
       def initialize(name, config)
         self.name = name
@@ -13,7 +13,7 @@ module Spectrum
           if item.empty?
             nil
           else
-            {image: item}
+            {text: item, href: 'mailto:' + item}
           end
         end.compact
       end

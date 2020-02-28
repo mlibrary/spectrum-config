@@ -1,11 +1,11 @@
 require_relative '../../spec_helper'
 require 'spectrum/config/metadata_component'
-require 'spectrum/config/image1_metadata_component'
+require 'spectrum/config/mailto_metadata_component'
 
-describe Spectrum::Config::Image1MetadataComponent do
-  subject { described_class.new('Name', {'type' => 'image1'}) }
-  let(:true_result) {{ term: 'Name', description: [{image: 'true'}]}}
-  let(:false_result) {{term: 'Name', description: [{image: 'false'}]}}
+describe Spectrum::Config::MailtoMetadataComponent do
+  subject { described_class.new('Name', {'type' => 'mailto'}) }
+  let(:true_result) {{ term: 'Name', description: [{text: 'true', href: 'mailto:true'}]}}
+  let(:false_result) {{term: 'Name', description: [{text: 'false', href: 'mailto:false'}]}}
   context "#resolve" do
     it "returns nil when given nil" do
       expect(subject.resolve(nil)).to be(nil)
