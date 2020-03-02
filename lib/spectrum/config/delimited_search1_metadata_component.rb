@@ -3,7 +3,7 @@ module Spectrum
     class DelimitedSearch1MetadataComponent < MetadataComponent
       type 'delimited_search1'
 
-      attr_accessor :name, :variant, :scope, :delimiter
+      attr_accessor :name, :scope, :variant, :delimiter
 
       def initialize(name, config)
         config ||= {}

@@ -51,6 +51,7 @@ require 'spectrum/config/image_metadata_component'
 require 'spectrum/config/href_linked_metadata_component'
 require 'spectrum/config/search1_metadata_component'
 require 'spectrum/config/search2_metadata_component'
+require 'spectrum/config/delimited_search1_metadata_component'
 
 require 'spectrum/config/highly_recommended'
 require 'spectrum/config/sort'
