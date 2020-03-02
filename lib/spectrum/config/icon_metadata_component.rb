@@ -24,7 +24,7 @@ module Spectrum
         'Electronic Resource' => 'web',
         'Encyclopedias' => 'book',
         'Journal' => 'collection_bookmark',
-        'Manuscript' => '',
+        'Manuscript' => 'document',
         'Map' => 'map',
         'Maps-Atlas' => 'map',
         'Microform' => 'theaters',
