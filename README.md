@@ -1,6 +1,22 @@
 # Spectrum::Config
 
-TODO: Write a gem description
+Spectrum::Config is a collection of utilities that support the configuration of the spectrum / spectrum-json application.
+
+The notable concepts involved are:
+
+1. `Spectrum::Config::Source` is a source of data.
+    Currently, sources may be solr indexes, or a summon index.
+
+2. `Spectrum::Config::Focus` is a potentially pre-filtered view of a source.
+    One source may supply multiple foci.
+
+3. `Spectrum::Config::Field` describe the data that comes from a source.  Some fields are searchable, some are facetable, some are just for presenting data.
+    Many fields are extract from MARC-XML formatted data, and the logic to do that is the subject of many classes in Spectrum::Config.
+
+4. `Spectrum::Config::Filter` describes operations that may be taken on fields to transform the data provided by the field.  
+
+5. Adjacent to the topic of extracting and transforming data, formatting it specifically for rendering as a `Spectrum::Config::MetadataComponent`, `Spectrum::Config::CSL` citation, and `Spectrum::Config::Z3988` COinS has received a fair amount of attention.
+
 
 ## Installation
 
@@ -20,15 +36,6 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
-
-## Contributing
-
-1. Fork it ( https://github.com/[my-github-username]/spectrum-config/fork )
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create a new Pull Request
 
 ## Copyright
 
