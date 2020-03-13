@@ -45,6 +45,19 @@ module Spectrum
         'Visual Material' => 'remove_red_eye',
         'Website' => 'web',
         'Web Resource' => 'web',
+        'Government Document' => 'document',
+        'Newsletter' => 'document',
+        'Poem' => 'document',
+        'Publication' => 'document',
+        'Trade Publication Article' => 'document',
+        'Streaming Audio' => 'volume_up',
+        'Photograph' => 'photo_library',
+        'Image' => 'photo_library',
+        'Painting' => 'photo_library',
+        'Streaming Video' => 'play_circle',
+        'Archival Material' => 'archive',
+        'Database' => 'insert_drive_file',
+        'Online Journal' => 'collection_bookmark',
       }
 
       def initialize(name, config)
