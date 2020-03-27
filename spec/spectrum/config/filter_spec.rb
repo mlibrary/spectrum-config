@@ -16,28 +16,28 @@ describe Spectrum::Config::Filter do
         expect(subject.apply([], nil)).to eq([])
       end
 
-      it "returns 'yes' when given 'true'" do
-        expect(subject.apply('true', nil)).to eq('yes')
+      it "returns 'Yes' when given 'true'" do
+        expect(subject.apply('true', nil)).to eq('Yes')
       end
 
-      it "returns 'yes' when given true" do
-        expect(subject.apply(true, nil)).to eq('yes')
+      it "returns 'Yes' when given true" do
+        expect(subject.apply(true, nil)).to eq('Yes')
       end
 
-      it "returns 'yes' when given 'yes'" do
-        expect(subject.apply('yes', nil)).to eq('yes')
+      it "returns 'Yes' when given 'yes'" do
+        expect(subject.apply('yes', nil)).to eq('Yes')
       end
 
-      it "returns 'no' when given 'false'" do
-        expect(subject.apply('false', nil)).to eq('no')
+      it "returns nil when given 'false'" do
+        expect(subject.apply('false', nil)).to be(nil)
       end
 
-      it "returns 'no' when given false" do
-        expect(subject.apply(false, nil)).to eq('no')
+      it "returns nil when given false" do
+        expect(subject.apply(false, nil)).to eq(nil)
       end
 
-      it "returns 'no' when given 'no'" do
-        expect(subject.apply('no', nil)).to eq('no')
+      it "returns nil when given 'no'" do
+        expect(subject.apply('no', nil)).to eq(nil)
       end
     end
   end

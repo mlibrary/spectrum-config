@@ -2,17 +2,49 @@
   "id": "published_brief",
   "metadata":{"name":"Published/Created"},
   "type":"formatted_catalog_published",
-  "fields": {
-    "publisher": {
+  "groups": [
+    {
       "type":"marcxml",
       "field":"fullrecord",
       "marc": {
+        "aggregator": "labeling",
         "fields": [
-          {"tag":"260", "sub":["ab"]},
-          {"tag":"264", "ind":"1", "sub":["ab"]}
+          {
+            "label": "c",
+            "tag": "260",
+            "sub": "[ab]"
+          },
+          {
+            "label": "ab",
+            "tag": "260",
+            "sub": "[ab]",
+            "join": " "
+          }
         ]
       }
     },
-    "pub_date":{"field":"display_date"}
-  }
+    {
+      "type":"marcxml",
+      "field":"fullrecord",
+      "marc": {
+        "aggregator": "labeling",
+        "fields": [
+          {
+            "label": "c",
+            "tag": "264",
+            "ind1": "1",
+            "sub": "[ab]"
+          },
+          {
+            "label": "ab",
+            "tag": "260",
+            "ind1": "1",
+            "sub": "[ab]",
+            "join": " "
+          }
+        ]
+      }
+    }
+  ],
+  "date":{"field":"display_date"}
 }

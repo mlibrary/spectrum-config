@@ -20,10 +20,10 @@ module Spectrum
         case value
         when Array
           value.map { |val| boolean(val, request) }
-        when 'true', true
-          'yes'
-        when 'false', false
-          'no'
+        when 'true', true, 'yes', 'Yes'
+          'Yes'
+        when 'false', false, 'no', 'No'
+          nil
         else
           value
         end
