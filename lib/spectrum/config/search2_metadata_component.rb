@@ -44,6 +44,7 @@ module Spectrum
         return nil if description.empty?
         {
           term: name,
+          termPlural: name.pluralize,
           description: description,
         }
       end

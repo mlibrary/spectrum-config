@@ -25,6 +25,7 @@ module Spectrum
 
         {
           term: name,
+          termPlural: name.pluralize,
           description: description,
         }
       end
