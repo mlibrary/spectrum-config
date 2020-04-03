@@ -4,6 +4,8 @@
 
 require 'yaml'
 require 'delegate'
+require 'active_support'
+require 'active_support/core_ext'
 
 require 'spectrum/config/version'
 require 'spectrum/config/hierarchy'

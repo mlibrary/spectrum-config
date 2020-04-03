@@ -76,6 +76,19 @@ module Spectrum
         []
       end
 
+      def icon(metadata)
+        return [] unless metadata[:preview].respond_to?(:find)
+        component = metadata[:preview].find do |candidate|
+          candidate.has_key?(:description) &&
+            candidate[:description].respond_to?(:any?) &&
+            candidate[:description].any? do |field|
+              field.has_key?(:icon)
+            end
+        end
+        return [] unless component
+        component[:description]
+      end
+
       def facet(name, _ = nil)
         @facets.facet(name, @facet_values, base_url)
       end

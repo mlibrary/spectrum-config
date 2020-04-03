@@ -17,6 +17,7 @@ describe Spectrum::Config::ImageMetadataComponent do
 
   let(:result) {{
     term: 'Name',
+    termPlural: 'Names',
     description: [{
       text: 'TEXT',
       image: 'IMAGE',

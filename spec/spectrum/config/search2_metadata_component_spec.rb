@@ -19,6 +19,7 @@ describe Spectrum::Config::Search2MetadataComponent do
 
   let(:result) {{
     term: 'Name',
+    termPlural: 'Names',
     description: [{
       text: 'TEXT',
       search: {

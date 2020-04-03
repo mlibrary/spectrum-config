@@ -4,8 +4,16 @@ require 'spectrum/config/mailto_metadata_component'
 
 describe Spectrum::Config::MailtoMetadataComponent do
   subject { described_class.new('Name', {'type' => 'mailto'}) }
-  let(:true_result) {{ term: 'Name', description: [{text: 'true', href: 'mailto:true'}]}}
-  let(:false_result) {{term: 'Name', description: [{text: 'false', href: 'mailto:false'}]}}
+  let(:true_result) {{
+    term: 'Name',
+    termPlural: 'Names',
+    description: [{text: 'true', href: 'mailto:true'}]
+  }}
+  let(:false_result) {{
+    term: 'Name',
+    termPlural: 'Names',
+    description: [{text: 'false', href: 'mailto:false'}]
+  }}
   context "#resolve" do
     it "returns nil when given nil" do
       expect(subject.resolve(nil)).to be(nil)

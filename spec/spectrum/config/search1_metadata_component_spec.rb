@@ -11,6 +11,7 @@ describe Spectrum::Config::Search1MetadataComponent do
   }}
   let(:true_result) {{
     term: 'Name',
+    termPlural: 'Names',
     description: [
       {
         text: true,
@@ -24,6 +25,7 @@ describe Spectrum::Config::Search1MetadataComponent do
   }}
   let(:false_result) {{
     term: 'Name',
+    termPlural: 'Names',
     description: [
       {
         text: false,

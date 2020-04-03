@@ -25,6 +25,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'marc'
   spec.add_dependency 'htmlentities'
+  spec.add_dependency 'activesupport'
   spec.add_dependency 'rails-html-sanitizer'
 
   spec.add_development_dependency 'pry'
