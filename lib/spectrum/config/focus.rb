@@ -76,7 +76,7 @@ module Spectrum
         []
       end
 
-      def icon(metadata)
+      def icons(metadata)
         return [] unless metadata[:preview].respond_to?(:find)
         component = metadata[:preview].find do |candidate|
           candidate.has_key?(:description) &&
