@@ -39,6 +39,10 @@ module Spectrum
         nil
       end
 
+      def icons(_)
+        nil
+      end
+
     end
   end
 end

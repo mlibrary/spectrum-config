@@ -175,6 +175,12 @@ module Spectrum
         mc.resolve(filter(data, request))
       end
 
+      def icons(data, request)
+        mc = metadata_component[:preview]
+        return nil unless mc.respond_to?(:icons)
+        mc.icons(filter(data, request))
+      end
+
       def spectrum
         if @searchable
           {

@@ -85,6 +85,12 @@ module Spectrum
         }.compact
       end
 
+      def icons(data)
+        description = get_description(data)
+        return nil if description.empty?
+        description
+      end
+
       def resolve(data)
         description = get_description(data)
         return nil if description.empty?
