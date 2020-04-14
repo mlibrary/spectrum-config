@@ -17,6 +17,7 @@ module Spectrum
         @link_type = args['link_type'] || :relative
         @link_base = args['link_base']
         @holdings  = args['holdings']
+        @conditionals = args['conditionals'] || {}
       end
 
       def fetch_record(field, id, _ = nil)
@@ -113,9 +114,10 @@ module Spectrum
 
       def params(focus, request, controller = nil)
         new_params = super
-        new_params[:fq] << 'ht_searchonly:false' if request.search_only?
-        if request.available_online?
-          new_params[:fq] << 'availability:"Available online"'
+        @conditionals.each_pair do |condition, fq|
+          if request.respond_to?(condition) && request.send(condition)
+            new_params[:fq] << fq
+          end
         end
         new_params
       end
