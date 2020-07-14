@@ -13,7 +13,7 @@ module Spectrum
         @default = false
         @required = false
         @mincount = 1
-        @limit = 1000
+        @limit = 50
         @offset = 0
         @metadata = Metadata.new('name' => 'Null Facet')
         @url = 'null'
@@ -46,7 +46,7 @@ module Spectrum
         @default      = args['default']  || false
         @required     = args['required'] || false
         @mincount     = args['mincount'] || 1
-        @limit        = args['limit']    || 1000
+        @limit        = args['limit']    || 50
         @offset       = args['offset']   || 0
         @metadata     = Metadata.new(args['metadata'])
         @url          = url + '/' + @uid
