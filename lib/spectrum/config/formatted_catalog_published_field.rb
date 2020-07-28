@@ -38,20 +38,15 @@ module Spectrum
           values = [group.value(data)].flatten(1).reject do |item|
             item.nil? || item.empty?
           end.map do |item|
-            if item.any? {|fl| fl[:uid] == 'c'}
-              [
-                (item.find {|fl| fl[:uid] == 'ab'} || {})[:value]
-              ].flatten(1).reject do |val|
-                val.nil? || !(String === val) || val.empty?
-              end.map do |val|
-                [date_val, val].compact.join(' - ')
-              end
-            else
-              (item.find {|fl| fl[:uid] == 'ab'} || {})[:value]
-            end
-          end.flatten
+            [
+              (item.find {|fl| fl[:uid] == 'ab'} || {})[:value],
+              (item.find {|fl| fl[:uid] == 'c'} || {})[:value] || date_val
+            ].flatten.reject do |val|
+              val.nil? || !(String === val) || val.empty?
+            end.join(' ')
+          end
           values.empty? ? nil : values
-        end.flatten.compact
+        end.compact.flatten
       end
 
       def value(data, request = nil)

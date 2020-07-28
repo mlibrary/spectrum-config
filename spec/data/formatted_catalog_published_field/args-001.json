@@ -12,7 +12,7 @@
           {
             "label": "c",
             "tag": "260",
-            "sub": "[ab]"
+            "sub": "[c]"
           },
           {
             "label": "ab",
@@ -33,7 +33,7 @@
             "label": "c",
             "tag": "264",
             "ind1": "1",
-            "sub": "[ab]"
+            "sub": "[c]"
           },
           {
             "label": "ab",
