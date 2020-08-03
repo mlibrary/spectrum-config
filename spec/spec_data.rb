@@ -1,3 +1,5 @@
+require 'marc'
+
 module SpecData
 
   def self.path(name, context)
@@ -13,5 +15,9 @@ module SpecData
 
   def self.load_json(name, context)
     JSON.parse(IO.read(path(name, context)))
+  end
+
+  def self.load_marcxml(name, context)
+    ::MARC::XMLReader.new(path(name, context))
   end
 end

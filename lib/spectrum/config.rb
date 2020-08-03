@@ -77,6 +77,7 @@ require 'spectrum/config/collapsing_aggregator'
 require 'spectrum/config/list_aggregator'
 require 'spectrum/config/field_aggregator'
 require 'spectrum/config/labeling_aggregator'
+require 'spectrum/config/filtered_labeling_aggregator'
 require 'spectrum/config/online_resource_aggregator'
 
 require 'spectrum/config/field'
