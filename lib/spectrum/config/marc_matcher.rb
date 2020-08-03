@@ -15,7 +15,7 @@ module Spectrum
       def initialize(arg)
         @label = arg['label'] || "#{arg['tag']} #{arg['ind1']}#{arg['ind2']} #{arg['sub']}"
         @join  = arg['join']
-        @filters = arg['filters']
+        @filters = (arg['filters'] || []).map(&:symbolize_keys)
         @tag   = /#{arg['tag'] || '.'}/
         @sub   = /#{arg['sub'] || '.'}/
         @ind1  = /#{arg['ind1'] || '.'}/
