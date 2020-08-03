@@ -2,18 +2,20 @@
 module Spectrum
   module Config
     class MarcMatcher
-      attr_reader :label, :join, :default
+      attr_reader :label, :join, :filters, :default
 
       def metadata
         {
           label: label,
           join: join,
+          filters: filters,
         }
       end
 
       def initialize(arg)
         @label = arg['label'] || "#{arg['tag']} #{arg['ind1']}#{arg['ind2']} #{arg['sub']}"
         @join  = arg['join']
+        @filters = arg['filters']
         @tag   = /#{arg['tag'] || '.'}/
         @sub   = /#{arg['sub'] || '.'}/
         @ind1  = /#{arg['ind1'] || '.'}/
