@@ -22,20 +22,13 @@ module Spectrum
       end
 
       def to_value
-        base = if is_only_electronic?
-          if is_book?
-            to_book_value.merge(preExpanded: true)
-          else
-            to_other_value.merge(preExpanded: true)
-          end
-        else
-          to_other_value.merge(preExpanded: false)
-        end
-        return nil if base[:rows].empty?
-        base.merge(
+        base = to_other_value.merge(
+          preExpanded: is_only_electronic?,
           caption: 'Online Resources',
           type: 'electronic',
         )
+        return nil if base[:rows].empty?
+        base
      end
 
      def is_book?
