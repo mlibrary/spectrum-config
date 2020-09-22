@@ -3,7 +3,8 @@ module Spectrum
   module Config
     module FacetParents
       def self.configure(root)
-        @parents_lists = YAML.load_file(File.join(root, 'config', 'facet_parents.yml'))
+        file = File.join(root, 'config', 'facet_parents.yml')
+        @parents_lists = YAML.load_file(file) if File.exist?(file)
       end
 
       def self.find(uid, value)
