@@ -40,7 +40,7 @@ module Spectrum
           end.map do |item|
             [
               (item.find {|fl| fl[:uid] == 'ab'} || {})[:value],
-              (item.find {|fl| fl[:uid] == 'c'} || {})[:value] || date_val
+              date_val || (item.find {|fl| fl[:uid] == 'c'} || {})[:value]
             ].flatten.reject do |val|
               val.nil? || !(String === val) || val.empty?
             end.join(' ')
