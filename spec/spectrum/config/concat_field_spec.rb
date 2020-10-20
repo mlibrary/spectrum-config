@@ -6,6 +6,23 @@ require 'spectrum/config/basic_field'
 require 'spectrum/config/concat_field'
 
 describe Spectrum::Config::ConcatField do
+
+  context '#initialize_from_instance' do
+    let(:args01) { SpecData.load_json('args-001.json', __FILE__) }
+    let(:args02) { SpecData.load_json('args-002.json', __FILE__) }
+    let(:config) { ConfigStub.new }
+    let(:instance2) { described_class.new(args02, config) }
+    subject do
+      described_class.new(args01, config).tap do |instance1|
+        instance1.initialize_from_instance(instance2)
+      end
+    end
+
+    it 'returns "" for .join' do
+      expect(subject.join).to eq("")
+    end
+  end
+
   context "#value" do
 
     context "When initialized without a join" do
