@@ -36,7 +36,6 @@ describe Spectrum::Config::ConcatField do
         expect(subject.value(nil, nil)).to eq(nil)
       end
 
-
       it "returns 'concatenated' values" do
         expect(subject.value(data, nil)).to eq(result)
       end

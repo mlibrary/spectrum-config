@@ -6,8 +6,8 @@ module Spectrum
   module Config
     class Focus
       attr_accessor :id, :name, :weight, :title, :source,
-                    :placeholder, :warning, :description, :viewstyles,
-                    :layout, :default_viewstyle, :category, :base,
+                    :placeholder, :warning, :description,
+                    :category, :base,
                     :fields, :url, :filters, :sorts, :id_field, :solr_params,
                     :highly_recommended, :base_url
 
@@ -258,10 +258,6 @@ module Spectrum
 
       def is_subsource?
         @subsource
-      end
-
-      def viewstyles?
-        !!viewstyles
       end
 
       def path(query)
