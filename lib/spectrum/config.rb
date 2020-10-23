@@ -32,6 +32,7 @@ require 'spectrum/config/csl_date'
 require 'spectrum/config/csl_author'
 require 'spectrum/config/csl_null'
 require 'spectrum/config/csl'
+require 'spectrum/config/csl_aggregator'
 
 require 'spectrum/config/z3988_literal'
 require 'spectrum/config/z3988_rft_val_fmt'
