@@ -105,6 +105,18 @@ module Spectrum
         end
       end
 
+      def trim2(value, _)
+        if String === value
+          value.sub(%r{\s*,\s*$}, '')
+        elsif value.respond_to?(:map) && value.all? { |item| String === item }
+          value.map do |item|
+            trim2(item, nil)
+          end
+        else
+          value
+        end
+      end
+
       def trim(value, _)
         if String === value
           value.sub(%r{(\S{3,})\s*[/.,:]$}, '\1')
