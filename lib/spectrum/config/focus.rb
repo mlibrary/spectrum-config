@@ -25,8 +25,8 @@ module Spectrum
           @facets.values.each do |facet|
             next if facet.type == 'range'
             next unless facet.uid == k
-            Array(v).each do |val|
-              acc << "#{facet.field},#{val}"
+            [v].flatten(1).each do |val|
+              acc << "#{facet.field},#{summon_escape(val)}"
             end
           end
         end
@@ -433,6 +433,11 @@ module Spectrum
 
       def get_sorts(request)
         highly_recommended.get_sorts(get_basic_sorts(request), request.facets)
+      end
+
+      private
+      def summon_escape(str)
+        str.gsub(/([\\,\{\}\(\)\[\]\&|!:])/, '\\\\\1')
       end
     end
   end
