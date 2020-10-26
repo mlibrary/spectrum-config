@@ -9,7 +9,7 @@ module Spectrum
       def merge!(value)
         value.each_pair do |key, val|
           next if val.empty?
-          if @fields.has_key?(key) && Array === @fields[key] 
+          if @fields.has_key?(key) && Array === @fields[key]
             @fields[key] = @fields[key] + val
           else
             @fields[key] = val
