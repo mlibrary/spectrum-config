@@ -192,7 +192,8 @@ module Spectrum
         if data === Array
           data.map { |item| apply_fields(item, nil, request) }.compact
         else
-          csl = CSLAggregator.new
+          #csl = CSLAggregator.new
+          csl = {}
           z3988 = [ 'ctx_ver=Z39.88-2004', 'ctx_enc=info%3Aofi%2Fenc%3AUTF-8' ]
           ret = []
           ret << href_field(data)
@@ -205,7 +206,8 @@ module Spectrum
             csl.merge!(field.csl.value(val))
             ret << val
           end
-          ret << csl.spectrum
+          #ret << csl.spectrum
+          ret << { uid: 'csl', value: csl, name: 'CSL' , value_has_html: true }
           if openurl = ret.find { |val| val&.fetch(:uid) == 'openurl' }&.fetch(:value)
             record_id = ret.find { |val| val&.fetch(:uid) == 'id' }&.fetch(:value) || '404-not-found'
             record_url = 'https://search.lib.umich.edu/articles/record/' + record_id
