@@ -9,7 +9,7 @@ module Spectrum
                     :placeholder, :warning, :description, :viewstyles,
                     :layout, :default_viewstyle, :category, :base,
                     :fields, :url, :filters, :sorts, :id_field, :solr_params,
-                    :highly_recommended, :base_url
+                    :highly_recommended, :base_url, :raw_config
 
       HREF_DATA = {
         'id' => 'href',
@@ -103,6 +103,8 @@ module Spectrum
         @facets          = Spectrum::Config::FacetList.new(args['facets'], config.fields, config.sorts, facet_url)
         @default_sort    = @sorts[args['default_sort']] || @sorts.default
         @solr_params     = args['solr_params'] || {}
+
+        @raw_config      = args
 
         @filters         = args['filters'] || []
 
