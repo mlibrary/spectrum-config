@@ -9,7 +9,8 @@ module Spectrum
                     :placeholder, :warning, :description,
                     :category, :base,
                     :fields, :url, :filters, :sorts, :id_field, :solr_params,
-                    :highly_recommended, :base_url
+                    :highly_recommended, :base_url, :raw_config
+
 
       HREF_DATA = {
         'id' => 'href',
@@ -85,6 +86,7 @@ module Spectrum
       end
 
       def initialize(args, config)
+        @raw_config      = args
         @id              = args['id']
         @base_url        = config.base_url
         @path            = args['path'] || args['id']
