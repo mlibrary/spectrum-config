@@ -25,7 +25,7 @@ module Spectrum
         else
           BOOK
         end
-        ["#{URI::encode_www_form_component(id)}=#{URI::encode_www_form_component(namespace + val)}"]
+        ["#{URI::encode_www_form_component(id)}=#{URI::encode_www_form_component(namespace.to_s + val.to_s)}"]
       end
     end
   end

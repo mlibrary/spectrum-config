@@ -13,7 +13,7 @@ module Spectrum
 
       def value(_ = nil)
         if id && constant
-          "#{URI::encode_www_form_component(id)}=#{URI::encode_www_form_component(namespace + constant)}"
+          "#{URI::encode_www_form_component(id)}=#{URI::encode_www_form_component(namespace.to_s + constant.to_s)}"
         else
           [ ]
         end
