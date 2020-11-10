@@ -1,5 +1,7 @@
 # Spectrum::Config
 
+[![Coverage Status](https://coveralls.io/repos/github/mlibrary/spectrum-config/badge.svg?branch=master)](https://coveralls.io/github/mlibrary/spectrum-config?branch=master)
+
 Spectrum::Config is a collection of utilities that support the configuration of the spectrum / spectrum-json application.
 
 The notable concepts involved are:
