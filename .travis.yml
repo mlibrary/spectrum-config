@@ -1,9 +1,0 @@
-language: ruby
-cache: bundler
-env:
-  - "BUNDLE_PATH=.bundle"
-rvm:
-  - 2.6
-before_install:
-    - gem uninstall -v '>= 2' -i $(rvm gemdir)@global -ax bundler || true
-    - gem install bundler -v '< 2'
