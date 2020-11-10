@@ -10,5 +10,6 @@ gemspec
 group :test do
   gem 'rake'
   gem 'simplecov'
+  gem 'simplecov-lcov', '~> 0.7.0'
   gem 'coveralls', '0.8.22'
 end
