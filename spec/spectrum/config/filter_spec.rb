@@ -37,6 +37,16 @@ describe Spectrum::Config::Filter do
       {'text' => 'TEXT available online'},
     ]}
 
+    let(:multiple_value_data) {[[
+      {uid: 'text', name: 'text', value: '$a'},
+      {uid: 'text', name: 'text', value: '$b'},
+      {uid: 'href', name: 'href', value: 'http://example.com/1'},
+      {uid: 'href', name: 'href', value: 'http://example.com/2'},
+    ]]}
+    let(:multiple_value_results) {[
+      {'text' => '$a $b', 'href' => 'http://example.com/1'},
+    ]}
+
     context "#apply" do
       it "returns nil when given nil" do
         expect(subject.apply(nil, nil)).to be(nil)

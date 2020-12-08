@@ -197,9 +197,14 @@ module Spectrum
          elsif value.all? { |val| Hash === val }
            value.map do |val|
              marc555(val, _)
-           end.compact.inject({}) do |acc, val|
-             acc.merge(val[:uid] => val[:value])
-           end.compact
+           end.compact.inject({'text' => [], 'href' => []}) do |acc, val|
+             key = val[:uid]
+             acc[key] = acc[key] + [val[:value]].flatten(1).compact
+             acc
+           end.tap do |hsh|
+             hsh['text'] = hsh['text'].join(' ')
+             hsh['href'] = hsh['href'].first
+           end
          end.compact
        elsif Hash === value
          candidate_method = method.to_s + value[:uid]
