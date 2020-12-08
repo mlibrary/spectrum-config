@@ -16,7 +16,7 @@ module Spectrum
         return nil if data.nil?
         description = [data].flatten(1).map { |item|
           if item.respond_to?(:[])
-            {text: item[text_field], href: item[href_field]}
+            {text: item[text_field], href: item[href_field]}.compact
           else
             nil
           end

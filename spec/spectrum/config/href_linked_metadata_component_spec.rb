@@ -5,10 +5,16 @@ require 'spectrum/config/href_linked_metadata_component'
 describe Spectrum::Config::HrefLinkedMetadataComponent do
   subject { described_class.new('Name', {'type' => 'href_linked'}) }
   let(:data) { { 'href' => 'HREF', 'text' => 'TEXT'} }
+  let(:text_only) {{'text' => 'TEXT' }}
   let(:result) {{
     term: 'Name',
     termPlural: 'Names',
     description: [{text: 'TEXT', href: 'HREF'}]
+  }}
+  let(:text_result) {{
+    term: 'Name',
+    termPlural: 'Names',
+    description: [{text: 'TEXT'}]
   }}
   context "#resolve" do
     it "returns nil when given nil" do
@@ -29,6 +35,10 @@ describe Spectrum::Config::HrefLinkedMetadataComponent do
 
     it "returns a link when given data" do
       expect(subject.resolve(data)).to eq(result)
+    end
+
+    it "returns a text item when geven text_only" do
+      expect(subject.resolve(text_only)).to eq(text_result)
     end
   end
 end

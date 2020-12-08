@@ -173,6 +173,45 @@ module Spectrum
           value
         end
       end
+
+      def marc555text(value, _)
+        value
+          .sub(%r{ via World Wide Web at URL:.*},' online')
+          .sub(%r{ via the World Wide Web at URL:.*}, ' online')
+          .sub(%r{ via the World Wide web at URL:.*}, ' online')
+          .sub(%r{ via the World Wide Web\.\.*}, ' online')
+          .sub(%r{ via the Internet\..*}, ' online')
+          .sub(%r{ available at http.*}, ' available online')
+          .sub(%r{: http.*}, ' available online')
+      end
+
+      def marc555href(value, _)
+        return nil if value.nil? || value.empty? || !value.include?('http')
+        value.sub(%r{^.*http}, 'http')
+      end
+
+      def marc555(value, _)
+       if Array === value
+         if value.all? { |val| Array === val }
+           value.map { |val| marc555(val, _) }
+         elsif value.all? { |val| Hash === val }
+           value.map do |val|
+             marc555(val, _)
+           end.compact.inject({}) do |acc, val|
+             acc.merge(val[:uid] => val[:value])
+           end.compact
+         end.compact
+       elsif Hash === value
+         candidate_method = method.to_s + value[:uid]
+         candidate_value = if respond_to?(candidate_method)
+           send(candidate_method, value[:value], _)
+         else
+           value[:value]
+         end
+         return nil if candidate_value.nil? || candidate_value.empty?
+         value.merge(value: candidate_value)
+       end
+      end
     end
   end
 end
