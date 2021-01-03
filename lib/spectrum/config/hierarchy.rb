@@ -35,8 +35,8 @@ module Spectrum
           'location' => {},
           'collection' => {},
         }
-        inst = YAML.load_file(hierarchy_def['load_inst'])
-        coll = YAML.load_file(hierarchy_def['load_coll'])
+        inst = YAML.load(ERB.new(File.read(hierarchy_def['load_inst'])).result)
+        coll = YAML.load(ERB.new(File.read(hierarchy_def['load_coll'])).result)
         @handled_uids.each { |uid| @value_mapping[uid] ||= {} }
         inst.each_pair do |inst, inst_info|
           top_val = {
