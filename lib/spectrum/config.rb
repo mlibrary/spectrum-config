@@ -53,6 +53,8 @@ require 'spectrum/config/delimited_search1_metadata_component'
 require 'spectrum/config/quoted_search1_metadata_component'
 require 'spectrum/config/quoted_search2_metadata_component'
 
+require 'spectrum/config/header_component'
+
 require 'spectrum/config/highly_recommended'
 require 'spectrum/config/sort'
 require 'spectrum/config/sort_list'

@@ -57,7 +57,7 @@ module Spectrum
 
       attr_reader :list, :full, :viewable, :searchable, :uid,
                   :field, :sorts, :fields, :query_params, :values,
-                  :query_field, :facet_field, :metadata_component
+                  :query_field, :facet_field, :metadata_component, :header_component
 
       type 'default'
 
@@ -87,6 +87,7 @@ module Spectrum
         @csl = i.csl
         @z3988 = i.z3988
         @metadata_component = i.metadata_component
+        @header_component = i.header_component
       end
 
       def initialize_from_hash(args, config)
@@ -125,6 +126,13 @@ module Spectrum
           preview: MetadataComponent.new(name, mc['preview']),
           medium: MetadataComponent.new(name, mc['medium']),
           full: MetadataComponent.new(name, mc['full']),
+        }
+
+        hc = args['header_component'] || {}
+        @header_component = {
+          preview: HeaderComponent.new(name, hc['preview']),
+          medium: HeaderComponent.new(name, hc['medium']),
+          full: HeaderComponent.new(name, hc['full']),
         }
       end
 
