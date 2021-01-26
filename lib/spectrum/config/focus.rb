@@ -112,7 +112,12 @@ module Spectrum
         @default_facets  = args['default_facets'] || {}
         @get_null_facets = nil
         @hierarchy       = Hierarchy.new(args['hierarchy']) if args['hierarchy']
+        @new_parser      = args['new_parser']
         @highly_recommended = HighlyRecommended.new(args['highly_recommended'])
+      end
+
+      def new_parser?
+        @new_parser
       end
 
       def default_facets
