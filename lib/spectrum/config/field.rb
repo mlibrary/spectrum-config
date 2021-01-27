@@ -183,6 +183,12 @@ module Spectrum
         mc.resolve(filter(data, request))
       end
 
+      def hc_display(mode, data, request)
+        hc = header_component[mode]
+        return nil unless hc
+        hc.resolve(filter(data, request))
+      end
+
       def icons(data, request)
         mc = metadata_component[:preview]
         return nil unless mc.respond_to?(:icons)
