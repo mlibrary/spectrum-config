@@ -190,15 +190,24 @@ module Spectrum
 
       def header_component(data, _ = nil, request = nil)
         return data.map {|item| header_component(item, nil, request)}.compact if data === Array
-        ret = {preview: [], medium: [], full: []}
-        @fields.each_value do |field|
-          if field.respond_to?(:hc_display)
-            hc_preview = field.hc_display(:preview, data, request)
-            hc_medium = field.hc_display(:medium, data, request)
-            hc_full = field.hc_display(:full, data, request)
-            ret[:preview] << hc_preview if hc_preview
-            ret[:medium] << hc_medium if hc_medium
-            ret[:full] << hc_full if hc_full
+        ret = {}
+        [:preview, :medium, :full].each do |display_type|
+          ret[display_type] = Hash.new
+          @fields.each_value do |field|
+            if field.respond_to?(:header_region_display)
+              rendered_display = field.header_region_display(display_type, data, request)
+              unless rendered_display.nil?
+                region = rendered_display[:region]
+                name = rendered_display[:name]
+                description = rendered_display[:description]
+                unless description.nil?
+                  unless ret[display_type].key?(region)
+                    ret[display_type][region] = Hash.new
+                  end
+                  ret[display_type][region][name] = description
+                end
+              end
+            end
           end
         end
         ret
