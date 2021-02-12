@@ -39,13 +39,13 @@ module Spectrum
             next if facet.type != 'range'
             next unless facet.uid == k
             Array(v).each do |val|
-              val.match(/^before(\d+)$/) do |m|
+              val.match(/^before\s*(\d+)$/) do |m|
                 val = "0000:#{m[1]}"
               end
-              val.match(/^after(\d+)$/) do |m|
+              val.match(/^after\s*(\d+)$/) do |m|
                 val = "#{m[1]}:3000"
               end
-              val.match(/^(\d+)to(\d+)$/) do |m|
+              val.match(/^(\d+)\s*to\s*(\d+)$/) do |m|
                 val = "#{m[1]}:#{m[2]}"
               end
               val.match(/^\d+$/) do |_m|
