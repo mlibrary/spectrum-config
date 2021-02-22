@@ -13,7 +13,7 @@ module Spectrum
       def value(data)
         if id && data && data[:value]
           [data[:value]].flatten.map do |val|
-            "#{URI::encode_www_form_component(id)}=#{URI::encode_www_form_component(namespace + val)}"
+            "#{URI::encode_www_form_component(id)}=#{URI::encode_www_form_component(namespace + val.to_s)}"
           end
         else
           [ ]
