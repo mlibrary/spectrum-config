@@ -9,7 +9,7 @@ module Spectrum
                     :placeholder, :warning, :description,
                     :category, :base,
                     :fields, :url, :filters, :sorts, :id_field, :solr_params,
-                    :highly_recommended, :base_url, :raw_config
+                    :highly_recommended, :base_url, :raw_config, :default_sort
 
 
       HREF_DATA = {
@@ -435,7 +435,7 @@ module Spectrum
       end
 
       def get_basic_sorts(request)
-        sorts.values.find { |sort| sort.uid == request.sort } || sorts.default
+        sorts.values.find { |sort| sort.uid == request.sort } || default_sort
       end
 
       def get_sorts(request)
