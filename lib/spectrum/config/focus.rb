@@ -9,7 +9,8 @@ module Spectrum
                     :placeholder, :warning, :description,
                     :category, :base,
                     :fields, :url, :filters, :sorts, :id_field, :solr_params,
-                    :highly_recommended, :base_url
+                    :highly_recommended, :base_url, :raw_config, :default_sort
+
 
       HREF_DATA = {
         'id' => 'href',
@@ -85,6 +86,7 @@ module Spectrum
       end
 
       def initialize(args, config)
+        @raw_config      = args
         @id              = args['id']
         @base_url        = config.base_url
         @path            = args['path'] || args['id']
@@ -110,7 +112,12 @@ module Spectrum
         @default_facets  = args['default_facets'] || {}
         @get_null_facets = nil
         @hierarchy       = Hierarchy.new(args['hierarchy']) if args['hierarchy']
+        @new_parser      = args['new_parser']
         @highly_recommended = HighlyRecommended.new(args['highly_recommended'])
+      end
+
+      def new_parser?
+        @new_parser
       end
 
       def default_facets
@@ -428,7 +435,7 @@ module Spectrum
       end
 
       def get_basic_sorts(request)
-        sorts.values.find { |sort| sort.uid == request.sort } || sorts.default
+        sorts.values.find { |sort| sort.uid == request.sort } || default_sort
       end
 
       def get_sorts(request)
