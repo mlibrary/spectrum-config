@@ -15,6 +15,16 @@ module Spectrum
       end
 
       def resolve(data)
+        # FIXME
+        # The following bit of code is ugly, no doubt about it.
+        # The description we get from PlainHeaderComponent,
+        # in concept similar to PlainMetadataComponent,
+        # is in this format:
+        #=> [{:text=>"The voodoo sacerdos suscitat"}]
+        # I wonder if there are cases (that I don't foresee right now)
+        # that would cause problems if I would change get_description()
+        # to return just a plain string?
+        #
         unless @header_component.nil?
           description = @header_component.get_description(data)
           unless description.nil?
