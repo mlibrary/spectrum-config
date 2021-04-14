@@ -1,4 +1,3 @@
-
 module Spectrum
   module Config
     class HeaderRegion
@@ -7,11 +6,10 @@ module Spectrum
         @name = name
 
         if config.is_a?(Hash)
-          @region, type_key = config.first
-          @type = type_key[:type]
+          @region, component_config = config.first
         end
 
-        @header_component = HeaderComponent.new(@name,type_key)
+        @header_component = HeaderComponent.new(@name, component_config)
       end
 
       def resolve(data)
