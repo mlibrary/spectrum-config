@@ -6,11 +6,26 @@ describe Spectrum::Config::PlainHeaderComponent do
   subject { described_class.new('Name', {'type' => 'plain'}) }
 
   let(:data) {{
-    term: 'TERM',
-    description: 'DESCRIPTION',
-  }}
+                term: 'TERM',
+                description: 'DESCRIPTION',
+              }}
 
-  let(:data_result) {{}}
+  let(:data_result) {{
+                       term: 'TERM',
+                       description: 'DESCRIPTION',
+                     }}
+
+  let(:data_full) {{
+                     term: 'TERM',
+                     termPlural: 'TERMS',
+                     description: [{text: 'DESCRIPTION'}]
+                   }}
+
+  let(:data_full_result) {{
+                            term: 'TERM',
+                            termPlural: 'TERMS',
+                            description: [{text: 'DESCRIPTION'}]
+                          }}
 
   context "#resolve" do
     it "returns nil when given nil" do
@@ -31,6 +46,10 @@ describe Spectrum::Config::PlainHeaderComponent do
 
     it "returns data when given a header component hash" do
       expect(subject.resolve(data)).to eq(data_result)
+    end
+
+    it "returns data when given full header component data" do
+      expect(subject.resolve(data_full)).to eq(data_full_result)
     end
   end
 end

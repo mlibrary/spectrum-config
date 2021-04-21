@@ -7,14 +7,21 @@ require 'spectrum/config/plain_header_component'
 describe Spectrum::Config::HeaderRegion do
   subject { described_class.new('Name', region_config) }
 
-  let(:region_config) {{ location: { 'type' => 'plain' } }}
+  let(:region_config) {{ 'region_descriptor'=>{ 'type' => 'plain' } }}
 
-  let(:data_input) {{
+  let(:data) {{
     term: 'TERM',
     description: 'DESCRIPTION',
   }}
 
-  let(:data_output) { {} }
+  let(:data_result) {
+    {
+      description: "{:term=>\"TERM\", :description=>\"DESCRIPTION\"}",
+      name: "Name",
+      region: 'region_descriptor',
+    }
+  }
+
   context "#resolve" do
     it "returns nil when given nil" do
       expect(subject.resolve(nil)).to be(nil)
@@ -33,7 +40,7 @@ describe Spectrum::Config::HeaderRegion do
     end
 
     it "returns data when given a data hash" do
-      expect(subject.resolve(data_input)).to eq(data_output)
+      expect(subject.resolve(data)).to eq(data_result)
     end
   end
 end
