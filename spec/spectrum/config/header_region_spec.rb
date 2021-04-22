@@ -32,7 +32,7 @@ describe Spectrum::Config::HeaderRegion do
     end
 
     it "returns nil when given [nil]" do
-      expect(subject.resolve([''])).to be(nil)
+      expect(subject.resolve([nil])).to be(nil)
     end
 
     it "returns nil when given ['']" do
