@@ -51,7 +51,7 @@ module Spectrum
         return nil unless data
         return nil if data.respond_to?(:empty?) && data.empty?
         href = if [data.src[@model_field]].flatten(1).first == 'OpenURL'
-          @openurl_root + '?' + data.send(@openurl_field)
+          @openurl_root + '?' + data.send(@openurl_field).gsub(/%requestingapplication%/, '')
         else
           data.send(@direct_link_field)
         end
