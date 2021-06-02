@@ -209,9 +209,9 @@ module Spectrum
                 description = rendered_display[:description]
                 unless description.nil?
                   unless ret[display_type].key?(region)
-                    ret[display_type][region] = Hash.new
+                    ret[display_type][region] = Array.new
                   end
-                  ret[display_type][region][name] = description
+                  ret[display_type][region] << {name => description}
                 end
               end
             end
