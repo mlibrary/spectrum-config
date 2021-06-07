@@ -114,6 +114,7 @@ module Spectrum
         @hierarchy       = Hierarchy.new(args['hierarchy']) if args['hierarchy']
         @new_parser      = args['new_parser']
         @highly_recommended = HighlyRecommended.new(args['highly_recommended'])
+        @facet_values    = {}
       end
 
       def new_parser?
