@@ -57,7 +57,7 @@ module Spectrum
 
       attr_reader :list, :full, :viewable, :searchable, :uid,
                   :field, :sorts, :fields, :query_params, :values,
-                  :query_field, :facet_field, :metadata_component
+                  :query_field, :facet_field, :metadata_component, :header_region
 
       type 'default'
 
@@ -87,6 +87,7 @@ module Spectrum
         @csl = i.csl
         @z3988 = i.z3988
         @metadata_component = i.metadata_component
+        @header_region = i.header_region
       end
 
       def initialize_from_hash(args, config)
@@ -125,6 +126,13 @@ module Spectrum
           preview: MetadataComponent.new(name, mc['preview']),
           medium: MetadataComponent.new(name, mc['medium']),
           full: MetadataComponent.new(name, mc['full']),
+        }
+
+       hr = args['header_region'] || {}
+       @header_region = {
+          preview: HeaderRegion.new(hr['preview']),
+          medium: HeaderRegion.new(hr['medium']),
+          full: HeaderRegion.new(hr['full']),
         }
       end
 
@@ -173,6 +181,12 @@ module Spectrum
         mc = metadata_component[mode]
         return nil unless mc
         mc.resolve(filter(data, request))
+      end
+
+      def header_region_display(mode, data, request)
+        hr = header_region[mode]
+        return nil unless hr
+        hr.resolve(filter(data, request))
       end
 
       def icons(data, request)
