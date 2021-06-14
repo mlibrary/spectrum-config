@@ -130,9 +130,9 @@ module Spectrum
 
        hr = args['header_region'] || {}
        @header_region = {
-          preview: HeaderRegion.new(name, hr['preview']),
-          medium: HeaderRegion.new(name, hr['medium']),
-          full: HeaderRegion.new(name, hr['full']),
+          preview: HeaderRegion.new(hr['preview']),
+          medium: HeaderRegion.new(hr['medium']),
+          full: HeaderRegion.new(hr['full']),
         }
       end
 

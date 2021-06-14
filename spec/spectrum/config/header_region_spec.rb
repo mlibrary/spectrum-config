@@ -5,7 +5,7 @@ require 'spectrum/config/plain_header_component'
 
 
 describe Spectrum::Config::HeaderRegion do
-  subject { described_class.new('Name', region_config) }
+  subject { described_class.new(region_config) }
 
   let(:region_config) {{ 'region_descriptor'=>{ 'type' => 'plain' } }}
 

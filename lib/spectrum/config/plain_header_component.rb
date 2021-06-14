@@ -3,8 +3,8 @@ module Spectrum
     class PlainHeaderComponent < HeaderComponent
       type 'plain'
 
-      def initialize(name, config)
-        self.name = name
+      def initialize(region, config)
+        self.region = region
       end
 
       def get_description(data)
@@ -19,13 +19,12 @@ module Spectrum
       end
 
       def resolve(data)
-        return data if Hash === data && data[:term] && data[:description]
+        return data if Hash === data && data[:region] && data[:description]
         description = get_description(data)
         return nil if description.empty?
 
         {
-          term: name,
-          termPlural: name.pluralize,
+          region: region,
           description: description,
         }
       end

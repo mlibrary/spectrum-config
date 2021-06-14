@@ -2,11 +2,11 @@ module Spectrum
   module Config
     class HeaderComponent
       class << self
-        def new(name, config)
+        def new(region, config)
           klass = get_type(config)
-          return klass.new(name, config) if klass
+          return klass.new(region, config) if klass
           obj = allocate
-          obj.send(:initialize, name, config)
+          obj.send(:initialize, region, config)
           obj
         end
 
@@ -30,7 +30,7 @@ module Spectrum
         end
       end
 
-      attr_accessor :name, :config
+      attr_accessor :region, :config
 
       def initialize(_, _)
       end

@@ -3,27 +3,32 @@ require 'spectrum/config/header_component'
 require 'spectrum/config/plain_header_component'
 
 describe Spectrum::Config::PlainHeaderComponent do
-  subject { described_class.new('Name', {'type' => 'plain'}) }
+  subject { described_class.new('REGION', {'type' => 'plain'}) }
+
+  let(:string_data) { "STRING" }
 
   let(:data) {{
-                term: 'TERM',
+                region: 'REGION',
                 description: 'DESCRIPTION',
               }}
 
   let(:data_result) {{
-                       term: 'TERM',
+                       region: 'REGION',
                        description: 'DESCRIPTION',
                      }}
 
+  let(:string_data_result) {{
+                       region: 'REGION',
+                       description: [{text: "STRING"}],
+                     }}
+
   let(:data_full) {{
-                     term: 'TERM',
-                     termPlural: 'TERMS',
+                     region: 'REGION',
                      description: [{text: 'DESCRIPTION'}]
                    }}
 
   let(:data_full_result) {{
-                            term: 'TERM',
-                            termPlural: 'TERMS',
+                            region: 'REGION',
                             description: [{text: 'DESCRIPTION'}]
                           }}
 
@@ -46,6 +51,10 @@ describe Spectrum::Config::PlainHeaderComponent do
 
     it "returns data when given a header component hash" do
       expect(subject.resolve(data)).to eq(data_result)
+    end
+
+    it "returns data when given a header component hash" do
+      expect(subject.resolve(string_data)).to eq(string_data_result)
     end
 
     it "returns data when given full header component data" do
