@@ -205,13 +205,10 @@ module Spectrum
               rendered_display = field.header_region_display(display_type, data, request)
               unless rendered_display.nil?
                 region = rendered_display[:region]
-                name = rendered_display[:name]
                 description = rendered_display[:description]
                 unless description.nil?
-                  unless ret[display_type].key?(region)
-                    ret[display_type][region] = Array.new
-                  end
-                  ret[display_type][region] << {name => description}
+                  ret[display_type][region] ||= []
+                  ret[display_type][region] << description
                 end
               end
             end

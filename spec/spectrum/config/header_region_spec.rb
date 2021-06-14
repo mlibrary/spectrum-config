@@ -9,15 +9,19 @@ describe Spectrum::Config::HeaderRegion do
 
   let(:region_config) {{ 'region_descriptor'=>{ 'type' => 'plain' } }}
 
-  let(:data) {{
-    term: 'TERM',
-    description: 'DESCRIPTION',
-  }}
+  let(:string_data) { "STRING" }
+  let(:array_data) { ["STRING1", "STRING2"] }
 
-  let(:data_result) {
+  let(:string_data_result) {
     {
-      description: "{:term=>\"TERM\", :description=>\"DESCRIPTION\"}",
-      name: "Name",
+      description: [{text: "STRING"}],
+      region: 'region_descriptor',
+    }
+  }
+
+  let(:array_data_result) {
+    {
+      description: [{text: "STRING1"}, {text: "STRING2"}],
       region: 'region_descriptor',
     }
   }
@@ -39,8 +43,12 @@ describe Spectrum::Config::HeaderRegion do
       expect(subject.resolve([''])).to be(nil)
     end
 
-    it "returns data when given a data hash" do
-      expect(subject.resolve(data)).to eq(data_result)
+    it "returns string_data_result when given string_data" do
+      expect(subject.resolve(string_data)).to eq(string_data_result)
+    end
+
+    it "returns string_data_result when given string_data" do
+      expect(subject.resolve(array_data)).to eq(array_data_result)
     end
   end
 end

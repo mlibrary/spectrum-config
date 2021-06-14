@@ -13,21 +13,13 @@ module Spectrum
       end
 
       def resolve(data)
-        unless @header_component.nil?
-          description = @header_component.get_description(data)
-          unless description.nil?
-            if description.is_a?(Array)
-              description = description[0]
-              if description.is_a?(Hash)
-                description = description[:text]
-                unless description.nil?
-                  ret = {:region => @region, :name => @name , :description => description }
-                end
-              end
-            end
-          end
-        end
-        ret
+        return nil if @header_component.nil?
+        description = @header_component.get_description(data)
+        return nil if description.nil? || description.empty?
+        {
+          region: @region,
+          description: description,
+        }
       end
 
     end
