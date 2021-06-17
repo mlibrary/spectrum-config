@@ -25,10 +25,35 @@ module Spectrum
         )
       end
 
+      def extract_query(field, conjunction, tree )
+        if tree.root_node?
+          return 'any,contains,a' if tree.children.empty?
+          return tree.children.map do |child|
+            extract_query(field, conjunction, child)
+          end.join(",#{conjunction};")
+        end
+        if tree.is_type?('tokens')
+          return "#{field},contains,#{tree.text}"
+        end
+        if ['and','or', 'not'].any? {|type| tree.is_type?(type) }
+          op = tree.operator.to_s.upcase
+          return tree.children.map do |child|
+            extract_query(field, op, child)
+          end.join(",#{op};")
+        end
+        if tree.is_type?('fielded')
+          return extract_query(tree.field, conjunction, tree.query)
+        end
+        ''
+      end
+
       def params(focus, request, controller)
-        new_params = super
-        return {
-          q: 'any,contains,a'
+        {
+          q: extract_query(
+            focus.raw_config['search_field_default'] || 'any',
+            'AND',
+            request.build_psearch.search_tree
+          )
         }
       end
     end
