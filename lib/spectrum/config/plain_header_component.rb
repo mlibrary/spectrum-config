@@ -18,16 +18,6 @@ module Spectrum
         end.compact
       end
 
-      def resolve(data)
-        return data if Hash === data && data[:region] && data[:description]
-        description = get_description(data)
-        return nil if description.empty?
-
-        {
-          region: region,
-          description: description,
-        }
-      end
     end
   end
 end
