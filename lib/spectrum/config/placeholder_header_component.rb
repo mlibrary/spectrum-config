@@ -1,7 +1,7 @@
 module Spectrum
   module Config
-    class PlainHeaderComponent < HeaderComponent
-      type 'plain'
+    class PlaceholderHeaderComponent < HeaderComponent
+      type 'placeholder'
 
       def initialize(region, config)
         self.region = region
@@ -13,7 +13,7 @@ module Spectrum
           if item.empty?
             nil
           else
-            {text: item}
+            {placeholder: item}
           end
         end.compact
       end
