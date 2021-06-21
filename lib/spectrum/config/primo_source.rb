@@ -47,7 +47,18 @@ module Spectrum
         ''
       end
 
+      def extract_record_query(request)
+        {
+          q: "id,exact,#{request.instance_eval {@request.params}['id']}"
+        }
+      end
+
       def params(focus, request, controller)
+
+        if Spectrum::Request::Record === request
+          return extract_record_query(request)
+        end
+
         {
           q: extract_query(
             focus.raw_config['search_field_default'] || 'any',

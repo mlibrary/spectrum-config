@@ -20,15 +20,12 @@ module Spectrum
         end
 
         def [](key)
-          if data['display'].has_key?(key)
-            return data['display'][key]
-          elsif data['addata'].has_key?(key)
-            return data['addata'][key]
-          elsif data['search'].has_key?(key)
-            return data['search'][key]
-          elsif data['control'].has_key?(key)
-            return data['control'][key]
+          ['control', 'display', 'addata', 'search'].each do |area|
+            if data[area].has_key?(key)
+              return data[area][key]
+            end
           end
+          return nil
         end
       end
     end

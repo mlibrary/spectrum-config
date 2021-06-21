@@ -26,6 +26,10 @@ module Spectrum
           @info.total
         end
 
+        def first
+          @docs.first
+        end
+
         def map
           @docs.map do |doc|
             yield doc
