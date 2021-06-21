@@ -56,6 +56,8 @@ require 'spectrum/config/quoted_search2_metadata_component'
 require 'spectrum/config/header_region'
 require 'spectrum/config/header_component'
 require 'spectrum/config/plain_header_component'
+require 'spectrum/config/icon_header_component'
+require 'spectrum/config/placeholder_header_component'
 
 require 'spectrum/config/highly_recommended'
 require 'spectrum/config/sort'
