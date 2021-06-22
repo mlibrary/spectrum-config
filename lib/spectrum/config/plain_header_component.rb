@@ -3,8 +3,12 @@ module Spectrum
     class PlainHeaderComponent < HeaderComponent
       type 'plain'
 
+      attr_accessor :append, :modifier
+
       def initialize(region, config)
         self.region = region
+        self.append = config['append'] || ''
+        self.modifier = config['modifier']
       end
 
       def get_description(data)
@@ -13,7 +17,9 @@ module Spectrum
           if item.empty?
             nil
           else
-            {text: item}
+            ret = {text: item + append}
+            ret[:modifier] = modifier if modifier
+            ret
           end
         end.compact
       end
