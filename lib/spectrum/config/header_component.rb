@@ -38,7 +38,7 @@ module Spectrum
       def resolve(data)
         return data if Hash === data && data[:region] && data[:description]
         description = get_description(data)
-        return nil if description.empty?
+        return nil if description.nil? || description.empty?
 
         {
           region: region,
