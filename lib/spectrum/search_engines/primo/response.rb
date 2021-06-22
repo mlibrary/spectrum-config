@@ -8,7 +8,7 @@ module Spectrum
           return self.new(
             info: Info.for_json(json['info']),
             highlights: Highlights.for_json(json['highlights']),
-            docs: Docs.for_json(json['docs']),
+            docs: Docs.for_json(json['docs'], json['info']['first'].to_i),
             timelog: Timelog.for_json(json['timelog']),
             facets: Facets.for_json(json['facets'])
           )

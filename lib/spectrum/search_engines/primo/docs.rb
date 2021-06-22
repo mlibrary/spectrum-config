@@ -2,8 +2,12 @@ module Spectrum
   module SearchEngines
     module Primo
       module Docs
-        def self.for_json(json)
-          json.map {|doc_json| Doc.for_json(doc_json)}
+        def self.for_json(json, position)
+          position -= 1
+          json.map do |doc_json|
+            position += 1
+            Doc.for_json(doc_json, position)
+          end
         end
       end
     end
