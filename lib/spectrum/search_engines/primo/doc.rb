@@ -5,22 +5,24 @@ module Spectrum
 
         attr_reader :data, :extras, :delivery
 
-        def self.for_json(json)
+        def self.for_json(json, position)
           self.new(
             data: json['pnx'],
             extras: json['extras'],
-            delivery: json['delivery']
+            delivery: json['delivery'],
+            position: position
           )
         end
 
-        def initialize(data: {}, extras: {}, delivery: {})
+        def initialize(data: {}, extras: {}, delivery: {}, position: 0)
           @data = data
           @extras = extras
           @delivery = delivery
+          @data['internal'] = { 'position' => position }
         end
 
         def [](key)
-          ['control', 'display', 'addata', 'search'].each do |area|
+          ['control', 'display', 'addata', 'search', 'internal'].each do |area|
             if data[area].has_key?(key)
               return data[area][key]
             end
