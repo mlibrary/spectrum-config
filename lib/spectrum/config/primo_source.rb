@@ -62,6 +62,7 @@ module Spectrum
       end
 
       def extract_limit(request)
+        return 1 if request.count <= 0
         request.count
       end
 
