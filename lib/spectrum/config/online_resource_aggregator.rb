@@ -12,7 +12,7 @@ module Spectrum
 
       def add(metadata, field, subfield)
         return unless subfield
-        if field.tag == "856"
+        if ["856", "E56"].include?(field.tag)
           @links[field] ||= {}
           @links[field][metadata[:label]] = subfield.value
         else
