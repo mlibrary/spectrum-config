@@ -18,7 +18,10 @@ module Spectrum
           @data = data
           @extras = extras
           @delivery = delivery
-          @data['internal'] = { 'position' => position }
+          @data['internal'] = {
+            'position' => position,
+            'id' => [(data['control'] || {})['recordid']].flatten.first,
+          }
         end
 
         def [](key)
