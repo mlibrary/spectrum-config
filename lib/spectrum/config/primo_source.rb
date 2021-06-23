@@ -53,6 +53,25 @@ module Spectrum
         }
       end
 
+      def extract_facets(request)
+        request.facets.q_include
+      end
+
+      def extract_offset(request)
+        request.start
+      end
+
+      def extract_limit(request)
+        request.count
+      end
+
+      def extract_sort(focus, request)
+        return 'rank' # title, author, date
+        (focus.sorts.values.find do |sort|
+          sort.uid == request.sort
+        end || focus.default_sort)&.value
+      end
+
       def params(focus, request, controller)
 
         if Spectrum::Request::Record === request
@@ -64,7 +83,11 @@ module Spectrum
             focus.raw_config['search_field_default'] || 'any',
             'AND',
             request.build_psearch.search_tree
-          )
+          ),
+          qInclude: extract_facets(request),
+          offset: extract_offset(request),
+          limit: extract_limit(request),
+          sort: extract_sort(focus, request),
         }
       end
     end
