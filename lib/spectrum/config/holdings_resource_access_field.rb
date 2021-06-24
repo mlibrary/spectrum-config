@@ -32,7 +32,7 @@ module Spectrum
 
         rows = bib_record.elec_holdings.map do |holding|
           [
-            {href: holding.link, link_text: link_text || holding.link_text},
+            {href: holding.link, text: link_text || holding.link_text},
             {text: [holding.description, holding.note].compact.join(' - ')}
           ]
         end
