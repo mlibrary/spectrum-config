@@ -24,6 +24,10 @@ module Spectrum
           }
         end
 
+        def fulltext?
+          @delivery['availability'].include?('fulltext')
+        end
+
         def [](key)
           ['control', 'display', 'addata', 'search', 'internal'].each do |area|
             if data[area].has_key?(key)
