@@ -134,6 +134,7 @@ require 'spectrum/config/primo_resource_access_field'
 require 'spectrum/config/more_information_field'
 require 'spectrum/config/times_cited_field'
 require 'spectrum/config/times_cited2_field'
+require 'spectrum/config/primo_times_cited_field'
 
 require 'spectrum/config/facet_parents'
 require 'spectrum/config/facet'

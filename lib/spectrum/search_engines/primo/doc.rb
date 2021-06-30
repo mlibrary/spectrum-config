@@ -29,7 +29,7 @@ module Spectrum
         end
 
         def [](key)
-          ['control', 'display', 'addata', 'search', 'internal'].each do |area|
+          ['control', 'display', 'addata', 'search', 'internal', 'facets'].each do |area|
             if data[area].has_key?(key)
               return data[area][key]
             end

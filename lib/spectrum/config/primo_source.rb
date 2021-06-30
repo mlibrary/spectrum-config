@@ -27,7 +27,7 @@ module Spectrum
 
       def extract_query(field, conjunction, tree )
         if tree.root_node?
-          return 'any,contains,a' if tree.children.empty?
+          return 'any,contains,*' if tree.children.empty?
           return tree.children.map do |child|
             extract_query(field, conjunction, child)
           end.join(",#{conjunction};")
