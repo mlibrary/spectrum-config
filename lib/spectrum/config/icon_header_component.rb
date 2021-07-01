@@ -1,9 +1,9 @@
 module Spectrum
   module Config
-    class IconMetadataComponent < MetadataComponent
+    class IconHeaderComponent < HeaderComponent
       type 'icon'
 
-      MAP = {
+      ICON_MAP = {
         'book' => 'book',
         'article' => 'document',
         'review' => 'document',
@@ -87,42 +87,41 @@ module Spectrum
         'Visual Material' => 'remove_red_eye',
         'Website' => 'web',
         'Web Resource' => 'web',
+        'outbound_link_graphic' => 'outbound_link_graphic',
       }
 
-      def initialize(name, config)
-        config ||= {}
-        self.name = name
+      def initialize(region, config)
+        self.region = region
+      end
+
+      def transform_item(item)
+        item
+      end
+
+      def transform_icon(item)
+        ICON_MAP[item]
       end
 
       def get_description(data)
-        [data].flatten(1).map { |item|
+        [data].flatten(1).map do |item|
           item = item.to_s
-          icon = MAP[item].to_s
           if item.empty?
             nil
-          elsif icon.empty?
-            {text: item}
           else
-            {text: item, icon: icon}
+            ret = {}
+            item = transform_item(item)
+            icon = transform_icon(item)
+            ret[:text] = item if item
+            ret[:icon] = icon if icon
+            if ret.empty?
+              nil
+            else
+             ret
+            end
           end
-        }.compact
+        end.compact
       end
 
-      def icons(data)
-        description = get_description(data)
-        return nil if description.empty?
-        description
-      end
-
-      def resolve(data)
-        description = get_description(data)
-        return nil if description.empty?
-        {
-          term: name,
-          termPlural: name.pluralize,
-          description: description,
-        }
-      end
     end
   end
 end
