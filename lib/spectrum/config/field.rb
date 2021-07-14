@@ -133,6 +133,9 @@ module Spectrum
           preview: HeaderRegion.new(hr['preview']),
           medium: HeaderRegion.new(hr['medium']),
           full: HeaderRegion.new(hr['full']),
+          callno_browse: HeaderRegion.new(hr['callno_browse']),
+          subject_browse: HeaderRegion.new(hr['subject_browse']),
+          author_browse: HeaderRegion.new(hr['author_browse']),
         }
       end
 
