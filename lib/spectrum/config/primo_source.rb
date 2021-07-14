@@ -54,7 +54,31 @@ module Spectrum
       end
 
       def extract_facets(request)
-        request.facets.q_include
+        return {} if request.facets.data.nil? || request.facets.data.empty?
+
+        retval = { qInclude: [], qExclude: [], pcAvailability: []}
+        facet_definitions = request.instance_eval { @focus.instance_eval { @facets } }
+
+        request.facets.data.each_pair do |key, values|
+          definition = facet_definitions.values.find { |f| [f.id, f.uid].include?(key) }
+          next unless definition
+
+          [values].flatten.each do |value|
+            value = definition.mapping.fetch(value, value)
+
+            if value.start_with?('qInclude=')
+              retval[:qInclude] << value[9, value.length]
+            elsif value.start_with?('qExclude=')
+              retval[:qExclude] << value[9, value.length]
+            elsif value.start_with?('pcAvailability=')
+              retval[:pcAvailability] << value[15, value.length]
+            else
+              retval[:qInclude] << "facet_#{definition.facet_field},exact,#{value}"
+            end
+          end
+        end
+
+        retval.reject {|key, val| val.empty?}.map {|key, val| [key, val.join('|,|')]}.to_h
       end
 
       def extract_offset(request)
@@ -85,11 +109,11 @@ module Spectrum
             'AND',
             request.build_psearch.search_tree
           ),
-          qInclude: extract_facets(request),
           offset: extract_offset(request),
           limit: extract_limit(request),
           sort: extract_sort(focus, request),
-        }
+        }.merge(extract_facets(request))
+
       end
     end
   end

@@ -26,12 +26,16 @@ module Spectrum
       [:pseudo_facet?, :rff, :routes, :sort, :label, :values, :spectrum, :name, :<=>, :more].each do |fn|
         define_method(fn) { |*arg| }
       end
+
+      def mapping
+        {}
+      end
     end
 
     class Facet
       attr_accessor :weight, :id, :limit, :mincount, :offset
 
-      attr_reader :uid, :field, :type, :facet_field, :selected
+      attr_reader :uid, :field, :type, :facet_field, :selected, :mapping
 
       DEFAULT_SORTS = { 'count' => 'count', 'index' => 'index' }.freeze
 
@@ -54,6 +58,7 @@ module Spectrum
         @ranges       = args['facet'].ranges
         @expanded     = args['facet'].expanded || false
         @selected     = args['facet'].selected || false
+        @mapping      = args['mapping'] || {}
 
         sorts         = args['facet_sorts'] || DEFAULT_SORTS
         @sorts        = Spectrum::Config::SortList.new(sorts, sort_list)
@@ -75,11 +80,12 @@ module Spectrum
       end
 
       def pseudo_facet?
-        @type == 'pseudo_facet'
+        @type == 'pseudo_facet' || @type == 'mapped_pseudo_facet'
       end
 
+      # The mapped_pseudo_facet looks more like a true facet.
       def true_facet?
-        !pseudo_facet?
+        @type != 'pseudo_facet'
       end
 
       def rff(applied)
