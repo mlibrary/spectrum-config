@@ -2,7 +2,7 @@
 module Spectrum
   module Config
     class PseudoFacetField < Field
-      type 'pseudo_facet'
+      type 'mapped_pseudo_facet'
 
       attr_reader :mapping
 
