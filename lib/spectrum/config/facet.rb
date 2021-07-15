@@ -35,7 +35,7 @@ module Spectrum
     class Facet
       attr_accessor :weight, :id, :limit, :mincount, :offset
 
-      attr_reader :uid, :field, :type, :facet_field, :selected, :mapping
+      attr_reader :uid, :field, :type, :facet_field, :selected, :mapping, :transform
 
       DEFAULT_SORTS = { 'count' => 'count', 'index' => 'index' }.freeze
 
@@ -58,6 +58,7 @@ module Spectrum
         @ranges       = args['facet'].ranges
         @expanded     = args['facet'].expanded || false
         @selected     = args['facet'].selected || false
+        @transform    = args['facet'].transform
         @mapping      = args['mapping'] || {}
 
         sorts         = args['facet_sorts'] || DEFAULT_SORTS

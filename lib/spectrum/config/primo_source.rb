@@ -53,6 +53,22 @@ module Spectrum
         }
       end
 
+      def date_range(value)
+        return value if value.nil? || value.empty?
+        value = value.to_s
+        if value.match(/^\d+$/)
+          "[#{value} TO #{value}]"
+        elsif (m = value.match(/^before\s*(\d+)$/))
+          "[* TO #{m[1]}]"
+        elsif (m = value.match(/^after\s*(\d+)$/))
+          "[#{m[1]} TO *]"
+        elsif (m = value.match(/^(\d+)\s*to\s*(\d+)$/))
+          "[#{m[1]} TO #{m[2]}]"
+        else
+          value
+        end
+      end
+
       def extract_facets(request)
         return {} if request.facets.data.nil? || request.facets.data.empty?
 
@@ -65,6 +81,7 @@ module Spectrum
 
           [values].flatten.each do |value|
             value = definition.mapping.fetch(value, value)
+            value = self.send(definition.transform, value) if definition.transform
 
             if value.start_with?('qInclude=')
               retval[:qInclude] << value[9, value.length]
