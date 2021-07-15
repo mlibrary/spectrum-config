@@ -57,7 +57,8 @@ module Spectrum
 
       attr_reader :list, :full, :viewable, :searchable, :uid,
                   :field, :sorts, :fields, :query_params, :values,
-                  :query_field, :facet_field, :metadata_component, :header_region
+                  :query_field, :facet_field, :metadata_component, :header_region,
+                  :mapping, :facet_query_field, :reverse_facets
 
       type 'default'
 
@@ -83,11 +84,14 @@ module Spectrum
         @origin = 'instance'
         @query_field = i.query_field
         @facet_field = i.facet_field
+        @facet_query_field = i.facet_query_field
         @ris = i.ris
         @csl = i.csl
         @z3988 = i.z3988
         @metadata_component = i.metadata_component
         @header_region = i.header_region
+        @mapping = i.mapping
+        @reverse_facets = i.reverse_facets
       end
 
       def initialize_from_hash(args, config)
@@ -106,11 +110,14 @@ module Spectrum
         @facet      = FieldFacet.new(args['facet'])
         @metadata   = Metadata.new(args['metadata'])
         @field      = args['field'] || args['id']
-        @facet_field = args['facet_field'] || args['field'] || args['id']
         @query_field = args['query_field'] || @field
+        @facet_field = args['facet_field'] || @field
+        @facet_query_field = args['facet_query_field'] || @facet_field
         @uid = args['uid'] || args['id']
         @query_params = args['query_params'] || {}
         @values = args['values'] || []
+        @mapping = args['mapping'] || {}
+        @reverse_facets = args['reverse_facets']
 
         @sorts = (args['sorts'] || [])
         raise "Missing sort id(s): #{(@sorts - config.sorts.keys).join(', ')}" unless (@sorts - config.sorts.keys).empty?
@@ -215,7 +222,12 @@ module Spectrum
       end
 
       def value(data, request = nil)
-        resolve_key(data, @field)
+        resolved = resolve_key(data, @field)
+        if Array === resolved
+          resolved.map {|val| mapping.fetch(val, val)}
+        else
+          mapping.fetch(resolved, resolved)
+        end
       end
 
       def resolve_key(data, name)

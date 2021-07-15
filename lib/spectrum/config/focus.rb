@@ -331,10 +331,13 @@ module Spectrum
           @facet_values = {}
           # TODO: Make a facet values object or something.
           results.facets.each do |facet|
+            field = fields.values.find { |f| f.facet_field == facet.display_name }
+            mapping = field&.mapping || {}
+            reversed = field&.reverse_facets
             @facet_values[facet.display_name] = []
-            facet.counts.each do |count|
+            (reversed ? facet.counts.reverse : facet.counts).each do |count|
               # unless count.applied?
-              @facet_values[facet.display_name] << count.value
+              @facet_values[facet.display_name] << mapping.fetch(count.value, count.value)
               @facet_values[facet.display_name] << count.count
               # end
             end
