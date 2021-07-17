@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 module Spectrum
   module Config
-    class PseudoFacetField < Field
+    class MappedPseudoFacetField < Field
       type 'mapped_pseudo_facet'
 
       attr_reader :mapping
