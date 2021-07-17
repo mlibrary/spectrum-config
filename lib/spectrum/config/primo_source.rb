@@ -11,38 +11,38 @@ module Spectrum
         @tab   = args['tab']
         @scope = args['scope']
         @view  = args['view']
+        @engine = nil
       end
 
       def engine(focus, request, controller = nil)
-        p = params(focus, request, controller)
-        Spectrum::SearchEngines::Primo::Engine.new(
+        @engine ||= Spectrum::SearchEngines::Primo::Engine.new(
           key: key,
           host: host,
           tab: tab,
           scope: scope,
           view: view,
-          params: p
+          params: params(focus, request, controller)
         )
       end
 
-      def extract_query(field, conjunction, tree )
+      def extract_query(field_mapping, field, conjunction, tree )
         if tree.root_node?
           return 'any,contains,*' if tree.children.empty?
           return tree.children.map do |child|
-            extract_query(field, conjunction, child)
+            extract_query(field_mapping, field, conjunction, child)
           end.join(",#{conjunction};")
         end
         if tree.is_type?('tokens')
-          return "#{field},contains,#{tree.text}"
+          return "#{field_mapping.fetch(field, field)},contains,#{tree.text}"
         end
         if ['and','or', 'not'].any? {|type| tree.is_type?(type) }
           op = tree.operator.to_s.upcase
           return tree.children.map do |child|
-            extract_query(field, op, child)
+            extract_query(field_mapping, field, op, child)
           end.join(",#{op};")
         end
         if tree.is_type?('fielded')
-          return extract_query(tree.field, conjunction, tree.query)
+          return extract_query(field_mapping, tree.field, conjunction, tree.query)
         end
         ''
       end
@@ -120,8 +120,11 @@ module Spectrum
           return extract_record_query(request)
         end
 
+        field_mapping = focus.fields.values.map { |f| [f.uid, f.query_field]}.to_h
+
         {
           q: extract_query(
+            field_mapping,
             focus.raw_config['search_field_default'] || 'any',
             'AND',
             request.build_psearch.search_tree
