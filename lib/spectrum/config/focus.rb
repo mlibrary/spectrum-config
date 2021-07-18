@@ -397,7 +397,7 @@ module Spectrum
                     to: 'json#holdings',
                     defaults: { source: source, focus: @id, type: 'Holdings', id_field: id_field },
                     via: [:get, :options]
-          app.match "#{url}/holdings/:record/:item/:pickup_location/:not_needed_after",
+          app.match "#{url}/holdings/:record/:holding/:item/:pickup_location/:not_needed_after",
                     to: 'json#hold',
                     defaults: { source: source, focus: @id, type: 'PlaceHold', id_field: id_field },
                     via: [:post, :options]
