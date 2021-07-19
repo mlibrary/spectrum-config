@@ -19,6 +19,9 @@ module Spectrum
           @view = view
           @params = params
           @results = nil
+          if defined?(Rails)
+            @logger = Rails.logger
+          end
         end
 
         def results
@@ -31,6 +34,7 @@ module Spectrum
 
 
         def search
+          @logger&.info { url }
           @results ||= Response.for_json(HTTParty.get(url))
         end
 

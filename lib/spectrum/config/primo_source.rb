@@ -11,11 +11,10 @@ module Spectrum
         @tab   = args['tab']
         @scope = args['scope']
         @view  = args['view']
-        @engine = nil
       end
 
       def engine(focus, request, controller = nil)
-        @engine ||= Spectrum::SearchEngines::Primo::Engine.new(
+        Spectrum::SearchEngines::Primo::Engine.new(
           key: key,
           host: host,
           tab: tab,
