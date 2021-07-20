@@ -6,6 +6,7 @@ module Spectrum
         attr_accessor :first, :last, :total
 
         def self.for_json(json)
+          json ||= {'total' => 0, 'first' => 0, 'last' => 0}
           self.new(total: json['total'], first: json['first'], last: json['last'])
         end
 
