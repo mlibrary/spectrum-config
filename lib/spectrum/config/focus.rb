@@ -114,6 +114,7 @@ module Spectrum
         @hierarchy       = Hierarchy.new(args['hierarchy']) if args['hierarchy']
         @new_parser      = args['new_parser']
         @highly_recommended = HighlyRecommended.new(args['highly_recommended'])
+        @facet_values    = {}
       end
 
       def new_parser?
@@ -330,10 +331,13 @@ module Spectrum
           @facet_values = {}
           # TODO: Make a facet values object or something.
           results.facets.each do |facet|
+            field = fields.values.find { |f| f.facet_field == facet.display_name }
+            mapping = field&.mapping || {}
+            reversed = field&.reverse_facets
             @facet_values[facet.display_name] = []
-            facet.counts.each do |count|
+            (reversed ? facet.counts.reverse : facet.counts).each do |count|
               # unless count.applied?
-              @facet_values[facet.display_name] << count.value
+              @facet_values[facet.display_name] << mapping.fetch(count.value, count.value)
               @facet_values[facet.display_name] << count.count
               # end
             end
@@ -393,7 +397,7 @@ module Spectrum
                     to: 'json#holdings',
                     defaults: { source: source, focus: @id, type: 'Holdings', id_field: id_field },
                     via: [:get, :options]
-          app.match "#{url}/holdings/:record/:item/:pickup_location/:not_needed_after",
+          app.match "#{url}/holdings/:record/:holding/:item/:pickup_location/:not_needed_after",
                     to: 'json#hold',
                     defaults: { source: source, focus: @id, type: 'PlaceHold', id_field: id_field },
                     via: [:post, :options]
