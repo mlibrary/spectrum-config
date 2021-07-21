@@ -25,7 +25,29 @@ module Spectrum
         end
 
         def fulltext?
-          @delivery['availability'].include?('fulltext')
+          @fulltext ||= @delivery['availability'].any? do |availability|
+            availability.include?('fulltext')
+          end
+        end
+
+        def link_to_resource?
+          @is_link_to_resource ||= @delivery['availability'].any? do |availability|
+            availability.include?('linktorsrc')
+          end
+        end
+
+        def link_to_resource
+          @link_to_resource ||= [@data.dig('links', 'linktorsrc')].flatten.compact.map do |linktorsrc|
+            linktorsrc.scan(/\$\$.[^$]*/).filter do |link|
+              link.start_with?('$$U')
+            end.map do |link|
+              link[3, link.length]
+            end
+          end.flatten.first
+        end
+
+        def openurl
+          @delivery['almaOpenurl'].sub(/^.*\?/,'')
         end
 
         def [](key)

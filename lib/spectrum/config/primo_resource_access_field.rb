@@ -5,7 +5,7 @@ module Spectrum
     class PrimoResourceAccessField < Field
       type 'primo_resource_access'
 
-      attr_reader :caption, :headings, :caption_link, :notes, :name, :link_text, :openurl_root
+      attr_reader :caption, :headings, :caption_link, :notes, :name, :link_text, :openurl_root, :proxy_prefix
 
       FULLTEXT = {
         text: 'Full text available',
@@ -28,6 +28,7 @@ module Spectrum
         @caption_link = i.caption_link
         @link_text = i.link_text
         @openurl_root = i.openurl_root
+        @proxy_prefix = i.proxy_prefix
       end
 
       def initialize_from_hash(args, config = {})
@@ -39,14 +40,18 @@ module Spectrum
         @caption_link = args['caption_link']
         @link_text = args['link_text']
         @openurl_root = args['openurl_root']
+        @proxy_prefix = args['proxy_prefix']
       end
 
       def value(data, request = nil)
+
         extra_headings = []
 
-        url = openurl_root +
-          '?' +
-           data.delivery['almaOpenurl'].sub(/^.*\?/,'')
+        url = if data.link_to_resource?
+          proxy_prefix + data.link_to_resource
+        else
+          openurl_root + '?' + data.openurl
+        end
 
         description = if data.fulltext?
           FULLTEXT
