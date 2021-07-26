@@ -21,6 +21,12 @@ module Spectrum
           @data['internal'] = {
             'position' => position,
             'id' => [(data['control'] || {})['recordid']].flatten.first,
+            'alt_ids' => [
+              data.dig('control', 'recordid'),
+              data.dig('control', 'sourcerecordid'),
+              data.dig('control', 'originalsourceid'),
+              data.dig('control', 'addsrcrecordid'),
+            ].compact.flatten,
           }
         end
 
