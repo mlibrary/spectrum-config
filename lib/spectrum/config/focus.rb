@@ -199,7 +199,7 @@ module Spectrum
       def header_component(data, _ = nil, request = nil)
         return data.map {|item| header_component(item, nil, request)}.compact if data === Array
         ret = {}
-        [:preview, :medium, :full, :callno_browse, :author_browse, :subject_browse].each do |display_type|
+        [:preview, :medium, :full, :callno_browse].each do |display_type|
           ret[display_type] = Hash.new
           @fields.each_value do |field|
             if field.respond_to?(:header_region_display)
