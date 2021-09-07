@@ -107,7 +107,7 @@ module Spectrum
       end
 
       def extract_sort(focus, request)
-        return 'rank' # title, author, date
+        return focus.default_sort.value unless request.sort
         (focus.sorts.values.find do |sort|
           sort.uid == request.sort
         end || focus.default_sort)&.value

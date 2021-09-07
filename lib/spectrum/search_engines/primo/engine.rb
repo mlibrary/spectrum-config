@@ -47,7 +47,7 @@ module Spectrum
             apikey: key,
             tab: tab,
             scope: scope,
-            vid: view
+            vid: view,
           }).to_query
         end
       end
