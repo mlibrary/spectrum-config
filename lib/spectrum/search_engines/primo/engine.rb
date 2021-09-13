@@ -19,7 +19,7 @@ module Spectrum
           @view = view
           @params = params
           @results = nil
-          if defined?(Rails)
+          if defined?(Rails) && Rails.respond_to?(:logger)
             @logger = Rails.logger
           end
         end

@@ -4,6 +4,17 @@ module Spectrum
 
       attr_accessor :key, :host, :tab, :scope, :view
 
+      def fetch_record(field, id, _ = nil)
+        Spectrum::SearchEngines::Primo::Engine.new(
+          key: key,
+          host: host,
+          tab: tab,
+          scope: scope,
+          view: view,
+          params: { q: "#{field},exact,#{id}" }
+        ).results&.first || {}
+      end
+
       def initialize(args)
         super(args)
         @key   = args['key']
