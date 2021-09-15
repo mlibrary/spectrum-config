@@ -48,9 +48,9 @@ module Spectrum
         extra_headings = []
 
         url = if data.link_to_resource?
-          proxy_prefix + data.link_to_resource
+          "#{proxy_prefix}#{data.link_to_resource}"
         else
-          openurl_root + '?' + data.openurl
+          "#{openurl_root}?#{data.openurl}"
         end
 
         description = if data.fulltext?
